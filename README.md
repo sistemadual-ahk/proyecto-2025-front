@@ -1,1 +1,1 @@
-# proyecto-2025-frontt
+# proyecto-2025-front
