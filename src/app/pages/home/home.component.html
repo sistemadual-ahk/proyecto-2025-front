@@ -1,0 +1,109 @@
+<div class="home-container">
+  <!-- Header -->
+  <header class="header">
+    <div class="header-left">
+      <button class="menu-btn" (click)="openMenu()">
+        <i class="mdi mdi-menu"></i>
+      </button>
+    </div>
+    
+    <div class="header-center">
+      <h1 class="app-title">Ga<span class="dollar-sign">$</span>tify</h1>
+    </div>
+    
+    <div class="header-right">
+      <button class="notification-btn" (click)="openNotifications()">
+        <i class="mdi mdi-bell"></i>
+      </button>
+      <button class="profile-btn" (click)="openProfile()">
+        <i class="mdi mdi-account-circle"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- Date Navigation -->
+  <div class="date-navigation">
+    <button class="nav-btn" (click)="previousMonth()">
+      <i class="mdi mdi-chevron-left"></i>
+    </button>
+    <h2 class="current-month">{{ currentMonth }}</h2>
+    <button class="nav-btn" (click)="nextMonth()">
+      <i class="mdi mdi-chevron-right"></i>
+    </button>
+  </div>
+
+  <!-- Summary Cards -->
+  <div class="summary-cards">
+    <div class="summary-card income-card">
+      <div class="card-icon">
+        <i class="mdi mdi-trending-up"></i>
+      </div>
+      <div class="card-content">
+        <h3 class="card-title">Ingresos</h3>
+        <p class="card-amount">${{ income }}</p>
+      </div>
+    </div>
+    
+    <div class="summary-card expense-card">
+      <div class="card-icon">
+        <i class="mdi mdi-trending-down"></i>
+      </div>
+      <div class="card-content">
+        <h3 class="card-title">Gastos</h3>
+        <p class="card-amount">${{ expenses }}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Available Balance Card -->
+  <div class="balance-card">
+    <div class="balance-header">
+      <h3 class="balance-title">Balance Disponible</h3>
+      <i class="mdi mdi-wallet balance-icon"></i>
+    </div>
+    <p class="balance-amount">${{ availableBalance }}</p>
+    <p class="balance-change">{{ balanceChange }}</p>
+  </div>
+
+  <!-- Recent Movements -->
+  <div class="movements-section">
+    <div class="section-header">
+      <h3 class="section-title">Movimientos Recientes</h3>
+      <button class="view-all-btn" (click)="viewAllMovements()">
+        Ver todo <i class="mdi mdi-chevron-right"></i>
+      </button>
+    </div>
+    
+    <div class="movements-list">
+      <div class="movement-item" *ngFor="let movement of recentMovements">
+        <div class="movement-icon" [style.background-color]="movement.color">
+          <i [class]="movement.icon"></i>
+        </div>
+        <div class="movement-details">
+          <h4 class="movement-category">{{ movement.category }}</h4>
+          <p class="movement-date">{{ movement.date }}</p>
+        </div>
+        <div class="movement-amount" [class.income]="movement.type === 'income'">
+          {{ movement.amount > 0 ? '+' : '' }}${{ Math.abs(movement.amount) }}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Navigation -->
+  <div class="bottom-nav">
+    <button class="nav-item" (click)="openGoals()">
+      <i class="mdi mdi-target"></i>
+      <span>Objetivos</span>
+    </button>
+    
+    <button class="nav-item" (click)="openAnalysis()">
+      <i class="mdi mdi-chart-bar"></i>
+      <span>Análisis</span>
+    </button>
+    
+    <button class="add-btn" (click)="addTransaction()">
+      <i class="mdi mdi-plus"></i>
+    </button>
+  </div>
+</div> 
