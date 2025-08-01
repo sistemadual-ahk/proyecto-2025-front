@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -12,6 +13,8 @@ import { FormsModule } from '@angular/forms';
 export class HomeComponent {
   // Hacer Math disponible en el template
   Math = Math;
+
+  constructor(private router: Router) {}
 
   // Datos del dashboard
   currentMonth = 'Junio 2025';
@@ -90,5 +93,11 @@ export class HomeComponent {
 
   addTransaction() {
     console.log('Agregar transacción');
+  }
+
+  logout(): void {
+    //TODO: Aquí iría la lógica de logout (limpiar tokens, etc.)
+    console.log('Logout');
+    this.router.navigate(['/']);
   }
 } 

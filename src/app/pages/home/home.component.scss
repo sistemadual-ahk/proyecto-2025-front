@@ -33,7 +33,7 @@
   color: var(--gastify-green);
 }
 
-.menu-btn, .notification-btn, .profile-btn {
+.menu-btn, .notification-btn, .profile-btn, .logout-btn {
   background: none;
   border: none;
   color: var(--gastify-light);
@@ -44,8 +44,16 @@
   transition: background-color 0.3s ease;
 }
 
-.menu-btn:hover, .notification-btn:hover, .profile-btn:hover {
+.menu-btn:hover, .notification-btn:hover, .profile-btn:hover, .logout-btn:hover {
   background-color: rgba(255, 255, 255, 0.1);
+}
+
+.logout-btn {
+  color: #FF6B6B;
+}
+
+.logout-btn:hover {
+  background-color: rgba(255, 107, 107, 0.1);
 }
 
 // Date Navigation
