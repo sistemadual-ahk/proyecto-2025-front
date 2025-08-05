@@ -23,6 +23,8 @@ export class HomeComponent {
   availableBalance = 37300;
   balanceChange = '+$200 vs mes anterior';
 
+
+
   // Movimientos recientes
   recentMovements = [
     {
@@ -102,4 +104,6 @@ export class HomeComponent {
   addTransaction() {
     console.log('Agregar transacción');
   }
+
+
 } 

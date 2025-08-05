@@ -192,7 +192,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 25px;
+  margin-bottom: 0px;
   padding: 10px 0;
 }
 
@@ -234,7 +234,7 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 25px;
-  padding: 12px 0;
+  padding: 0px 0;
 }
 
 .current-month {
@@ -268,7 +268,7 @@
 }
 
 .summary-card {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.15);
   border-radius: 16px;
   padding: 18px;
   display: flex;
@@ -276,7 +276,7 @@
   gap: 12px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .card-icon {
@@ -317,49 +317,120 @@
   color: var(--gastify-light);
 }
 
-/* Balance Card */
-.balance-card {
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 20px;
-  padding: 22px;
-  margin-bottom: 25px;
-  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.3);
+/* Payment Cards Stack */
+.cards-stack {
   position: relative;
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  height: 200px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 25px;
 }
 
-.balance-header {
+.payment-card {
+  position: absolute;
+  width: 280px;
+  height: 160px;
+  border-radius: 16px;
+  padding: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.payment-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.4);
+}
+
+/* Mercado Pago Card (Front) */
+.mercado-pago-card {
+  background: linear-gradient(135deg, #009EE3, #0078BE);
+  z-index: 3;
+  transform: translateY(0);
+}
+
+.mercado-pago-card:hover {
+  transform: translateY(-5px) scale(1.02);
+}
+
+/* Santander Card (Middle) */
+.santander-card {
+  background: linear-gradient(135deg, #EC0000, #CC0000);
+  z-index: 2;
+  transform: translateY(10px) scale(0.95);
+  opacity: 0.9;
+}
+
+.santander-card:hover {
+  transform: translateY(5px) scale(0.97);
+}
+
+/* Cash Card (Back) */
+.cash-card {
+  background: linear-gradient(135deg, #51CF66, #40C057);
+  z-index: 1;
+  transform: translateY(20px) scale(0.9);
+  opacity: 0.8;
+}
+
+.cash-card:hover {
+  transform: translateY(15px) scale(0.92);
+}
+
+/* Card Content */
+.card-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 12px;
+  margin-bottom: 20px;
 }
 
-.balance-title {
-  font-size: 0.95rem;
+.card-logo {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  color: white;
+}
+
+.card-type {
+  font-size: 0.9rem;
   font-weight: 600;
-  margin: 0;
-  color: rgba(255, 255, 255, 0.9);
+  color: white;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
-.balance-icon {
-  font-size: 1.3rem;
-  color: var(--gastify-green);
-}
-
-.balance-amount {
-  font-size: 2rem;
-  font-weight: 700;
-  margin: 0 0 6px 0;
-  color: var(--gastify-light);
-}
-
-.balance-change {
-  font-size: 0.85rem;
+.card-number {
+  font-size: 1rem;
   font-weight: 500;
-  margin: 0;
-  color: var(--gastify-green);
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 20px;
+  letter-spacing: 1px;
+}
+
+.card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.card-holder {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.card-balance {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: white;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 /* Movements Section */
@@ -537,8 +608,33 @@
     font-size: 1.1rem;
   }
   
-  .balance-amount {
-    font-size: 1.8rem;
+  .cards-stack {
+    height: 180px;
+  }
+  
+  .payment-card {
+    width: 250px;
+    height: 140px;
+    padding: 16px;
+  }
+  
+  .card-logo {
+    width: 35px;
+    height: 35px;
+    font-size: 1.1rem;
+  }
+  
+  .card-type {
+    font-size: 0.85rem;
+  }
+  
+  .card-number {
+    font-size: 0.9rem;
+    margin-bottom: 16px;
+  }
+  
+  .card-balance {
+    font-size: 1rem;
   }
   
   .card-amount {
@@ -606,8 +702,33 @@
     font-size: 1rem;
   }
   
-  .balance-amount {
-    font-size: 1.6rem;
+  .cards-stack {
+    height: 160px;
+  }
+  
+  .payment-card {
+    width: 220px;
+    height: 120px;
+    padding: 14px;
+  }
+  
+  .card-logo {
+    width: 30px;
+    height: 30px;
+    font-size: 1rem;
+  }
+  
+  .card-type {
+    font-size: 0.8rem;
+  }
+  
+  .card-number {
+    font-size: 0.85rem;
+    margin-bottom: 14px;
+  }
+  
+  .card-balance {
+    font-size: 0.9rem;
   }
   
   .card-amount {
