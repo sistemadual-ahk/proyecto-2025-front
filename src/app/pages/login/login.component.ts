@@ -36,12 +36,4 @@ export class LoginComponent {
     // Por ahora, redirigir a home
     this.router.navigate(['/home']);
   }
-
-  navegarAWelcome(): void {
-    this.router.navigate(['/']);
-  }
-
-  navegarARegister(): void {
-    this.router.navigate(['/register']);
-  }
 }
