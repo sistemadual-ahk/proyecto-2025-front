@@ -64,3 +64,35 @@ a {
 ::-webkit-scrollbar-thumb:hover {
   background: var(--gastify-green);
 }
+
+// Prevenir zoom en dispositivos móviles
+html, body {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+// Permitir selección de texto en inputs y textareas
+input, textarea {
+  -webkit-user-select: text;
+  -khtml-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
+}
+
+// Prevenir zoom en elementos interactivos
+button, a, [role="button"] {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+// Mejorar la experiencia de scroll en iOS
+* {
+  -webkit-overflow-scrolling: touch;
+}
