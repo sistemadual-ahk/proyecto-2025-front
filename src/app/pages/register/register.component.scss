@@ -11,23 +11,16 @@
 .register-content {
   background: transparent;
   border-radius: 20px;
-  padding: 30px;
+  padding: 50px 30px 30px 30px;
   width: 100%;
   max-width: 350px;
-}
-
-// Logo Section
-.logo-section {
-  text-align: center;
-  margin-bottom: 25px;
   position: relative;
 }
 
 .btn-back {
   position: absolute;
   left: 0;
-  top: 50%;
-  transform: translateY(-50%);
+  top: 0;
   background: rgba(255, 255, 255, 0.1);
   border: none;
   color: var(--gastify-light);
@@ -36,12 +29,58 @@
   cursor: pointer;
   transition: all 0.3s ease;
   font-size: 1.2rem;
+  z-index: 10;
 }
 
 .btn-back:hover {
   background: rgba(255, 255, 255, 0.2);
-  transform: translateY(-50%) scale(1.1);
+  transform: scale(1.1);
 }
+
+.profile-image {
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 4rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin: 0 auto;
+  position: relative;
+  margin-bottom: 30px;
+}
+
+.edit-profile-btn {
+  position: absolute;
+  bottom: 0px;
+  right: 5px;
+  background: var(--gastify-green);
+  border: none;
+  color: var(--gastify-dark);
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.edit-profile-btn:hover {
+  background: #35b887;
+  transform: scale(1.1);
+}
+.profile-section {
+  text-align: center;
+  margin-bottom: 5px;
+  padding: 5px 0;
+}
+
+
 
 .logo-image {
   max-width: 240px;
@@ -52,7 +91,7 @@
 // Title Section
 .title-section {
   text-align: center;
-  margin-bottom: 25px;
+  margin-bottom: 10px;
 }
 
 .welcome-title {
@@ -77,10 +116,10 @@
 
 .input-group {
   position: relative;
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.06);
   border-radius: 12px;
   padding: 2px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.6);
 }
 
 .input-icon {
@@ -195,11 +234,11 @@
   }
   
   .welcome-title {
-    font-size: 1.3rem;
+    font-size: 1.8rem;
   }
   
   .welcome-subtitle {
-    font-size: 0.85rem;
+    font-size: 1.0rem;
   }
   
   .register-form {
@@ -273,7 +312,7 @@
   
   .btn-next {
     font-size: 0.9rem;
-    padding: 10px;
+    padding: 8px;
   }
   
   .checkbox-label {

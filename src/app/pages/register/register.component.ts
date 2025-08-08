@@ -52,4 +52,8 @@ export class RegisterComponent {
   navegarALogin(): void {
     this.router.navigate(['/login']);
   }
+
+  navegarAInicio(): void {
+    this.router.navigate(['/']);
+  }
 } 
