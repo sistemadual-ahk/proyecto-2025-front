@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -15,6 +16,8 @@ export class HomeComponent {
 
   // Estado del menú
   isMenuOpen = false;
+
+  constructor(private router: Router) {}
 
   // Datos del dashboard
   currentMonth = 'Junio 2025';
@@ -66,6 +69,12 @@ export class HomeComponent {
   closeMenu() {
     console.log('closeMenu ejecutado');
     this.isMenuOpen = false;
+  }
+
+  logout(): void {
+    // Aquí iría la lógica de logout (limpiar tokens, etc.)
+    console.log('Logout');
+    this.router.navigate(['/']);
   }
 
   // Métodos para navegación
