@@ -122,6 +122,14 @@ npx cap open ios
 
 ### Pasos para Ejecutar en Dispositivos
 
+0. **Levantar servidor de desarrollo para hot reloading local
+
+   ```bash
+   ng serve --host=0.0.0.0 --port=4200
+   ```
+
+Hay que configurar la ip de local actual en el archivo capacitor.config.ts.
+
 1. **Sincronizar el proyecto:**
    ```bash
    npx cap sync
@@ -135,6 +143,12 @@ npx cap open ios
    - Conecta tu dispositivo Android o usa el emulador
    - Presiona el botón "Run" (▶️) en Android Studio
 
+También es posible ejecutar directamente con 
+```bash
+   npx cap run android
+   ```
+
+
 3. **Para iOS:**
    ```bash
    npx cap open ios
@@ -142,6 +156,11 @@ npx cap open ios
    - Se abrirá Xcode
    - Conecta tu dispositivo iOS o usa el simulador
    - Presiona el botón "Run" (▶️) en Xcode
+
+También es posible ejecutar directamente con 
+```bash
+   npx cap run ios
+   ```
 
 ### Notas Importantes
 
