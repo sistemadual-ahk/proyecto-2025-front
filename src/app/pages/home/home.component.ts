@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -14,7 +13,8 @@ export class HomeComponent {
   // Hacer Math disponible en el template
   Math = Math;
 
-  constructor(private router: Router) {}
+  // Estado del menú
+  isMenuOpen = false;
 
   // Datos del dashboard
   currentMonth = 'Junio 2025';
@@ -22,6 +22,8 @@ export class HomeComponent {
   expenses = 4500;
   availableBalance = 37300;
   balanceChange = '+$200 vs mes anterior';
+
+
 
   // Movimientos recientes
   recentMovements = [
@@ -54,6 +56,18 @@ export class HomeComponent {
     }
   ];
 
+  // Métodos para el menú
+  toggleMenu() {
+    console.log('toggleMenu ejecutado');
+    this.isMenuOpen = !this.isMenuOpen;
+    console.log('Estado del menú:', this.isMenuOpen);
+  }
+
+  closeMenu() {
+    console.log('closeMenu ejecutado');
+    this.isMenuOpen = false;
+  }
+
   // Métodos para navegación
   previousMonth() {
     // Lógica para mes anterior
@@ -66,10 +80,6 @@ export class HomeComponent {
   }
 
   // Métodos para acciones
-  openMenu() {
-    console.log('Abrir menú');
-  }
-
   openNotifications() {
     console.log('Abrir notificaciones');
   }
@@ -95,9 +105,5 @@ export class HomeComponent {
     console.log('Agregar transacción');
   }
 
-  logout(): void {
-    //TODO: Aquí iría la lógica de logout (limpiar tokens, etc.)
-    console.log('Logout');
-    this.router.navigate(['/']);
-  }
+
 } 

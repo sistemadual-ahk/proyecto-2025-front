@@ -44,12 +44,4 @@ export class RegisterComponent {
     // Por ahora, redirigir a home
     this.router.navigate(['/home']);
   }
-
-  navegarAWelcome(): void {
-    this.router.navigate(['/']);
-  }
-
-  navegarALogin(): void {
-    this.router.navigate(['/login']);
-  }
 } 
