@@ -1,0 +1,84 @@
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
+
+@Component({
+  selector: 'app-saving-goals',
+  standalone: true,
+  imports: [CommonModule],
+  templateUrl: './saving-goals.component.html',
+  styleUrl: './saving-goals.component.scss'
+})
+export class SavingGoalsComponent {
+  
+  // Datos de los objetivos de ahorro
+  savingGoals = [
+    {
+      id: 1,
+      title: 'Viaje a Brasil',
+      currentAmount: 1200,
+      targetAmount: 3000,
+      progress: 40, // 1200/3000 * 100
+      color: '#8B5CF6' // Purple
+    },
+    {
+      id: 2,
+      title: 'Comprar guitarra',
+      currentAmount: 750,
+      targetAmount: 1200,
+      progress: 62.5, // 750/1200 * 100
+      color: '#10B981' // Teal/Green
+    }
+  ];
+
+  // Tips de ahorro
+  savingTips = [
+    {
+      id: 1,
+      icon: 'mdi-bell-ring',
+      title: 'Intenta ahorrar automáticamente',
+      description: 'Programa transferencias periódicas a tus objetivos para alcanzarlos más rápidamente'
+    },
+    {
+      id: 2,
+      icon: 'mdi-thought-bubble',
+      title: 'Reduce las compras impulsivas',
+      description: 'Considera una \'espera de 48 horas\' antes de adquirir objetos no esenciales'
+    },
+    {
+      id: 3,
+      icon: 'mdi-help-circle',
+      title: 'Desafía tus gastos',
+      description: '¿Puedes encontrar una alternativa más barata para ciertos servicios?'
+    }
+  ];
+
+  constructor(private router: Router) {}
+
+  // Métodos de navegación
+  goBack() {
+    this.router.navigate(['/home']);
+  }
+
+  openMenu() {
+    console.log('Abrir menú');
+  }
+
+  openNotifications() {
+    console.log('Abrir notificaciones');
+  }
+
+  openProfile() {
+    console.log('Abrir perfil');
+  }
+
+  // Métodos para objetivos
+  addNewGoal() {
+    console.log('Agregar nuevo objetivo');
+  }
+
+  // Métodos para tips
+  viewTip(tipId: number) {
+    console.log('Ver tip:', tipId);
+  }
+} 

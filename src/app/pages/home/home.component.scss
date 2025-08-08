@@ -552,9 +552,8 @@
   flex-direction: column;
   border: 1px solid white;
   border-radius: 10%;
-  padding: 20px;
+  padding: 10px;
   align-items: center;
-  gap: 4px;
   font-size: 0.75rem;
   font-weight: 500;
   transition: color 0.3s ease;
@@ -566,7 +565,7 @@
 }
 
 .bottom-nav-item i {
-  font-size: 1.2rem;
+  font-size: 2rem;
 }
 
 .add-btn {

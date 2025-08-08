@@ -104,6 +104,7 @@ export class HomeComponent {
   // Métodos para botones inferiores
   openGoals() {
     console.log('Abrir objetivos');
+    this.router.navigate(['/saving-goals']);
   }
 
   openAnalysis() {

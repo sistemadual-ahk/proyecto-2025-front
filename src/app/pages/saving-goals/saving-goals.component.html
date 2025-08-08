@@ -1,0 +1,77 @@
+<div class="saving-goals-container">
+  <!-- Header con tiempo y estado -->
+  <div class="status-bar">
+    <div class="time">09:30 PM</div>
+    <div class="status-icons">
+      <i class="mdi mdi-wifi"></i>
+      <i class="mdi mdi-signal"></i>
+      <i class="mdi mdi-battery"></i>
+    </div>
+  </div>
+
+  <!-- Header principal -->
+  <header class="main-header">
+    <button class="menu-btn" (click)="openMenu()">
+      <i class="mdi mdi-menu"></i>
+    </button>
+    <h1 class="app-title">Ga<span class="dollar-sign">$</span>tify</h1>
+    <div class="header-right">
+      <button class="notification-btn" (click)="openNotifications()">
+        <i class="mdi mdi-bell"></i>
+      </button>
+      <button class="profile-btn" (click)="openProfile()">
+        <i class="mdi mdi-account-circle"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- Navegación y título -->
+  <div class="navigation-section">
+    <button class="back-btn" (click)="goBack()">
+      <i class="mdi mdi-arrow-left"></i>
+    </button>
+    <h2 class="page-title">Objetivos de ahorro</h2>
+  </div>
+
+  <!-- Sección de objetivos de ahorro -->
+  <div class="goals-section">
+    <div class="goal-card" *ngFor="let goal of savingGoals">
+      <h3 class="goal-title">{{ goal.title }}</h3>
+      <div class="progress-container">
+        <div class="progress-bar">
+          <div class="progress-fill" 
+               [style.width.%]="goal.progress"
+               [style.background-color]="goal.color"></div>
+        </div>
+        <div class="goal-amounts">
+          <span class="current-amount">${{ goal.currentAmount.toLocaleString() }}</span>
+          <span class="separator">/</span>
+          <span class="target-amount">${{ goal.targetAmount.toLocaleString() }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sección de tips de ahorro -->
+  <div class="tips-section">
+    <h3 class="tips-title">Tips de ahorro</h3>
+    
+    <div class="tip-card" *ngFor="let tip of savingTips">
+      <div class="tip-icon">
+        <i [class]="tip.icon"></i>
+      </div>
+      <div class="tip-content">
+        <h4 class="tip-title">{{ tip.title }}</h4>
+        <p class="tip-description">{{ tip.description }}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Botón de nuevo objetivo -->
+  <div class="bottom-action">
+    <button class="new-goal-btn" (click)="addNewGoal()">
+      <i class="mdi mdi-plus"></i>
+      <span>Nuevo Objetivo</span>
+    </button>
+  </div>
+</div> 
