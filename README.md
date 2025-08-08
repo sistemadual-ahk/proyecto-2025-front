@@ -91,6 +91,65 @@ ng lint
 ng version
 ```
 
+## 📱 Ejecución en Dispositivos Móviles
+
+### Prerrequisitos para Desarrollo Móvil
+
+Antes de ejecutar la aplicación en dispositivos móviles, asegúrate de tener instalado:
+
+#### Para Android:
+- **Android Studio** con Android SDK
+- **Java Development Kit (JDK)** 11 o superior
+- **Variables de entorno** configuradas (ANDROID_HOME, JAVA_HOME)
+
+#### Para iOS:
+- **Xcode** (solo disponible en macOS)
+- **CocoaPods** para gestión de dependencias
+- **iOS Simulator** o dispositivo físico conectado
+
+### Comandos para Dispositivos Móviles
+
+```bash
+# Sincronizar el proyecto con Capacitor
+npx cap sync
+
+# Abrir proyecto en Android Studio
+npx cap open android
+
+# Abrir proyecto en Xcode (solo macOS)
+npx cap open ios
+```
+
+### Pasos para Ejecutar en Dispositivos
+
+1. **Sincronizar el proyecto:**
+   ```bash
+   npx cap sync
+   ```
+
+2. **Para Android:**
+   ```bash
+   npx cap open android
+   ```
+   - Se abrirá Android Studio
+   - Conecta tu dispositivo Android o usa el emulador
+   - Presiona el botón "Run" (▶️) en Android Studio
+
+3. **Para iOS:**
+   ```bash
+   npx cap open ios
+   ```
+   - Se abrirá Xcode
+   - Conecta tu dispositivo iOS o usa el simulador
+   - Presiona el botón "Run" (▶️) en Xcode
+
+### Notas Importantes
+
+- **Dispositivos físicos**: Asegúrate de tener habilitado el "Modo desarrollador" y "Depuración USB" en Android, o confiar en tu computadora en iOS
+- **Simuladores**: Puedes usar el AVD Manager en Android Studio o el iOS Simulator en Xcode
+- **Primera ejecución**: La primera vez puede tardar más tiempo en compilar
+- **Actualizaciones**: Después de cambios en el código, ejecuta `npx cap sync` para sincronizar
+
 ## 🏗️ Estructura del Proyecto
 
 ```
