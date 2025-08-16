@@ -111,7 +111,7 @@
 .register-form {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 10px;
 }
 
 .input-group {
@@ -137,7 +137,7 @@
   padding: 14px 14px 14px 40px;
   background: transparent;
   border: none;
-  color: var(--gastify-light);
+  color: #ffffff7d;
   font-size: 0.95rem;
   font-family: 'Poppins', sans-serif;
   outline: none;
@@ -172,11 +172,11 @@
 .checkbox-label {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 5px;
   color: rgba(255, 255, 255, 0.8);
   font-size: 0.85rem;
   cursor: pointer;
-  position: relative;
+  position: absolute;
 }
 
 .checkbox-label input[type="checkbox"] {
@@ -209,7 +209,7 @@
   font-family: 'Poppins', sans-serif;
   cursor: pointer;
   transition: all 0.3s ease;
-  margin-top: 8px;
+  margin-top: 10px;
 }
 
 .btn-next:hover {
@@ -242,7 +242,7 @@
   }
   
   .register-form {
-    gap: 14px;
+    gap: 10px;
   }
   
   .input-group {
@@ -251,7 +251,7 @@
   
   .form-input {
     font-size: 0.9rem;
-    padding: 12px 12px 12px 36px;
+    padding: 12px 12px 10px 36px;
   }
   
   .input-icon {
