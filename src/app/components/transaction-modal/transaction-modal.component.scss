@@ -1,0 +1,302 @@
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.modal-content {
+  background: #1a1a1a;
+  width: 100%;
+  max-width: 400px;
+  border-radius: 20px 20px 0 0;
+  padding: 20px;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
+  animation: slideUp 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  height: auto;
+  overflow: hidden;
+  border: 1px solid #333;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+// Header del modal
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #333;
+  position: relative;
+}
+
+.close-btn, .save-btn {
+  background: #333;
+  border: 1px solid #555;
+  font-size: 18px;
+  color: #fff;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  &:hover {
+    background: #555;
+    color: white;
+    transform: scale(1.05);
+  }
+}
+
+.modal-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #fff;
+  margin: 0;
+}
+
+// Toggle Ingreso/Gasto
+.transaction-toggle {
+  display: flex;
+  background: #333;
+  border-radius: 12px;
+  padding: 4px;
+  margin-bottom: 20px;
+  gap: 4px;
+  border: 1px solid #555;
+}
+
+.toggle-btn {
+  flex: 1;
+  padding: 10px 14px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background-color: transparent;
+  color: #ccc;
+  
+  &.active {
+    color: white;
+    font-weight: 600;
+    
+    &.income-btn {
+      background: #10b981;
+    }
+    
+    &.expense-btn {
+      background: #ef4444;
+    }
+  }
+  
+  &:not(.active):hover {
+    background: #444;
+    color: #fff;
+  }
+}
+
+// Formulario
+.transaction-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-row {
+  display: flex;
+  gap: 12px;
+  
+  .form-group {
+    flex: 1;
+  }
+}
+
+.form-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: #ccc;
+  margin-bottom: 4px;
+}
+
+.form-input {
+  padding: 10px 12px;
+  border: 1px solid #555;
+  border-radius: 8px;
+  font-size: 14px;
+  background: #2a2a2a;
+  transition: all 0.3s ease;
+  color: #fff;
+  
+  &:focus {
+    outline: none;
+    border-color: #10b981;
+    background: #333;
+  }
+  
+  &::placeholder {
+    color: #888;
+    font-weight: 400;
+  }
+  
+  &:hover {
+    border-color: #666;
+    background: #333;
+  }
+}
+
+// Campo de monto especial
+.amount-group {
+  position: relative;
+  margin-bottom: 12px;
+  background: #2a2a2a;
+  border-radius: 12px;
+  padding: 12px;
+  border: 1px solid #555;
+}
+
+.amount-label {
+  font-size: 24px;
+  font-weight: 700;
+  color: #fff;
+  text-align: center;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.amount-input {
+  text-align: center;
+  font-size: 20px;
+  font-weight: 600;
+  padding: 12px;
+  border: 2px solid #555;
+  border-radius: 8px;
+  background: #333;
+  color: #fff;
+  transition: all 0.3s ease;
+  
+  &:focus {
+    outline: none;
+    border-color: #10b981;
+    background: #444;
+  }
+  
+  &::placeholder {
+    color: #888;
+    font-weight: 500;
+  }
+}
+
+.clear-amount {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: #444;
+  border: none;
+  color: #ef4444;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  &:hover {
+    background: #ef4444;
+    color: white;
+  }
+}
+
+// Inputs con iconos
+.input-with-icon {
+  position: relative;
+  
+  .form-input {
+    padding-right: 36px;
+  }
+  
+  i {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #888;
+    font-size: 16px;
+    pointer-events: none;
+    transition: all 0.3s ease;
+  }
+  
+  &:focus-within i {
+    color: #10b981;
+  }
+}
+
+// Responsive
+@media (max-width: 480px) {
+  .modal-content {
+    border-radius: 20px 20px 0 0;
+    padding: 16px;
+    max-width: 100%;
+  }
+  
+  .form-row {
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .amount-label {
+    font-size: 20px;
+  }
+  
+  .amount-input {
+    font-size: 18px;
+    padding: 10px;
+  }
+  
+  .transaction-toggle {
+    padding: 3px;
+    gap: 3px;
+  }
+  
+  .toggle-btn {
+    padding: 8px 10px;
+    font-size: 13px;
+  }
+  
+  .form-input {
+    padding: 8px 10px;
+    font-size: 13px;
+  }
+} 

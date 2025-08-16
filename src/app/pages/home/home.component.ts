@@ -2,11 +2,12 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { TransactionModalComponent } from '../../components/transaction-modal/transaction-modal.component';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TransactionModalComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })
@@ -16,6 +17,9 @@ export class HomeComponent {
 
   // Estado del menú
   isMenuOpen = false;
+  
+  // Estado del modal de transacciones
+  showTransactionModal = false;
 
   constructor(private router: Router) {}
 
@@ -113,6 +117,79 @@ export class HomeComponent {
 
   addTransaction() {
     console.log('Agregar transacción');
+    this.showTransactionModal = true;
+  }
+
+  closeTransactionModal() {
+    this.showTransactionModal = false;
+  }
+
+  saveTransaction(transaction: any) {
+    console.log('Transacción guardada:', transaction);
+    
+    // Agregar la nueva transacción a la lista de movimientos recientes
+    const newMovement = {
+      id: this.recentMovements.length + 1,
+      type: transaction.type,
+      category: transaction.category,
+      icon: this.getIconForCategory(transaction.category),
+      amount: transaction.amount,
+      date: this.formatDate(transaction.date),
+      color: transaction.type === 'income' ? '#10b981' : this.getColorForCategory(transaction.category)
+    };
+    
+    this.recentMovements.unshift(newMovement);
+    
+    // Actualizar los totales
+    if (transaction.type === 'income') {
+      this.income += transaction.amount;
+    } else {
+      this.expenses += Math.abs(transaction.amount);
+    }
+    
+    this.closeTransactionModal();
+  }
+
+  private getIconForCategory(category: string): string {
+    const iconMap: { [key: string]: string } = {
+      'Alimentación': 'mdi-cart',
+      'Transporte': 'mdi-car',
+      'Entretenimiento': 'mdi-movie',
+      'Salud': 'mdi-medical-bag',
+      'Educación': 'mdi-school',
+      'Vivienda': 'mdi-home',
+      'Otros': 'mdi-dots-horizontal'
+    };
+    return iconMap[category] || 'mdi-cash';
+  }
+
+  private getColorForCategory(category: string): string {
+    const colorMap: { [key: string]: string } = {
+      'Alimentación': '#f59e0b',
+      'Transporte': '#3b82f6',
+      'Entretenimiento': '#8b5cf6',
+      'Salud': '#ef4444',
+      'Educación': '#10b981',
+      'Vivienda': '#6366f1',
+      'Otros': '#6b7280'
+    };
+    return colorMap[category] || '#6b7280';
+  }
+
+  private formatDate(dateString: string): string {
+    const date = new Date(dateString);
+    const today = new Date();
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+    
+    if (date.toDateString() === today.toDateString()) {
+      return 'Hoy, ' + date.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+    } else if (date.toDateString() === yesterday.toDateString()) {
+      return 'Ayer, ' + date.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+    } else {
+      return date.toLocaleDateString('es-ES', { day: 'numeric', month: 'short' }) + ', ' + 
+             date.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+    }
   }
 
 

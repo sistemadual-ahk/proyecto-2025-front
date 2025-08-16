@@ -209,4 +209,11 @@
       </button>
     </div>
   </div>
+
+  <!-- Modal de Transacción -->
+  <app-transaction-modal 
+    *ngIf="showTransactionModal"
+    (closeModal)="closeTransactionModal()"
+    (saveTransaction)="saveTransaction($event)">
+  </app-transaction-modal>
 </div> 
