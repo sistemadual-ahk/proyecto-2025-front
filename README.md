@@ -205,12 +205,6 @@ gastify-frontend/
 - **Material Design Icons (MDI)** - Biblioteca de iconos
 - **Responsive Design** - Diseño adaptable
 
-### Características Implementadas
-- ✅ **Pantalla de Bienvenida** - Landing page con logo y botones de acción
-- ✅ **Pantalla de Login** - Formulario de autenticación con Google
-- ✅ **Pantalla de Registro** - Formulario de registro de usuarios
-- ✅ **Diseño Responsive** - Adaptable a móviles, tablets y desktop
-- ✅ **Paleta de Colores Ga$tify** - Colores personalizados de la marca
 
 ## 🎨 Paleta de Colores
 
@@ -223,34 +217,6 @@ gastify-frontend/
 --gastify-light: #FFFFFF;     // Blanco/azul claro
 ```
 
-## 📱 Pantallas Implementadas
-
-### 1. Pantalla de Bienvenida (`/`)
-- Logo de Ga$tify prominente
-- Título y subtítulo descriptivos
-- Botones de acción: "Crear cuenta" e "Iniciar sesión"
-- Características destacadas con iconos MDI
-- Diseño completamente responsive
-
-### 2. Pantalla de Login (`/login`)
-- Logo de Ga$tify
-- Formulario de login con campos de email/username y contraseña
-- Botón de "Conectar con Google"
-- Enlaces de "¿Olvidaste tu contraseña?" y "Registrate"
-- Diseño responsive y accesible
-
-### 3. Pantalla de Registro (`/register`)
-- Logo de Ga$tify
-- Formulario completo de registro
-- Campos: username, email, contraseña, confirmar contraseña, fecha de nacimiento
-- Checkbox de términos y condiciones
-- Botón "Siguiente" para continuar
-- Diseño responsive
-
-## 🔧 Configuración del Entorno
-
-### Variables de Entorno
-El proyecto está configurado para trabajar con variables de entorno. Crea un archivo `.env` en la raíz del proyecto si necesitas configuraciones específicas.
 
 ### Configuración de Angular
 - **TypeScript**: Configurado para Angular 18
@@ -275,12 +241,6 @@ Todos los componentes están configurados como **standalone components** siguien
 
 ## 🔗 Integración con Backend
 
-El frontend está preparado para integrarse con el backend de Ga$tify:
-
-- **APIs REST** para autenticación y gestión de datos
-- **JWT** para manejo de sesiones
-- **MongoDB** como base de datos
-- **Node.js + TypeScript** en el backend
 
 ## 📱 Responsive Design
 
@@ -289,85 +249,12 @@ La aplicación está optimizada para:
 - 📱 **Tablets** (481px - 768px)
 - 💻 **Desktop** (769px+)
 
-## 🐛 Solución de Problemas
 
-### Error: "Could not find the '@angular-devkit/build-angular:dev-server'"
-```bash
-npm install
-npm start
-```
-
-### Error: "Node packages may not be installed"
-```bash
-rm -rf node_modules package-lock.json
-npm install
-```
-
-### Error: "Port 4200 is already in use"
-```bash
-# Usar un puerto diferente
-ng serve --port 4201
-```
-
-### Error: "Module not found"
-```bash
-npm install
-npm start
-```
-
-## 📝 Scripts Disponibles
-
-```bash
-# Desarrollo
-npm start          # Inicia el servidor de desarrollo
-npm run build      # Construye para producción
-npm run test       # Ejecuta tests
-npm run lint       # Ejecuta linting
-
-# Angular CLI
-ng serve           # Servidor de desarrollo
-ng build           # Construcción
-ng test            # Tests
-ng lint            # Linting
-```
-
-## 🤝 Contribución
-
-1. Fork el proyecto
-2. Crea una rama para tu feature (`git checkout -b feature/AmazingFeature`)
-3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
-4. Push a la rama (`git push origin feature/AmazingFeature`)
-5. Abre un Pull Request
-
-## 📄 Licencia
-
-Este proyecto está bajo la Licencia MIT. Ver el archivo `LICENSE` para más detalles.
 
 ## 👥 Equipo
 
 - **Germán Moreno Bauer**       
 - **Fernanda Baez**
 - **Tomas Ramirez**  
-- **Contacto**: [Tu email de contacto]
-
-## 🚀 Roadmap
-
-### Próximas Funcionalidades
-- [ ] Dashboard principal con gráficos
-- [ ] Registro de gastos manual
-- [ ] Integración con WhatsApp Bot
-- [ ] Análisis inteligente con OpenAI
-- [ ] Configuración de perfil de usuario
-- [ ] Notificaciones push
-- [ ] Exportación de reportes
-
-### Mejoras Técnicas
-- [ ] Implementación de PWA
-- [ ] Optimización de performance
-- [ ] Tests unitarios y de integración
-- [ ] CI/CD pipeline
-- [ ] Deploy automático
-
----
 
 **¡Gracias por usar Ga$tify! 💚**
