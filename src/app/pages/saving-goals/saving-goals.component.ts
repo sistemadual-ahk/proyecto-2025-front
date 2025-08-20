@@ -19,7 +19,7 @@ export class SavingGoalsComponent {
       currentAmount: 1200,
       targetAmount: 3000,
       progress: 40, // 1200/3000 * 100
-      color: '#8B5CF6' // Purple
+      color: 'var(--gastify-purple)'
     },
     {
       id: 2,
@@ -27,7 +27,7 @@ export class SavingGoalsComponent {
       currentAmount: 750,
       targetAmount: 1200,
       progress: 62.5, // 750/1200 * 100
-      color: '#10B981' // Teal/Green
+      color: 'var(--gastify-green)'
     }
   ];
 

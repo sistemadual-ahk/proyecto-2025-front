@@ -1,0 +1,154 @@
+<div class="container">
+  <!-- Sidebar -->
+  <div class="sidebar" [class.open]="isMenuOpen">
+    <div class="sidebar-content">
+      <!-- Profile Section -->
+      <div class="profile-section">
+        <div class="profile-image">
+          <i class="mdi mdi-account"></i>
+        </div>
+        <button class="edit-profile-btn">
+          <i class="mdi mdi-pencil"></i>
+        </button>
+        <div class="profile-name">Ezequiel</div>
+      </div>
+      <div class="separator"></div>
+      
+      <!-- Navigation Menu -->
+      <nav class="sidebar-nav">
+        <a (click)="openProfile()" class="sidebar-nav-item" style="cursor: pointer;">
+          <i class="mdi mdi-account"></i>
+          <span>Perfil</span>
+        </a>
+        <a (click)="openHome()" class="sidebar-nav-item" style="cursor: pointer;">
+          <i class="mdi mdi-home"></i>
+          <span>Inicio</span>
+        </a>
+        <a (click)="openWallets()" class="sidebar-nav-item active" style="cursor: pointer;">
+          <i class="mdi mdi-wallet"></i>
+          <span>Billeteras</span>
+        </a>
+        <a (click)="openActivity()" class="sidebar-nav-item" style="cursor: pointer;">
+          <i class="mdi mdi-sync"></i>
+          <span>Actividad</span>
+        </a>
+        <a (click)="openAnalysis()" class="sidebar-nav-item" style="cursor: pointer;">
+          <i class="mdi mdi-chart-line"></i>
+          <span>Análisis</span>
+        </a>
+        <a (click)="openGoals()" class="sidebar-nav-item" style="cursor: pointer;">
+          <i class="mdi mdi-target"></i>
+          <span>Objetivos</span>
+        </a>
+        <a (click)="openCategories()" class="sidebar-nav-item" style="cursor: pointer;">
+          <i class="mdi mdi-dots-horizontal"></i>
+          <span>Categorías</span>
+        </a>
+        <a (click)="openSettings()" class="sidebar-nav-item" style="cursor: pointer;">
+          <i class="mdi mdi-cog"></i>
+          <span>Ajustes</span>
+        </a>
+        <a (click)="logout()" class="sidebar-nav-item logout" style="cursor: pointer;">
+          <i class="mdi mdi-logout"></i>
+          <span>Cerrar Sesión</span>
+        </a>
+      </nav>
+      
+      <!-- Footer -->
+      <div class="sidebar-footer">
+        <div class="refresh-info">
+          <i class="mdi mdi-refresh"></i>
+          <span>22 Abr. 2025</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Overlay -->
+  <div class="overlay" [class.active]="isMenuOpen" (click)="closeMenu()"></div>
+
+  <!-- Main Content -->
+  <div class="main">
+    <!-- Header -->
+    <header class="header">
+      <button class="menu-btn" (click)="toggleMenu()">
+        <i class="mdi mdi-menu"></i>
+      </button>
+      <h1 class="app-title">Ga<span class="dollar-sign">$</span>tify</h1>
+      <div class="header-right">
+        <button class="notification-btn" (click)="openNotifications()">
+          <i class="mdi mdi-bell"></i>
+        </button>
+        <button class="profile-btn" (click)="openUserProfile()">
+          <i class="mdi mdi-account-circle"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- Navigation and Title -->
+    <div class="page-navigation">
+      <button class="back-btn" (click)="goBack()">
+        <i class="mdi mdi-arrow-left"></i>
+      </button>
+      <h2 class="page-title">Mis billeteras</h2>
+    </div>
+
+    <!-- Total Balance Card -->
+    <div class="total-balance-card">
+      <div class="balance-label">Total:</div>
+      <div class="balance-amount">{{ formatCurrency(totalBalance) }}</div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="action-buttons">
+      <button class="action-btn" (click)="openTransferHistory()">
+        <div class="action-icon">
+          <i class="mdi mdi-refresh"></i>
+        </div>
+        <span class="action-text">Historial de transferencias</span>
+      </button>
+      
+      <button class="action-btn" (click)="openNewTransfer()">
+        <div class="action-icon">
+          <i class="mdi mdi-swap-horizontal"></i>
+        </div>
+        <span class="action-text">Nueva transferencia</span>
+      </button>
+    </div>
+
+    <!-- Wallets List -->
+    <div class="wallets-list">
+      <div class="wallet-item" *ngFor="let wallet of wallets">
+        <div class="wallet-icon" [style.background-color]="wallet.iconColor">
+          <i [class]="wallet.icon"></i>
+        </div>
+        <div class="wallet-info">
+          <div class="wallet-name">{{ wallet.name }}</div>
+          <div class="wallet-subtitle">
+            <span class="wallet-type">{{ wallet.type | titlecase }}</span>
+            <span class="wallet-dot" *ngIf="wallet.isDefault">•</span>
+            <span class="wallet-default" *ngIf="wallet.isDefault">Predeterminada</span>
+          </div>
+        </div>
+        <div class="wallet-meta">
+          <div class="wallet-balance">{{ formatCurrency(wallet.balance) }}</div>
+          <i class="mdi mdi-chevron-right"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add Account Button -->
+    <button class="add-account-btn" (click)="addAccount()">
+      <i class="mdi mdi-plus"></i>
+      <span>Agregar Cuenta</span>
+    </button>
+  </div>
+
+  <!-- Modal: Agregar cuenta -->
+  <app-add-account-modal 
+    *ngIf="showAddAccountModal"
+    (closeModal)="closeAddAccountModal()"
+    (saveAccount)="saveAccount($event)">
+  </app-add-account-modal>
+</div>
+

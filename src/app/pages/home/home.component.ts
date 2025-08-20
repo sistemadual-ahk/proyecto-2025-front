@@ -111,6 +111,11 @@ export class HomeComponent {
     this.router.navigate(['/saving-goals']);
   }
 
+  openWallets() {
+    console.log('Abrir billeteras');
+    this.router.navigate(['/wallets']);
+  }
+
   openAnalysis() {
     console.log('Abrir análisis');
   }
