@@ -1,17 +1,19 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { AddAccountModalComponent } from '../../components/add-account-modal/add-account-modal.component';
 
 @Component({
   selector: 'app-wallets',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, AddAccountModalComponent],
   templateUrl: './wallets.component.html',
   styleUrl: './wallets.component.scss'
 })
 export class WalletsComponent {
   // Estado del menú
   isMenuOpen = false;
+  showAddAccountModal = false;
   
   // Datos de las billeteras
   wallets = [
@@ -81,7 +83,36 @@ export class WalletsComponent {
   }
 
   addAccount() {
-    console.log('Agregar nueva cuenta');
+    this.showAddAccountModal = true;
+  }
+
+  closeAddAccountModal() {
+    this.showAddAccountModal = false;
+  }
+
+  saveAccount(newAccount: { name: string; type: 'bank' | 'digital' | 'cash'; provider?: string; initialBalance: number; }) {
+    const iconByType: Record<'bank' | 'digital' | 'cash', string> = {
+      bank: 'mdi-bank',
+      digital: 'mdi-credit-card',
+      cash: 'mdi-cash-multiple'
+    };
+    const colorByType: Record<'bank' | 'digital' | 'cash', string> = {
+      bank: '#ef4444',
+      digital: '#3b82f6',
+      cash: '#f59e0b'
+    };
+
+    this.wallets.unshift({
+      id: this.wallets.length + 1,
+      name: newAccount.name,
+      type: newAccount.type,
+      icon: iconByType[newAccount.type],
+      iconColor: colorByType[newAccount.type],
+      balance: newAccount.initialBalance,
+      isDefault: false
+    });
+
+    this.showAddAccountModal = false;
   }
 
   // Métodos del sidebar

@@ -124,7 +124,15 @@
         </div>
         <div class="wallet-info">
           <div class="wallet-name">{{ wallet.name }}</div>
-          <div class="wallet-type" *ngIf="wallet.isDefault">Total</div>
+          <div class="wallet-subtitle">
+            <span class="wallet-type">{{ wallet.type | titlecase }}</span>
+            <span class="wallet-dot" *ngIf="wallet.isDefault">•</span>
+            <span class="wallet-default" *ngIf="wallet.isDefault">Predeterminada</span>
+          </div>
+        </div>
+        <div class="wallet-meta">
+          <div class="wallet-balance">{{ formatCurrency(wallet.balance) }}</div>
+          <i class="mdi mdi-chevron-right"></i>
         </div>
       </div>
     </div>
@@ -135,5 +143,12 @@
       <span>Agregar Cuenta</span>
     </button>
   </div>
+
+  <!-- Modal: Agregar cuenta -->
+  <app-add-account-modal 
+    *ngIf="showAddAccountModal"
+    (closeModal)="closeAddAccountModal()"
+    (saveAccount)="saveAccount($event)">
+  </app-add-account-modal>
 </div>
 

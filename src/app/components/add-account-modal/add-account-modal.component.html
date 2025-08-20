@@ -1,0 +1,63 @@
+<div class="modal-overlay" (click)="onClose()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <!-- Header -->
+    <div class="modal-header">
+      <button class="close-btn" (click)="onClose()">
+        <i class="mdi mdi-close"></i>
+      </button>
+      <h2 class="modal-title">Agregar cuenta</h2>
+      <button class="save-btn" (click)="onSave()">
+        <i class="mdi mdi-check"></i>
+      </button>
+    </div>
+
+    <!-- Tipo de cuenta -->
+    <div class="type-toggle">
+      <button class="toggle-chip" [class.active]="type==='bank'" (click)="setType('bank')">
+        <i class="mdi mdi-bank"></i>
+        Banco
+      </button>
+      <button class="toggle-chip" [class.active]="type==='digital'" (click)="setType('digital')">
+        <i class="mdi mdi-credit-card"></i>
+        Digital
+      </button>
+      <button class="toggle-chip" [class.active]="type==='cash'" (click)="setType('cash')">
+        <i class="mdi mdi-cash"></i>
+        Efectivo
+      </button>
+    </div>
+
+    <div class="form">
+      <!-- Nombre -->
+      <div class="form-group">
+        <label class="form-label">Nombre</label>
+        <input class="form-input" type="text" [(ngModel)]="name" placeholder="Ej: Mi cuenta sueldo" />
+      </div>
+
+      <!-- Proveedor (cuando aplica) -->
+      <div class="form-group" *ngIf="type !== 'cash'">
+        <label class="form-label">Proveedor</label>
+        <div class="input-with-icon">
+          <select class="form-input" [(ngModel)]="provider">
+            <option value="">Seleccionar</option>
+            <option *ngFor="let p of currentProviders" [value]="p">{{ p }}</option>
+          </select>
+          <i class="mdi mdi-chevron-down"></i>
+        </div>
+      </div>
+
+      <!-- Saldo inicial -->
+      <div class="form-group">
+        <label class="form-label">Saldo inicial</label>
+        <div class="input-with-icon">
+          <input class="form-input" type="number" [(ngModel)]="initialBalance" placeholder="0" min="0" />
+          <i class="mdi mdi-currency-usd"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+</div>
+
+
+
