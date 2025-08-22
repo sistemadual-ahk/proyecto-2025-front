@@ -1,19 +1,20 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Gasto } from '../../../models/gasto.model';
+import { Operation } from '../../../models/operation.model';
 
 @Component({
-  selector: 'app-add-gasto-modal',
+  selector: 'app-operation',
   standalone: true,
-  imports: [CommonModule, FormsModule],
-  templateUrl: './gastos.component.html',
-  styleUrl: './gastos.component.scss'
+  imports: [],
+  templateUrl: './operation.component.html',
+  styleUrl: './operation.component.scss'
 })
-export class AddGastoModalComponent {
+
+export class AddOperationModalComponent {
   // Eventos para interactuar con el componente padre
   @Output() closeModal = new EventEmitter<void>();
-  @Output() saveGasto = new EventEmitter<Partial<Gasto>>();
+  @Output() saveOperation = new EventEmitter<Partial<Operation>>();
 
   // Estado del formulario
   descripcion = '';
@@ -36,7 +37,7 @@ export class AddGastoModalComponent {
   }
 
   /**
-   * Emite los datos del nuevo gasto si el formulario es válido.
+   * Emite los datos del nuevo Operation si el formulario es válido.
    */
   onSave() {
     // Validar que los campos no estén vacíos
@@ -45,7 +46,7 @@ export class AddGastoModalComponent {
       return;
     }
     
-    this.saveGasto.emit({
+    this.saveOperation.emit({
       descripcion: this.descripcion.trim(),
       monto: Math.max(0, this.monto), // Aseguramos que el monto no sea negativo
       categoria: this.categoria
@@ -63,3 +64,4 @@ export class AddGastoModalComponent {
     this.categoria = null;
   }
 }
+
