@@ -1,8 +1,10 @@
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, inject } from '@angular/core';
+import { CommonModule, DOCUMENT } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { TransactionModalComponent } from '../../components/transaction-modal/transaction-modal.component';
+import { AuthService } from '@auth0/auth0-angular';
+
 
 @Component({
   selector: 'app-home',
@@ -12,6 +14,9 @@ import { TransactionModalComponent } from '../../components/transaction-modal/tr
   styleUrl: './home.component.scss'
 })
 export class HomeComponent {
+  private auth = inject(AuthService);
+  private doc = inject(DOCUMENT);
+
   // Hacer Math disponible en el template
   Math = Math;
 
@@ -77,6 +82,10 @@ export class HomeComponent {
 
   logout(): void {
     // Aquí iría la lógica de logout (limpiar tokens, etc.)
+    this.auth.logout({
+      logoutParams: {
+        returnTo: this.doc.location.origin,
+      }})
     console.log('Logout');
     this.router.navigate(['/']);
   }
