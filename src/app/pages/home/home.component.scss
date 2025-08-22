@@ -186,15 +186,22 @@
 .main {
   min-height: 100vh;
   padding: 20px;
+  padding-top: 80px;
 }
 
 /* Header */
 .header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 0px;
- margin-top: 30px;
+  padding: 20px;
+  background: var(--gastify-dark);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .header-left, .header-right {
@@ -590,6 +597,10 @@
 
 /* Responsive Design */
 @media (max-width: 480px) {
+  .header {
+    padding: 15px;
+  }
+  
   .sidebar {
     width: 260px;
     left: -260px;
@@ -597,6 +608,7 @@
   
   .main {
     padding: 5px;
+    padding-top: 70px;
   }
   
   .app-title {
