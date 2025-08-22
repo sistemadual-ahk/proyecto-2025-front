@@ -1,0 +1,62 @@
+/* Header */
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  background: var(--gastify-dark);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.header-left, .header-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.app-title {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--gastify-light);
+}
+
+.dollar-sign {
+  color: var(--gastify-green);
+}
+
+.menu-btn, .notification-btn, .profile-btn {
+  background: none;
+  border: none;
+  color: var(--gastify-light);
+  font-size: 1.3rem;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  transition: background-color 0.3s ease;
+}
+
+.menu-btn:hover, .notification-btn:hover, .profile-btn:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+  .header {
+    padding: 15px;
+  }
+  
+  .app-title {
+    font-size: 1.3rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .app-title {
+    font-size: 1.3rem;
+  }
+}
