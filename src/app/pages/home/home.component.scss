@@ -194,7 +194,7 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 0px;
-  padding: 10px 0;
+ margin-top: 30px;
 }
 
 .header-left, .header-right {
@@ -206,7 +206,6 @@
 .app-title {
   font-size: 1.6rem;
   font-weight: 700;
-  margin: 0;
   color: var(--gastify-light);
 }
 
@@ -234,8 +233,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 25px;
-  padding: 0px 0;
+  margin-bottom: 5px;
 }
 
 .current-month {
@@ -451,6 +449,7 @@
   font-weight: 600;
   margin: 0;
   color: var(--gastify-light);
+  margin-left:5px
 }
 
 .view-all-btn {
@@ -601,7 +600,7 @@
   }
   
   .app-title {
-    font-size: 1.4rem;
+    font-size: 1.3rem;
   }
   
   .current-month {

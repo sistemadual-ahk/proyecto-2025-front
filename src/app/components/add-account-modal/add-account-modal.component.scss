@@ -42,7 +42,7 @@
   border-bottom: 1px solid rgba(255, 255, 255, 0.12);
 }
 
-.close-btn, .save-btn {
+.close-btn {
   background: var(--gastify-purple);
   border: 1px solid rgba(255, 255, 255, 0.12);
   font-size: 20px;
@@ -58,7 +58,7 @@
   justify-content: center;
 }
 
-.close-btn:hover, .save-btn:hover {
+.close-btn:hover {
   background: rgba(59, 59, 88, 0.85);
   color: white;
   transform: scale(1.03);

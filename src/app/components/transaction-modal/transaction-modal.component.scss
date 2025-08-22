@@ -54,43 +54,38 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 16px;
-  padding-bottom: 8px;
-  min-height: 40px;
+  margin-bottom: 10px;
+  min-height: 10px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.12);
   position: relative;
 }
 
-.close-btn, .save-btn {
-  background: var(--gastify-purple);
+
+.save-btn {
+  background: #3DCD99;
   border: 1px solid rgba(255, 255, 255, 0.12);
   font-size: 20px;
   color: #fff;
   cursor: pointer;
-  padding: 8px;
-  border-radius: 50%;
+  border-radius: 30px;
   transition: all 0.3s ease;
-  width: 40px;
+  width: 350px;
   height: 40px;
   display: flex;
+  flex-direction: column;
+  position: relative;
+  top: 10px;
+  left: 20px;
   align-items: center;
   justify-content: center;
   box-shadow: var(--shadow-sm);
-  
-  &:hover {
+
+  &:hover{
     background: rgba(59, 59, 88, 0.85);
     color: white;
-    transform: scale(1.03);
+    transform: scale(1.5);
   }
 }
-
-.modal-title {
-  font-size: 18px;
-  font-weight: 600;
-  color: #fff;
-  margin: 0;
-}
-
 // Toggle Ingreso/Gasto
 .transaction-toggle {
   display: flex;
@@ -145,7 +140,6 @@
 .form-group {
   display: flex;
   flex-direction: column;
-  gap: 6px;
 }
 
 .form-row {
@@ -165,8 +159,7 @@
 }
 
 .form-input {
-  height: 48px;
-  padding: 0 16px;
+  height: 30px;
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 14px;
   font-size: 14px;
@@ -235,32 +228,6 @@
     font-weight: 500;
   }
 }
-
-.clear-amount {
-  position: absolute;
-  right: 8px;
-  top: 50%;
-  transform: translateY(-50%);
-  background: rgba(255, 255, 255, 0.08);
-  border: none;
-  color: rgba(255, 255, 255, 0.6);
-  font-size: 14px;
-  cursor: pointer;
-  padding: 4px;
-  border-radius: 50%;
-  transition: all 0.3s ease;
-  width: 24px;
-  height: 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  
-  &:hover {
-    background: rgba(255, 255, 255, 0.15);
-    color: var(--gastify-light);
-  }
-}
-
 // Inputs con iconos
 .input-with-icon {
   position: relative;
