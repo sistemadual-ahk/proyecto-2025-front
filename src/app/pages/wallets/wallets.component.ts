@@ -14,6 +14,8 @@ export class WalletsComponent {
   // Estado del menú
   isMenuOpen = false;
   showAddAccountModal = false;
+  showWalletPopup = false;
+  selectedWallet: any = null;
   
   // Datos de las billeteras
   wallets = [
@@ -113,6 +115,74 @@ export class WalletsComponent {
     });
 
     this.showAddAccountModal = false;
+  }
+
+  // Métodos del popup de billetera
+  openWalletPopup(wallet: any) {
+    this.selectedWallet = wallet;
+    this.showWalletPopup = true;
+  }
+
+  closeWalletPopup() {
+    this.showWalletPopup = false;
+    this.selectedWallet = null;
+  }
+
+  openWalletTransfer() {
+    console.log('Abrir transferencia para:', this.selectedWallet?.name);
+    // Aquí puedes implementar la lógica para abrir la transferencia
+  }
+
+  openWalletHistory() {
+    console.log('Abrir historial para:', this.selectedWallet?.name);
+    // Aquí puedes implementar la lógica para abrir el historial
+  }
+
+  openWalletSettings() {
+    console.log('Abrir ajustes para:', this.selectedWallet?.name);
+    // Aquí puedes implementar la lógica para abrir los ajustes
+  }
+
+  setAsDefault() {
+    if (this.selectedWallet) {
+      // Remover la billetera predeterminada anterior
+      this.wallets.forEach(wallet => wallet.isDefault = false);
+      // Establecer la nueva billetera predeterminada
+      this.selectedWallet.isDefault = true;
+      this.closeWalletPopup();
+    }
+  }
+
+  editWallet() {
+    console.log('Editar billetera:', this.selectedWallet?.name);
+    // Aquí puedes implementar la lógica para editar la billetera
+  }
+
+  deleteWallet() {
+    if (this.selectedWallet && confirm('¿Estás seguro de que quieres eliminar esta billetera?')) {
+      const index = this.wallets.findIndex(w => w.id === this.selectedWallet.id);
+      if (index > -1) {
+        this.wallets.splice(index, 1);
+        this.closeWalletPopup();
+      }
+    }
+  }
+
+  getWalletTypeLabel(type: string): string {
+    const typeLabels: Record<string, string> = {
+      'bank': 'Cuenta bancaria',
+      'digital': 'Billetera digital',
+      'cash': 'Efectivo'
+    };
+    return typeLabels[type] || type;
+  }
+
+  getLastUpdate(): string {
+    return new Date().toLocaleDateString('es-AR', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric'
+    });
   }
 
   // Métodos del sidebar

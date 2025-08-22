@@ -118,7 +118,7 @@
 
     <!-- Wallets List -->
     <div class="wallets-list">
-      <div class="wallet-item" *ngFor="let wallet of wallets">
+      <div class="wallet-item" *ngFor="let wallet of wallets" (click)="openWalletPopup(wallet)" style="cursor: pointer;">
         <div class="wallet-icon" [style.background-color]="wallet.iconColor">
           <i [class]="wallet.icon"></i>
         </div>
@@ -150,5 +150,90 @@
     (closeModal)="closeAddAccountModal()"
     (saveAccount)="saveAccount($event)">
   </app-add-account-modal>
-</div>
 
+  <!-- Popup: Detalles de billetera -->
+  <div class="wallet-popup-overlay" *ngIf="showWalletPopup" (click)="closeWalletPopup()">
+    <div class="wallet-popup" (click)="$event.stopPropagation()">
+      <!-- Header del popup -->
+      <div class="popup-header">
+        <div class="popup-title">
+          <div class="popup-wallet-icon" [style.background-color]="selectedWallet?.iconColor">
+            <i [class]="selectedWallet?.icon"></i>
+          </div>
+          <div class="popup-wallet-info">
+            <h3 class="popup-wallet-name">{{ selectedWallet?.name }}</h3>
+            <p class="popup-wallet-type">{{ selectedWallet?.type | titlecase }}</p>
+          </div>
+        </div>
+        <button class="popup-close-btn" (click)="closeWalletPopup()">
+          <i class="mdi mdi-close"></i>
+        </button>
+      </div>
+
+      <!-- Contenido del popup -->
+      <div class="popup-content">
+        <!-- Balance principal -->
+        <div class="popup-balance-section">
+          <div class="popup-balance-label">Balance actual</div>
+          <div class="popup-balance-amount">{{ formatCurrency(selectedWallet?.balance || 0) }}</div>
+        </div>
+
+        <!-- Acciones rápidas -->
+        <div class="popup-actions">
+          <button class="popup-action-btn" (click)="openWalletTransfer()">
+            <div class="popup-action-icon">
+              <i class="mdi mdi-swap-horizontal"></i>
+            </div>
+            <span>Transferir</span>
+          </button>
+          
+          <button class="popup-action-btn" (click)="openWalletHistory()">
+            <div class="popup-action-icon">
+              <i class="mdi mdi-history"></i>
+            </div>
+            <span>Historial</span>
+          </button>
+          
+          <button class="popup-action-btn" (click)="openWalletSettings()">
+            <div class="popup-action-icon">
+              <i class="mdi mdi-cog"></i>
+            </div>
+            <span>Ajustes</span>
+          </button>
+        </div>
+
+        <!-- Información adicional -->
+        <div class="popup-details">
+          <div class="popup-detail-item">
+            <span class="detail-label">Tipo de cuenta:</span>
+            <span class="detail-value">{{ getWalletTypeLabel(selectedWallet?.type) }}</span>
+          </div>
+          <div class="popup-detail-item" *ngIf="selectedWallet?.isDefault">
+            <span class="detail-label">Estado:</span>
+            <span class="detail-value default-badge">Predeterminada</span>
+          </div>
+          <div class="popup-detail-item">
+            <span class="detail-label">Última actualización:</span>
+            <span class="detail-value">{{ getLastUpdate() }}</span>
+          </div>
+        </div>
+
+        <!-- Botones de acción principales -->
+        <div class="popup-main-actions">
+          <button class="popup-main-btn primary" (click)="setAsDefault()" *ngIf="!selectedWallet?.isDefault">
+            <i class="mdi mdi-star"></i>
+            Establecer como predeterminada
+          </button>
+          <button class="popup-main-btn secondary" (click)="editWallet()">
+            <i class="mdi mdi-pencil"></i>
+            Editar billetera
+          </button>
+          <button class="popup-main-btn danger" (click)="deleteWallet()">
+            <i class="mdi mdi-delete"></i>
+            Eliminar billetera
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
