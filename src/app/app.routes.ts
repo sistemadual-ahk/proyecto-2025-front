@@ -6,6 +6,7 @@ import { SavingGoalsComponent } from './pages/saving-goals/saving-goals.componen
 import { WalletsComponent } from './pages/wallets/wallets.component';
 import { AddGastoModalComponent } from './components/gastos/gastos.component';
 import { TestGastoComponent } from './pages/test-gasto/test-gasto.component';
+import { ActivityComponent } from './pages/activity/activity.component';
 
 export const routes: Routes = [
   { path: '', component: LoginComponent },
@@ -14,5 +15,6 @@ export const routes: Routes = [
   { path: 'saving-goals', component: SavingGoalsComponent },
   { path: 'wallets', component: WalletsComponent }, 
   { path: 'test', component: AddGastoModalComponent },
-  { path: 'testGasto', component: TestGastoComponent }
+  { path: 'testGasto', component: TestGastoComponent },
+  { path: 'activity', component: ActivityComponent }
 ];

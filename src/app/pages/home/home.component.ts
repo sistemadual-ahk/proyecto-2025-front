@@ -103,6 +103,7 @@ export class HomeComponent {
 
   viewAllMovements() {
     console.log('Ver todos los movimientos');
+    this.router.navigate(['/activity']);
   }
 
   // Métodos para botones inferiores

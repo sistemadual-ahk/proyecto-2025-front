@@ -1,17 +1,19 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { NzSelectModule } from 'ng-zorro-antd/select';
 
 @Component({
   selector: 'app-transaction-modal',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, NzSelectModule],
   templateUrl: './transaction-modal.component.html',
   styleUrl: './transaction-modal.component.scss'
 })
 export class TransactionModalComponent {
   @Output() closeModal = new EventEmitter<void>();
   @Output() saveTransaction = new EventEmitter<any>();
+  selectedValue = null;
 
   // Estado del formulario
   transactionType: 'income' | 'expense' = 'expense';
