@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 
 @Component({
   selector: 'app-activity',
@@ -10,13 +10,18 @@ import { RouterModule } from '@angular/router';
   styleUrl: './activity.component.scss'
 })
 export class ActivityComponent {
-  // Datos de ejemplo para las transacciones
+  constructor(private router: Router) {}
+
+  // Estado del menú
+  isMenuOpen = false;
+
+  // Datos de ejemplo para las transacciones (igual a la imagen)
   transactions = [
     {
       id: 1,
       type: 'expense',
-      amount: 2500,
-      description: 'Supermercado Carrefour',
+      amount: 4500,
+      description: 'Supermercado',
       category: 'Alimentación',
       subcategory: 'Supermercado',
       wallet: 'Mercado Pago',
@@ -26,59 +31,238 @@ export class ActivityComponent {
     {
       id: 2,
       type: 'income',
-      amount: 150000,
-      description: 'Salario Enero',
+      amount: 45000,
+      description: 'Salario',
       category: 'Ingresos',
       subcategory: 'Salario',
       wallet: 'Santander',
       date: '2024-01-15',
-      time: '09:00'
+      time: '14:30'
     },
     {
       id: 3,
       type: 'expense',
-      amount: 800,
-      description: 'Combustible Shell',
+      amount: 3200,
+      description: 'Combustible',
       category: 'Transporte',
       subcategory: 'Combustible',
       wallet: 'Mercado Pago',
-      date: '2024-01-14',
-      time: '18:45'
+      date: '2024-01-15',
+      time: '14:30'
     },
     {
       id: 4,
       type: 'expense',
-      amount: 1200,
-      description: 'Almuerzo McDonald\'s',
+      amount: 4500,
+      description: 'Supermercado',
       category: 'Alimentación',
-      subcategory: 'Restaurante',
-      wallet: 'Uala',
+      subcategory: 'Supermercado',
+      wallet: 'Mercado Pago',
       date: '2024-01-14',
-      time: '13:15'
+      time: '08:15'
     },
     {
       id: 5,
-      type: 'expense',
-      amount: 3500,
-      description: 'Netflix',
-      category: 'Entretenimiento',
-      subcategory: 'Streaming',
+      type: 'income',
+      amount: 45000,
+      description: 'Salario',
+      category: 'Ingresos',
+      subcategory: 'Salario',
       wallet: 'Santander',
-      date: '2024-01-13',
-      time: '20:00'
+      date: '2024-01-14',
+      time: '08:15'
     },
     {
       id: 6,
       type: 'income',
-      amount: 25000,
-      description: 'Freelance Diseño',
+      amount: 45000,
+      description: 'Salario',
       category: 'Ingresos',
-      subcategory: 'Freelance',
+      subcategory: 'Salario',
+      wallet: 'Santander',
+      date: '2024-11-28',
+      time: '09:00'
+    },
+    {
+      id: 7,
+      type: 'expense',
+      amount: 3200,
+      description: 'Combustible',
+      category: 'Transporte',
+      subcategory: 'Combustible',
       wallet: 'Mercado Pago',
-      date: '2024-01-13',
-      time: '16:30'
-    }
+      date: '2024-11-28',
+      time: '09:00'
+    },
+    {
+      id: 8,
+      type: 'income',
+      amount: 45000,
+      description: 'Salario',
+      category: 'Ingresos',
+      subcategory: 'Salario',
+      wallet: 'Santander',
+      date: '2024-01-15',
+      time: '14:30'
+    },
+    {
+      id: 9,
+      type: 'income',
+      amount: 45000,
+      description: 'Salario',
+      category: 'Ingresos',
+      subcategory: 'Salario',
+      wallet: 'Santander',
+      date: '2024-01-15',
+      time: '14:30'
+    },
+    {
+      id: 10,
+      type: 'income',
+      amount: 45000,
+      description: 'Salario',
+      category: 'Ingresos',
+      subcategory: 'Salario',
+      wallet: 'Santander',
+      date: '2024-01-15',
+      time: '14:30'
+    },
+    {
+      id:11,
+      type: 'income',
+      amount: 45000,
+      description: 'Salario',
+      category: 'Ingresos',
+      subcategory: 'Salario',
+      wallet: 'Santander',
+      date: '2024-01-15',
+      time: '14:30'
+    },
+    {
+      id: 12,
+      type: 'income',
+      amount: 45000,
+      description: 'Salario',
+      category: 'Ingresos',
+      subcategory: 'Salario',
+      wallet: 'Santander',
+      date: '2024-01-15',
+      time: '14:30'
+    },
+    {
+      id: 13,
+      type: 'income',
+      amount: 45000,
+      description: 'Salario',
+      category: 'Ingresos',
+      subcategory: 'Salario',
+      wallet: 'Santander',
+      date: '2024-01-15',
+      time: '14:30'
+    },
+         {
+       id: 14,
+       type: 'income',
+       amount: 45000,
+       description: 'Salario',
+       category: 'Ingresos',
+       subcategory: 'Salario',
+       wallet: 'Santander',
+       date: '2024-01-15',
+       time: '14:30'
+     },
+     {
+       id: 15,
+       type: 'expense',
+       amount: 1500,
+       description: 'Café',
+       category: 'Alimentación',
+       subcategory: 'Café',
+       wallet: 'Mercado Pago',
+       date: '2024-01-13',
+       time: '09:15'
+     },
+     {
+       id: 16,
+       type: 'expense',
+       amount: 800,
+       description: 'Almuerzo',
+       category: 'Alimentación',
+       subcategory: 'Restaurante',
+       wallet: 'Mercado Pago',
+       date: '2024-01-13',
+       time: '12:30'
+     },
+     {
+       id: 17,
+       type: 'expense',
+       amount: 2500,
+       description: 'Uber',
+       category: 'Transporte',
+       subcategory: 'Taxi',
+       wallet: 'Mercado Pago',
+       date: '2024-01-12',
+       time: '18:45'
+     },
+     {
+       id: 18,
+       type: 'expense',
+       amount: 1200,
+       description: 'Farmacia',
+       category: 'Salud',
+       subcategory: 'Medicamentos',
+       wallet: 'Mercado Pago',
+       date: '2024-01-12',
+       time: '16:20'
+     },
+     {
+       id: 19,
+       type: 'expense',
+       amount: 3500,
+       description: 'Cine',
+       category: 'Entretenimiento',
+       subcategory: 'Cine',
+       wallet: 'Mercado Pago',
+       date: '2024-01-11',
+       time: '20:00'
+     },
+     {
+       id: 20,
+       type: 'expense',
+       amount: 1800,
+       description: 'Cena',
+       category: 'Alimentación',
+       subcategory: 'Restaurante',
+       wallet: 'Mercado Pago',
+       date: '2024-01-11',
+       time: '21:30'
+     }
   ];
+
+  // Getter para transacciones agrupadas por fecha
+  get groupedTransactions() {
+    const groups: { [key: string]: any[] } = {};
+    
+    this.transactions.forEach(transaction => {
+      const dateKey = this.formatDate(transaction.date);
+      if (!groups[dateKey]) {
+        groups[dateKey] = [];
+      }
+      groups[dateKey].push(transaction);
+    });
+    
+    // Convertir a array y ordenar por fecha (más reciente primero)
+    return Object.keys(groups)
+      .map(date => ({
+        date: date,
+        transactions: groups[date]
+      }))
+      .sort((a, b) => {
+        const dateA = new Date(this.transactions.find(t => this.formatDate(t.date) === a.date)?.date || '');
+        const dateB = new Date(this.transactions.find(t => this.formatDate(t.date) === b.date)?.date || '');
+        return dateB.getTime() - dateA.getTime();
+      });
+  }
 
   // Función para formatear la fecha
   formatDate(dateString: string): string {
@@ -127,5 +311,43 @@ export class ActivityComponent {
       'Otros': '#A8A8A8'
     };
     return colors[category] || '#A8A8A8';
+  }
+
+  // Métodos para el menú
+  toggleMenu() {
+    this.isMenuOpen = !this.isMenuOpen;
+  }
+
+  closeMenu() {
+    this.isMenuOpen = false;
+  }
+
+  logout(): void {
+    console.log('Logout');
+    this.router.navigate(['/']);
+  }
+
+  // Métodos para acciones
+  openNotifications() {
+    console.log('Abrir notificaciones');
+  }
+
+  openProfile() {
+    console.log('Abrir perfil');
+  }
+
+  // Métodos para navegación
+  openGoals() {
+    console.log('Abrir objetivos');
+    this.router.navigate(['/saving-goals']);
+  }
+
+  openWallets() {
+    console.log('Abrir billeteras');
+    this.router.navigate(['/wallets']);
+  }
+
+  goBack() {
+    this.router.navigate(['/home']);
   }
 }

@@ -1,69 +1,142 @@
-<div class="activity-container">
-  <!-- Header -->
-  <div class="activity-header">
-    <div class="header-content">
-      <button class="back-btn" routerLink="/home">
-        <i class="mdi mdi-arrow-left"></i>
+<div class="container">
+  <!-- Sidebar -->
+  <div class="sidebar" [class.open]="isMenuOpen">
+    <div class="sidebar-content">
+      <!-- Profile Section -->
+      <div class="profile-section">
+        <div class="profile-image">
+          <i class="mdi mdi-account"></i>
+        </div>
+        <button class="edit-profile-btn">
+          <i class="mdi mdi-pencil"></i>
+        </button>
+        <div class="profile-name">Ezequiel</div>
+      </div>
+      <div class="separator"></div>
+      
+      <!-- Navigation Menu -->
+      <nav class="sidebar-nav">
+        <a href="#" class="sidebar-nav-item">
+          <i class="mdi mdi-account"></i>
+          <span>Perfil</span>
+        </a>
+        <a routerLink="/home" class="sidebar-nav-item">
+          <i class="mdi mdi-home"></i>
+          <span>Inicio</span>
+        </a>
+        <a (click)="openWallets()" class="sidebar-nav-item" style="cursor: pointer;">
+          <i class="mdi mdi-wallet"></i>
+          <span>Billeteras</span>
+        </a>
+        <a routerLink="/activity" class="sidebar-nav-item active">
+          <i class="mdi mdi-sync"></i>
+          <span>Actividad</span>
+        </a>
+        <a href="#" class="sidebar-nav-item">
+          <i class="mdi mdi-chart-line"></i>
+          <span>Análisis</span>
+        </a>
+        <a (click)="openGoals()" class="sidebar-nav-item" style="cursor: pointer;">
+          <i class="mdi mdi-target"></i>
+          <span>Objetivos</span>
+        </a>
+        <a href="#" class="sidebar-nav-item">
+          <i class="mdi mdi-dots-horizontal"></i>
+          <span>Categorías</span>
+        </a>
+        <a href="#" class="sidebar-nav-item">
+          <i class="mdi mdi-cog"></i>
+          <span>Ajustes</span>
+        </a>
+        <a (click)="logout()" class="sidebar-nav-item logout">
+          <i class="mdi mdi-logout"></i>
+          <span>Cerrar Sesión</span>
+        </a>
+      </nav>
+      
+      <!-- Footer -->
+      <div class="sidebar-footer">
+        <div class="refresh-info">
+          <i class="mdi mdi-refresh"></i>
+          <span>22 Abr. 2025</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Overlay -->
+  <div class="overlay" [class.active]="isMenuOpen" (click)="closeMenu()"></div>
+
+  <!-- Main Content -->
+  <div class="main">
+    <!-- Header -->
+    <header class="header">
+      <button class="menu-btn" (click)="toggleMenu()">
+        <i class="mdi mdi-menu"></i>
       </button>
-      <h1 class="page-title">Actividad</h1>
-      <div class="header-actions">
-        <button class="filter-btn">
-          <i class="mdi mdi-filter-variant"></i>
+      <h1 class="app-title">Ga<span class="dollar-sign">$</span>tify</h1>
+      <div class="header-right">
+        <button class="notification-btn" (click)="openNotifications()">
+          <i class="mdi mdi-bell"></i>
+        </button>
+        <button class="profile-btn" (click)="openProfile()">
+          <i class="mdi mdi-account-circle"></i>
         </button>
       </div>
+    </header>
+
+  <!-- Título de la página -->
+  <div class="page-header">
+    <button class="back-btn" (click)="goBack()">
+      <i class="mdi mdi-arrow-left"></i>
+    </button>
+    <h2 class="page-title">Actividad</h2>
+  </div>
+
+  <!-- Barra de búsqueda -->
+  <div class="search-section">
+    <div class="search-bar">
+      <i class="mdi mdi-magnify search-icon"></i>
+      <input type="text" placeholder="Buscar" class="search-input">
     </div>
   </div>
 
-  <!-- Filtros rápidos -->
-  <div class="quick-filters">
-    <div class="filter-chips">
-      <button class="filter-chip active">Todos</button>
-      <button class="filter-chip">Gastos</button>
-      <button class="filter-chip">Ingresos</button>
-      <button class="filter-chip">Este mes</button>
-    </div>
-  </div>
-
-  <!-- Lista de transacciones -->
-  <div class="transactions-list">
-    <div class="transaction-item" *ngFor="let transaction of transactions">
-      <!-- Ícono de categoría -->
-      <div class="category-icon" [style.background-color]="getCategoryColor(transaction.category)">
-        <i [class]="getCategoryIcon(transaction.category)"></i>
-      </div>
-
-      <!-- Información de la transacción -->
-      <div class="transaction-info">
-        <div class="transaction-main">
-          <h3 class="transaction-description">{{ transaction.description }}</h3>
-          <p class="transaction-category">{{ transaction.category }} • {{ transaction.subcategory }}</p>
-        </div>
-        
-        <div class="transaction-details">
-          <div class="transaction-amount" [class.income]="transaction.type === 'income'">
-            <span class="amount-sign">{{ transaction.type === 'income' ? '+' : '-' }}</span>
-            ${{ transaction.amount.toLocaleString() }}
+  <!-- Lista de transacciones agrupadas por fecha -->
+  <div class="transactions-container">
+    <div class="date-group" *ngFor="let group of groupedTransactions">
+      <div class="date-header">{{ group.date }}</div>
+      
+      <div class="transactions-list">
+        <div class="transaction-item" *ngFor="let transaction of group.transactions">
+          <!-- Ícono de categoría -->
+          <div class="category-icon" [style.background-color]="getCategoryColor(transaction.category)">
+            <i [class]="getCategoryIcon(transaction.category)"></i>
           </div>
-          <div class="transaction-meta">
-            <span class="transaction-wallet">{{ transaction.wallet }}</span>
-            <span class="transaction-time">{{ formatDate(transaction.date) }} • {{ transaction.time }}</span>
+
+          <!-- Información de la transacción -->
+          <div class="transaction-info">
+            <div class="transaction-main">
+              <h3 class="transaction-description">{{ transaction.description }}</h3>
+              <p class="transaction-time">{{ formatDate(transaction.date) }}, {{ transaction.time }}</p>
+            </div>
+            
+            <div class="transaction-amount" [class.income]="transaction.type === 'income'">
+              <span class="amount-sign">{{ transaction.type === 'income' ? '+' : '-' }}</span>
+              ${{ transaction.amount.toLocaleString() }}
+            </div>
           </div>
         </div>
       </div>
-
-      <!-- Botón de acción -->
-      <button class="action-btn">
-        <i class="mdi mdi-dots-vertical"></i>
-      </button>
     </div>
   </div>
 
-  <!-- Estado vacío (opcional) -->
-  <div class="empty-state" *ngIf="transactions.length === 0">
+  <!-- Estado vacío -->
+  <div class="empty-state" *ngIf="groupedTransactions.length === 0">
     <div class="empty-icon">
       <i class="mdi mdi-receipt-text-outline"></i>
     </div>
     <h3>No hay transacciones</h3>
     <p>Aún no has registrado ninguna transacción. ¡Comienza a trackear tus gastos!</p>
+  </div>
   </div>
 </div>
