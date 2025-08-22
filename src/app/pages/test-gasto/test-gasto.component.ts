@@ -4,8 +4,8 @@ import { CommonModule } from '@angular/common';
 
 // Importa los componentes y servicios necesarios
 import { AddGastoModalComponent } from '../../components/gastos/gastos.component';
-import { GastoService } from '../../services/gasto.service';
-import { Gasto } from '../../../models/gasto.model';
+import { GastoService } from '../../services/operation.service';
+import { Gasto } from '../../../models/operation.model';
 
 @Component({
   selector: 'app-test-gasto',
