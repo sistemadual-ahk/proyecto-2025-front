@@ -6,6 +6,16 @@
 // Importar Material Design Icons
 @import url('https://cdn.jsdelivr.net/npm/@mdi/font@7.2.96/css/materialdesignicons.min.css');
 
+@import 'ng-zorro-antd/ng-zorro-antd.min.css';
+
+// Importar estilos de los componentes de NG-ZORRO
+@import 'ng-zorro-antd/button/style/index.min.css';
+@import 'ng-zorro-antd/icon/style/index.min.css';
+@import 'ng-zorro-antd/slider/style/index.min.css';
+@import 'ng-zorro-antd/switch/style/index.min.css';
+@import 'ng-zorro-antd/select/style/index.min.css';
+
+
 // Variables CSS para la paleta de colores de Ga$tify
 :root {
   --gastify-dark: #0F152C;      // Fondo principal
