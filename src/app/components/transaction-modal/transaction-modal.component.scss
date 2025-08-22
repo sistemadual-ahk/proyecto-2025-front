@@ -60,6 +60,16 @@
   position: relative;
 }
 
+// Asa/handle para indicar que se puede deslizar
+.modal-handle {
+  width: 42px;
+  height: 5px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.45);
+  margin: 6px auto 8px auto;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
 
 .save-btn {
   background: #3DCD99;

@@ -1,7 +1,8 @@
 <div class="modal-overlay" (click)="onClose()">
-  <div class="modal-content" (click)="$event.stopPropagation()">
+  <div class="modal-content" (click)="$event.stopPropagation()" [style.transform]="'translateY(' + dragTranslateY + 'px)'" [style.transition]="isDragging ? 'none' : 'transform 200ms ease-out'">
     <!-- Header del modal -->
-    <div class="modal-header">
+    <div class="modal-header" (touchstart)="onTouchStart($event)" (touchmove)="onTouchMove($event)" (touchend)="onTouchEnd()" (mousedown)="onMouseDown($event)" (mousemove)="onMouseMove($event)" (mouseup)="onMouseUp()" (mouseleave)="onMouseUp()">
+      <div class="modal-handle" aria-hidden="true"></div>
     </div>
 
     <!-- Toggle Ingreso/Gasto -->
