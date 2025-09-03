@@ -116,7 +116,13 @@
           <!-- Información de la transacción -->
           <div class="transaction-info">
             <div class="transaction-main">
-              <h3 class="transaction-description">{{ transaction.description }}</h3>
+              <h3 class="transaction-description">
+                {{ transaction.description }}
+                <span *ngIf="transaction.subcategory && transaction.subcategory !== transaction.description" class="subcategory">
+                  - {{ transaction.subcategory }}
+                </span>
+              </h3>
+              <p class="transaction-category">{{ transaction.category }}</p>
               <p class="transaction-time">{{ formatDate(transaction.date) }}, {{ transaction.time }}</p>
             </div>
             

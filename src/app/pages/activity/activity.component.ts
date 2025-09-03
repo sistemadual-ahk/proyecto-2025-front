@@ -1,6 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { TransactionService, Transaction } from '../../services/transaction.service';
 
 @Component({
   selector: 'app-activity',
@@ -9,259 +11,42 @@ import { RouterModule, Router } from '@angular/router';
   templateUrl: './activity.component.html',
   styleUrl: './activity.component.scss'
 })
-export class ActivityComponent {
-  constructor(private router: Router) {}
+export class ActivityComponent implements OnInit, OnDestroy {
+  constructor(
+    private router: Router,
+    private transactionService: TransactionService
+  ) {}
 
   // Estado del menú
   isMenuOpen = false;
 
-  // Datos de ejemplo para las transacciones (igual a la imagen)
-  transactions = [
-    {
-      id: 1,
-      type: 'expense',
-      amount: 4500,
-      description: 'Supermercado',
-      category: 'Alimentación',
-      subcategory: 'Supermercado',
-      wallet: 'Mercado Pago',
-      date: '2024-01-15',
-      time: '14:30'
-    },
-    {
-      id: 2,
-      type: 'income',
-      amount: 45000,
-      description: 'Salario',
-      category: 'Ingresos',
-      subcategory: 'Salario',
-      wallet: 'Santander',
-      date: '2024-01-15',
-      time: '14:30'
-    },
-    {
-      id: 3,
-      type: 'expense',
-      amount: 3200,
-      description: 'Combustible',
-      category: 'Transporte',
-      subcategory: 'Combustible',
-      wallet: 'Mercado Pago',
-      date: '2024-01-15',
-      time: '14:30'
-    },
-    {
-      id: 4,
-      type: 'expense',
-      amount: 4500,
-      description: 'Supermercado',
-      category: 'Alimentación',
-      subcategory: 'Supermercado',
-      wallet: 'Mercado Pago',
-      date: '2024-01-14',
-      time: '08:15'
-    },
-    {
-      id: 5,
-      type: 'income',
-      amount: 45000,
-      description: 'Salario',
-      category: 'Ingresos',
-      subcategory: 'Salario',
-      wallet: 'Santander',
-      date: '2024-01-14',
-      time: '08:15'
-    },
-    {
-      id: 6,
-      type: 'income',
-      amount: 45000,
-      description: 'Salario',
-      category: 'Ingresos',
-      subcategory: 'Salario',
-      wallet: 'Santander',
-      date: '2024-11-28',
-      time: '09:00'
-    },
-    {
-      id: 7,
-      type: 'expense',
-      amount: 3200,
-      description: 'Combustible',
-      category: 'Transporte',
-      subcategory: 'Combustible',
-      wallet: 'Mercado Pago',
-      date: '2024-11-28',
-      time: '09:00'
-    },
-    {
-      id: 8,
-      type: 'income',
-      amount: 45000,
-      description: 'Salario',
-      category: 'Ingresos',
-      subcategory: 'Salario',
-      wallet: 'Santander',
-      date: '2024-01-15',
-      time: '14:30'
-    },
-    {
-      id: 9,
-      type: 'income',
-      amount: 45000,
-      description: 'Salario',
-      category: 'Ingresos',
-      subcategory: 'Salario',
-      wallet: 'Santander',
-      date: '2024-01-15',
-      time: '14:30'
-    },
-    {
-      id: 10,
-      type: 'income',
-      amount: 45000,
-      description: 'Salario',
-      category: 'Ingresos',
-      subcategory: 'Salario',
-      wallet: 'Santander',
-      date: '2024-01-15',
-      time: '14:30'
-    },
-    {
-      id:11,
-      type: 'income',
-      amount: 45000,
-      description: 'Salario',
-      category: 'Ingresos',
-      subcategory: 'Salario',
-      wallet: 'Santander',
-      date: '2024-01-15',
-      time: '14:30'
-    },
-    {
-      id: 12,
-      type: 'income',
-      amount: 45000,
-      description: 'Salario',
-      category: 'Ingresos',
-      subcategory: 'Salario',
-      wallet: 'Santander',
-      date: '2024-01-15',
-      time: '14:30'
-    },
-    {
-      id: 13,
-      type: 'income',
-      amount: 45000,
-      description: 'Salario',
-      category: 'Ingresos',
-      subcategory: 'Salario',
-      wallet: 'Santander',
-      date: '2024-01-15',
-      time: '14:30'
-    },
-         {
-       id: 14,
-       type: 'income',
-       amount: 45000,
-       description: 'Salario',
-       category: 'Ingresos',
-       subcategory: 'Salario',
-       wallet: 'Santander',
-       date: '2024-01-15',
-       time: '14:30'
-     },
-     {
-       id: 15,
-       type: 'expense',
-       amount: 1500,
-       description: 'Café',
-       category: 'Alimentación',
-       subcategory: 'Café',
-       wallet: 'Mercado Pago',
-       date: '2024-01-13',
-       time: '09:15'
-     },
-     {
-       id: 16,
-       type: 'expense',
-       amount: 800,
-       description: 'Almuerzo',
-       category: 'Alimentación',
-       subcategory: 'Restaurante',
-       wallet: 'Mercado Pago',
-       date: '2024-01-13',
-       time: '12:30'
-     },
-     {
-       id: 17,
-       type: 'expense',
-       amount: 2500,
-       description: 'Uber',
-       category: 'Transporte',
-       subcategory: 'Taxi',
-       wallet: 'Mercado Pago',
-       date: '2024-01-12',
-       time: '18:45'
-     },
-     {
-       id: 18,
-       type: 'expense',
-       amount: 1200,
-       description: 'Farmacia',
-       category: 'Salud',
-       subcategory: 'Medicamentos',
-       wallet: 'Mercado Pago',
-       date: '2024-01-12',
-       time: '16:20'
-     },
-     {
-       id: 19,
-       type: 'expense',
-       amount: 3500,
-       description: 'Cine',
-       category: 'Entretenimiento',
-       subcategory: 'Cine',
-       wallet: 'Mercado Pago',
-       date: '2024-01-11',
-       time: '20:00'
-     },
-     {
-       id: 20,
-       type: 'expense',
-       amount: 1800,
-       description: 'Cena',
-       category: 'Alimentación',
-       subcategory: 'Restaurante',
-       wallet: 'Mercado Pago',
-       date: '2024-01-11',
-       time: '21:30'
-     }
-  ];
+  // Suscripciones
+  private subscription = new Subscription();
 
-  // Getter para transacciones agrupadas por fecha
-  get groupedTransactions() {
-    const groups: { [key: string]: any[] } = {};
-    
-    this.transactions.forEach(transaction => {
-      const dateKey = this.formatDate(transaction.date);
-      if (!groups[dateKey]) {
-        groups[dateKey] = [];
-      }
-      groups[dateKey].push(transaction);
-    });
-    
-    // Convertir a array y ordenar por fecha (más reciente primero)
-    return Object.keys(groups)
-      .map(date => ({
-        date: date,
-        transactions: groups[date]
-      }))
-      .sort((a, b) => {
-        const dateA = new Date(this.transactions.find(t => this.formatDate(t.date) === a.date)?.date || '');
-        const dateB = new Date(this.transactions.find(t => this.formatDate(t.date) === b.date)?.date || '');
-        return dateB.getTime() - dateA.getTime();
-      });
+  // Transacciones agrupadas
+  groupedTransactions: { date: string; transactions: Transaction[] }[] = [];
+
+  ngOnInit(): void {
+    this.loadTransactions();
+    this.subscribeToTransactions();
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
+  }
+
+  private loadTransactions(): void {
+    // Cargar transacciones agrupadas
+    this.groupedTransactions = this.transactionService.getGroupedTransactions();
+  }
+
+  private subscribeToTransactions(): void {
+    // Suscribirse a cambios en las transacciones
+    this.subscription.add(
+      this.transactionService.transactions$.subscribe(() => {
+        this.groupedTransactions = this.transactionService.getGroupedTransactions();
+      })
+    );
   }
 
   // Función para formatear la fecha
@@ -348,6 +133,15 @@ export class ActivityComponent {
   }
 
   goBack() {
-    this.router.navigate(['/home']);
+    // Agregar clase de transición antes de navegar
+    document.body.classList.add('page-transition');
+    
+    setTimeout(() => {
+      this.router.navigate(['/home']);
+      // Remover la clase después de la navegación
+      setTimeout(() => {
+        document.body.classList.remove('page-transition');
+      }, 300);
+    }, 150);
   }
 }

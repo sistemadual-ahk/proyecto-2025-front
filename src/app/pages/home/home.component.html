@@ -20,7 +20,7 @@
           <i class="mdi mdi-account"></i>
           <span>Perfil</span>
         </a>
-        <a href="#" class="sidebar-nav-item active">
+        <a routerLink="/home" class="sidebar-nav-item active">
           <i class="mdi mdi-home"></i>
           <span>Inicio</span>
         </a>
@@ -182,7 +182,12 @@
             <i [class]="movement.icon"></i>
           </div>
           <div class="movement-details">
-            <h4 class="movement-category">{{ movement.category }}</h4>
+            <h4 class="movement-category">
+              {{ movement.description }}
+              <span *ngIf="movement.subcategory && movement.subcategory !== movement.description" class="movement-subcategory">
+                - {{ movement.subcategory }}
+              </span>
+            </h4>
             <p class="movement-date">{{ movement.date }}</p>
           </div>
           <div class="movement-amount" [class.income]="movement.type === 'income'">

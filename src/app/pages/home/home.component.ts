@@ -1,17 +1,19 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { TransactionModalComponent } from '../../components/transaction-modal/transaction-modal.component';
+import { TransactionService, Transaction } from '../../services/transaction.service';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, FormsModule, TransactionModalComponent],
+  imports: [CommonModule, FormsModule, RouterModule, TransactionModalComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })
-export class HomeComponent {
+export class HomeComponent implements OnInit, OnDestroy {
   // Hacer Math disponible en el template
   Math = Math;
 
@@ -21,47 +23,52 @@ export class HomeComponent {
   // Estado del modal de transacciones
   showTransactionModal = false;
 
-  constructor(private router: Router) {}
+  // Suscripciones
+  private subscription = new Subscription();
 
   // Datos del dashboard
   currentMonth = 'Junio 2025';
   income = 0;
-  expenses = 4500;
-  availableBalance = 37300;
+  expenses = 0;
+  availableBalance = 0;
   balanceChange = '+$200 vs mes anterior';
 
-
-
   // Movimientos recientes
-  recentMovements = [
-    {
-      id: 1,
-      type: 'expense',
-      category: 'Supermercado',
-      icon: 'mdi-cart',
-      amount: -4500,
-      date: 'Hoy, 14:30',
-      color: '#FF6B6B'
-    },
-    {
-      id: 2,
-      type: 'income',
-      category: 'Salario',
-      icon: 'mdi-cash',
-      amount: 45000,
-      date: '28 Nov, 09:00',
-      color: '#51CF66'
-    },
-    {
-      id: 3,
-      type: 'expense',
-      category: 'Combustible',
-      icon: 'mdi-gas-station',
-      amount: -3200,
-      date: 'Ayer, 08:15',
-      color: '#74C0FC'
-    }
-  ];
+  recentMovements: any[] = [];
+
+  constructor(
+    private router: Router,
+    private transactionService: TransactionService
+  ) {}
+
+  ngOnInit(): void {
+    this.loadData();
+    this.subscribeToTransactions();
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
+  }
+
+  private loadData(): void {
+    // Cargar estadísticas
+    const stats = this.transactionService.getStats();
+    this.income = stats.income;
+    this.expenses = stats.expenses;
+    this.availableBalance = stats.balance;
+
+    // Cargar movimientos recientes
+    this.recentMovements = this.transactionService.getRecentMovements();
+  }
+
+  private subscribeToTransactions(): void {
+    // Suscribirse a cambios en las transacciones
+    this.subscription.add(
+      this.transactionService.transactions$.subscribe(() => {
+        this.loadData();
+      })
+    );
+  }
 
   // Métodos para el menú
   toggleMenu() {
@@ -103,7 +110,16 @@ export class HomeComponent {
 
   viewAllMovements() {
     console.log('Ver todos los movimientos');
-    this.router.navigate(['/activity']);
+    // Agregar clase de transición antes de navegar
+    document.body.classList.add('page-transition');
+    
+    setTimeout(() => {
+      this.router.navigate(['/activity']);
+      // Remover la clase después de la navegación
+      setTimeout(() => {
+        document.body.classList.remove('page-transition');
+      }, 300);
+    }, 150);
   }
 
   // Métodos para botones inferiores
@@ -133,70 +149,21 @@ export class HomeComponent {
   saveTransaction(transaction: any) {
     console.log('Transacción guardada:', transaction);
     
-    // Agregar la nueva transacción a la lista de movimientos recientes
-    const newMovement = {
-      id: this.recentMovements.length + 1,
+    // Agregar la transacción usando el servicio
+    this.transactionService.addTransaction({
       type: transaction.type,
+      amount: Math.abs(transaction.amount),
+      description: transaction.description || transaction.category,
       category: transaction.category,
-      icon: this.getIconForCategory(transaction.category),
-      amount: transaction.amount,
-      date: this.formatDate(transaction.date),
-      color: transaction.type === 'income' ? '#10b981' : this.getColorForCategory(transaction.category)
-    };
-    
-    this.recentMovements.unshift(newMovement);
-    
-    // Actualizar los totales
-    if (transaction.type === 'income') {
-      this.income += transaction.amount;
-    } else {
-      this.expenses += Math.abs(transaction.amount);
-    }
+      subcategory: transaction.subcategory,
+      wallet: transaction.wallet,
+      date: transaction.date
+    });
     
     this.closeTransactionModal();
   }
 
-  private getIconForCategory(category: string): string {
-    const iconMap: { [key: string]: string } = {
-      'Alimentación': 'mdi-cart',
-      'Transporte': 'mdi-car',
-      'Entretenimiento': 'mdi-movie',
-      'Salud': 'mdi-medical-bag',
-      'Educación': 'mdi-school',
-      'Vivienda': 'mdi-home',
-      'Otros': 'mdi-dots-horizontal'
-    };
-    return iconMap[category] || 'mdi-cash';
-  }
 
-  private getColorForCategory(category: string): string {
-    const colorMap: { [key: string]: string } = {
-      'Alimentación': '#f59e0b',
-      'Transporte': '#3b82f6',
-      'Entretenimiento': '#8b5cf6',
-      'Salud': '#ef4444',
-      'Educación': '#10b981',
-      'Vivienda': '#6366f1',
-      'Otros': '#6b7280'
-    };
-    return colorMap[category] || '#6b7280';
-  }
-
-  private formatDate(dateString: string): string {
-    const date = new Date(dateString);
-    const today = new Date();
-    const yesterday = new Date(today);
-    yesterday.setDate(yesterday.getDate() - 1);
-    
-    if (date.toDateString() === today.toDateString()) {
-      return 'Hoy, ' + date.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
-    } else if (date.toDateString() === yesterday.toDateString()) {
-      return 'Ayer, ' + date.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
-    } else {
-      return date.toLocaleDateString('es-ES', { day: 'numeric', month: 'short' }) + ', ' + 
-             date.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
-    }
-  }
 
 
 } 

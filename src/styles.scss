@@ -106,3 +106,35 @@ button, a, [role="button"] {
 * {
   -webkit-overflow-scrolling: touch;
 }
+
+// Transiciones suaves entre páginas
+.page-transition {
+  .container {
+    opacity: 0;
+    transform: translateX(20px);
+    transition: all 0.3s ease-in-out;
+  }
+}
+
+// Animaciones para elementos de entrada
+.container {
+  opacity: 1;
+  transform: translateX(0);
+  transition: all 0.3s ease-in-out;
+}
+
+// Animación para elementos de la lista
+.movement-item, .transaction-item {
+  animation: slideInUp 0.3s ease-out;
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
