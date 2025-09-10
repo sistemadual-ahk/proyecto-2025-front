@@ -1,13 +1,14 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
+import { SidebarComponent } from '../../components/sidebar/sidebar.component';
 import { Subscription } from 'rxjs';
 import { TransactionService, Transaction } from '../../services/transaction.service';
 
 @Component({
   selector: 'app-activity',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, SidebarComponent],
   templateUrl: './activity.component.html',
   styleUrl: './activity.component.scss'
 })

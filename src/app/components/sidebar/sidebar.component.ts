@@ -29,6 +29,18 @@ export class SidebarComponent {
     this.onCloseMenu();
   }
 
+  openAnalysis() {
+    // Animación suave antes de navegar (igual que "ver todo >")
+    document.body.classList.add('page-transition');
+    setTimeout(() => {
+      this.router.navigate(['/analysis']);
+      setTimeout(() => {
+        document.body.classList.remove('page-transition');
+      }, 300);
+    }, 150);
+    this.onCloseMenu();
+  }
+
   logout(): void {
     console.log('Logout');
     this.router.navigate(['/']);

@@ -7,6 +7,7 @@ import { WalletsComponent } from './pages/wallets/wallets.component';
 import { AddGastoModalComponent } from './components/gastos/gastos.component';
 import { TestGastoComponent } from './pages/test-gasto/test-gasto.component';
 import { ActivityComponent } from './pages/activity/activity.component';
+import { AnalysisComponent } from './pages/analysis/analysis.component';
 
 export const routes: Routes = [
   { path: '', component: LoginComponent },
@@ -16,5 +17,6 @@ export const routes: Routes = [
   { path: 'wallets', component: WalletsComponent }, 
   { path: 'test', component: AddGastoModalComponent },
   { path: 'testGasto', component: TestGastoComponent },
-  { path: 'activity', component: ActivityComponent }
+  { path: 'activity', component: ActivityComponent },
+  { path: 'analysis', component: AnalysisComponent }
 ];

@@ -1,0 +1,100 @@
+<div class="container">
+  <!-- Sidebar -->
+  <app-sidebar 
+    [isMenuOpen]="isMenuOpen"
+    (closeMenu)="closeMenu()">
+  </app-sidebar>
+
+  <!-- Header -->
+  <header class="header">
+    <button class="menu-btn" (click)="toggleMenu()">
+      <i class="mdi mdi-menu"></i>
+    </button>
+    <h1 class="app-title">Ga<span class="dollar-sign">$</span>tify</h1>
+    <div class="header-right">
+      <button class="notification-btn" (click)="openNotifications()">
+        <i class="mdi mdi-bell"></i>
+      </button>
+      <button class="profile-btn" (click)="openProfile()">
+        <i class="mdi mdi-account-circle"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <div class="main">
+    <!-- Back and Title -->
+    <div class="page-navigation" style="justify-content: center; position: relative;">
+      <button class="back-btn" (click)="goBack()" style="position: absolute; left: 0;">
+        <i class="mdi mdi-arrow-left"></i>
+      </button>
+      <h2 class="page-title">Analisis de Gastos</h2>
+    </div>
+
+    <!-- Tabs & Month Selector -->
+    <div class="tabs-row">
+      <div class="tabs">
+        <button class="tab">Semanal</button>
+        <button class="tab active">Mensual</button>
+        <button class="tab">Anual</button>
+      </div>
+      <button class="calendar-btn">
+        <i class="mdi mdi-calendar"></i>
+      </button>
+    </div>
+
+    <div class="month-selector">
+      <button class="arrow"><i class="mdi mdi-chevron-left"></i></button>
+      <div class="month">Junio 2025</div>
+      <button class="arrow"><i class="mdi mdi-chevron-right"></i></button>
+    </div>
+
+    <!-- Donut Chart Card -->
+    <div class="card">
+      <div class="card-title">Gastos por categoría</div>
+      <div class="donut">
+        <div class="donut-center">$4,500</div>
+      </div>
+      <div class="legend">
+        <div class="legend-row">
+          <span class="dot dot-food"></span>Alimentos
+          <span class="dot dot-health"></span>Salud
+          <span class="dot dot-transport"></span>Transporte
+        </div>
+        <div class="legend-row">
+          <span class="dot dot-entertainment"></span>Entretenimientos
+          <span class="dot dot-others"></span>Otros
+        </div>
+      </div>
+    </div>
+
+    <!-- Line Chart Card -->
+    <div class="card">
+      <div class="card-title">Evolución de gastos</div>
+      <div class="line-placeholder"></div>
+      <div class="axis-label">Semanas del mes</div>
+    </div>
+
+    <!-- Insight Cards -->
+    <div class="insight-card">
+      <div class="insight-icon">
+        <i class="mdi mdi-alert-decagram-outline"></i>
+      </div>
+      <div class="insight-content">
+        <div class="insight-title">Gasto inusual detectado</div>
+        <div class="insight-text">El gasto en Delivery aumentó un 30% respecto a la semana pasada</div>
+      </div>
+    </div>
+    <div class="insight-card">
+      <div class="insight-icon">
+        <i class="mdi mdi-lightbulb-on-outline"></i>
+      </div>
+      <div class="insight-content">
+        <div class="insight-title">Consejo de ahorro</div>
+        <div class="insight-text">¿Sabías que podés ahorrar $150 este mes siguiendo los siguientes consejos?</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+

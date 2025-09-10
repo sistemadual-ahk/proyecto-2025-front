@@ -1,0 +1,292 @@
+/*
+  Layout base
+*/
+.container {
+  height: 100vh;
+  background: var(--gastify-dark);
+  color: var(--gastify-light);
+  position: relative;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.main {
+  padding: 20px;
+  padding-top: 80px;
+  padding-bottom: 100px;
+}
+
+/*
+  Header interno (título centrado y back a la izquierda)
+*/
+.page-navigation {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.back-btn {
+  position: absolute;
+  left: 0;
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 22px;
+}
+
+.page-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #ffffff;
+  text-align: center;
+  margin-top: 5px;
+}
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background: var(--gastify-dark);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .header-left, .header-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  
+  .app-title {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--gastify-light);
+  }
+  
+  .dollar-sign {
+    color: var(--gastify-green);
+  }
+  
+  .menu-btn, .notification-btn, .profile-btn {
+    background: none;
+    border: none;
+    color: var(--gastify-light);
+    font-size: 1.3rem;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+    transition: background-color 0.3s ease;
+  }
+  
+  .menu-btn:hover, .notification-btn:hover, .profile-btn:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+/*
+  Tabs + selector de mes
+*/
+.tabs-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tabs {
+  display: flex;
+  background: #111a2c;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.tab {
+  padding: 8px 12px;
+  color: rgba(255, 255, 255, 0.85);
+  background: transparent;
+  border: none;
+}
+
+.tab.active {
+  background: #2a3347;
+  color: #fff;
+}
+
+.calendar-btn {
+  background: #2a3347;
+  color: #fff;
+  border: none;
+  padding: 8px 10px;
+  border-radius: 8px;
+}
+
+.month-selector {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 5px 0 3px;
+  font-weight: 600;
+}
+
+.month-selector .arrow {
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 20px;
+}
+
+/*
+  Tarjetas base
+*/
+.card {
+  background: #15233C;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  margin-top: 10px;
+}
+
+.card-title {
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+/*
+  Donut de categorías
+*/
+.donut {
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  margin: 0 auto;
+  background: conic-gradient(
+    #9b59b6 0 80deg,
+    #45B7D1 80deg 160deg,
+    #4ECDC4 160deg 260deg,
+    #FF6B6B 260deg 310deg,
+    #f472b6 310deg 360deg
+  );
+  display: grid;
+  place-items: center;
+  position: relative;
+}
+
+.donut::before {
+  content: '';
+  width: 110px;
+  height: 110px;
+  background: #0F152C;
+  border-radius: 50%;
+  position: absolute;
+}
+
+.donut-center {
+  position: relative;
+  font-weight: 700;
+}
+
+/*
+  Leyenda
+*/
+.legend {
+  margin-top: 12px;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.legend-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 6px;
+  flex-wrap: wrap;
+}
+
+.dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-right: 4px; }
+.dot-food { background: #FF6B6B; }
+.dot-health { background: #96CEB4; }
+.dot-transport { background: #45B7D1; }
+.dot-entertainment { background: #f472b6; }
+.dot-others { background: #A8A8A8; }
+
+/*
+  Placeholder de evolución (línea)
+*/
+.line-placeholder {
+  height: 120px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
+  border-radius: 10px;
+}
+
+.axis-label {
+  margin-top: 8px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.7);
+  text-align: center;
+}
+
+/*
+  Tarjetas de insights
+*/
+.insight-card {
+  background: #2a3347;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  padding: 14px;
+  margin-top: 12px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.insight-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.08);
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.insight-icon i {
+  color: rgba(255, 255, 255, 0.95);
+  font-size: 20px;
+}
+
+.insight-content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.insight-title { font-weight: 700; }
+
+.insight-text {
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+@media (max-width: 480px) {
+    .header {
+      padding: 10px;
+    }
+    
+    .sidebar {
+      width: 260px;
+      left: -260px;
+    }
+    
+    .main {
+      padding: 5px;
+      padding-top: 70px;
+    }
+    
+    .app-title {
+      font-size: 1.3rem;
+    }
+
+
+}

@@ -135,6 +135,8 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   openAnalysis() {
     console.log('Abrir análisis');
+    this.router.navigate(['/analysis']);
+    this.closeMenu();
   }
 
   addTransaction() {
