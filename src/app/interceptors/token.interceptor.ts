@@ -15,6 +15,7 @@ export class AuthInterceptor implements HttpInterceptor {
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
     // Si la URL de la petición no es a tu API, no hacemos nada y la dejamos pasar.
+    console.log(HttpRequest)
     if (!request.url.startsWith(this.apiBaseUrl)) {
       return next.handle(request);
     }
@@ -24,6 +25,7 @@ export class AuthInterceptor implements HttpInterceptor {
     return this.auth.getAccessTokenSilently().pipe(
       first(),
       switchMap(token => {
+        console.log("token:" + token)
         // Clonamos la petición original y añadimos el token a los headers.
         const authReq = request.clone({
           setHeaders: {
