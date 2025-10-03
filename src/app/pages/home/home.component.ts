@@ -166,11 +166,6 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.router.navigate(['/saving-goals']);
   }
 
-  openWallets() {
-    console.log('Abrir billeteras');
-    this.router.navigate(['/wallets']);
-  }
-
   openAnalysis() {
     console.log('Abrir análisis');
     this.router.navigate(['/analysis']);
@@ -263,8 +258,5 @@ export class HomeComponent implements OnInit, OnDestroy {
              date.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
     }
   }
-
-
-
 
 } 

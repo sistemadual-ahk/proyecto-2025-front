@@ -32,44 +32,7 @@
 }
 
 /* Main Header */
-.main-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 16px 20px;
-  margin-bottom: 20px;
-  
-  .menu-btn, .notification-btn, .profile-btn {
-    background: none;
-    border: none;
-    color: white;
-    font-size: 20px;
-    cursor: pointer;
-    padding: 8px;
-    border-radius: 50%;
-    transition: background-color 0.3s;
-    
-    &:hover {
-      background-color: rgba(255, 255, 255, 0.1);
-    }
-  }
-  
-  .app-title {
-    font-size: 24px;
-    font-weight: bold;
-    color: white;
-    margin: 0;
-    
-    .dollar-sign {
-      color: var(--gastify-green);
-    }
-  }
-  
-  .header-right {
-    display: flex;
-    gap: 8px;
-  }
-}
+/* Header global se usa desde HeaderComponent; se limpia duplicación */
 
 /* Navigation Section */
 .navigation-section {
