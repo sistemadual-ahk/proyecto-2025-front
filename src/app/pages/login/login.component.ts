@@ -1,13 +1,14 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
+import { AuthService } from '@auth0/auth0-angular';
 
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterLink], // Añade RouterLink a los imports
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
 })
@@ -16,8 +17,20 @@ export class LoginComponent {
   password: string = '';
   showPassword: boolean = false;
 
+  constructor(public auth: AuthService, private router: Router) {}
 
-  constructor(private router: Router) {}
+  loginWithGoogle() {
+    console.log(this.auth)
+    
+    this.auth.loginWithRedirect({
+      appState: {
+        target: '/home'
+      },
+      authorizationParams: {
+        connection: 'google-oauth2'
+      }
+    });
+  }
 
   togglePasswordVisibility() {
     this.showPassword = !this.showPassword;

@@ -5,7 +5,7 @@ const config: CapacitorConfig = {
   appName: 'Gastify',
   webDir: 'dist/gastify-frontend',
   server: {
-    url: 'http://192.168.3.186:4200',
+    url: 'localhost:4200',
     cleartext: true
   }
 };

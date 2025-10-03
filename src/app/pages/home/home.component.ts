@@ -1,10 +1,12 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
+import { CommonModule, DOCUMENT } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { TransactionModalComponent } from '../../components/transaction-modal/transaction-modal.component';
-import { TransactionService, Transaction } from '../../services/transaction.service';
+import { TransactionService } from '../../services/transaction.service';
+import { AuthService } from '@auth0/auth0-angular';
+
 
 @Component({
   selector: 'app-home',
@@ -14,12 +16,15 @@ import { TransactionService, Transaction } from '../../services/transaction.serv
   styleUrl: './home.component.scss'
 })
 export class HomeComponent implements OnInit, OnDestroy {
+  private auth = inject(AuthService);
+  private doc = inject(DOCUMENT);
+
   // Hacer Math disponible en el template
   Math = Math;
 
   // Estado del menú
   isMenuOpen = false;
-  
+
   // Estado del modal de transacciones
   showTransactionModal = false;
 
@@ -39,7 +44,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   constructor(
     private router: Router,
     private transactionService: TransactionService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.loadData();
@@ -84,6 +89,11 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   logout(): void {
     // Aquí iría la lógica de logout (limpiar tokens, etc.)
+    this.auth.logout({
+      logoutParams: {
+        returnTo: this.doc.location.origin,
+      }
+    })
     console.log('Logout');
     this.router.navigate(['/']);
   }
@@ -112,7 +122,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     console.log('Ver todos los movimientos');
     // Agregar clase de transición antes de navegar
     document.body.classList.add('page-transition');
-    
+
     setTimeout(() => {
       this.router.navigate(['/activity']);
       // Remover la clase después de la navegación
@@ -150,7 +160,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   saveTransaction(transaction: any) {
     console.log('Transacción guardada:', transaction);
-    
+
     // Agregar la transacción usando el servicio
     this.transactionService.addTransaction({
       type: transaction.type,
@@ -161,7 +171,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       wallet: transaction.wallet,
       date: transaction.date
     });
-    
+
     this.closeTransactionModal();
   }
 

@@ -1,20 +1,18 @@
 import { Component, EventEmitter, Output } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { Gasto } from '../../../models/gasto.model';
 import { CategoryService } from '../../services/category.service';
 import { Categoria } from '../../../models/categoria.model';
+import { Gasto } from '../../../models/operation.model';
 
 @Component({
-  selector: 'app-add-gasto-modal',
+  selector: 'app-operation',
   standalone: true,
-  imports: [CommonModule, FormsModule],
-  templateUrl: './gastos.component.html',
-  styleUrl: './gastos.component.scss'
+  imports: [],
+  templateUrl: './operation.component.html',
+  styleUrl: './operation.component.scss'
 })
 export class AddGastoModalComponent {
   @Output() closeModal = new EventEmitter<void>();
-  @Output() saveGasto = new EventEmitter<Partial<Gasto>>();
+  @Output() save = new EventEmitter<Partial<Gasto>>();
 
   descripcion = '';
   monto: number | null = null;
@@ -46,7 +44,7 @@ export class AddGastoModalComponent {
       return;
     }
 
-    this.saveGasto.emit({
+    this.save.emit({
       descripcion: this.descripcion.trim(),
       monto: Math.max(0, this.monto),
       categoria: this.categoria
@@ -61,3 +59,4 @@ export class AddGastoModalComponent {
     this.categoria = null;
   }
 }
+

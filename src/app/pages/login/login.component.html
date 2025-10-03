@@ -9,6 +9,11 @@
     <div class="welcome-section">
       <h2 class="welcome-message">¡Bienvenido de vuelta!</h2>
       <p class="welcome-subtitle">Inicia sesión para continuar gestionando tus finanzas</p>
+
+      <ul *ngIf="auth.user$ | async as user">
+      <li>{{ user.name }}</li>
+      <li>{{ user.email }}</li>
+    </ul>
     </div>
 
     <!-- Login Form -->
@@ -60,7 +65,7 @@
 
     <!-- Google Login -->
     <div class="google-section">
-      <button class="btn-google" (click)="onGoogleLogin()">
+      <button class="btn-google" (click)="loginWithGoogle()">
         <img src="assets/images/google-icon.png" alt="Google" class="google-icon">
         Conectar con Google
       </button>
