@@ -4,7 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { TransactionModalComponent } from '../../components/transaction-modal/transaction-modal.component';
 import { AuthService } from '@auth0/auth0-angular';
-
+import { Observable } from 'rxjs';
+import { HttpClient } from '@angular/common/http'; 
 
 @Component({
   selector: 'app-home',
@@ -26,7 +27,25 @@ export class HomeComponent {
   // Estado del modal de transacciones
   showTransactionModal = false;
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private http: HttpClient) {
+    this.getAllGategorias().subscribe(data => {
+      console.log('Categorías obtenidas:', data);
+
+    });
+    this.getAllBilleteras().subscribe(data => {
+      console.log('Billeteras obtenidas:', data);
+    }
+    );
+  }
+
+  getAllGategorias(): Observable<any> {
+      return this.http.get<any[]>(`http://localhost:3000/api/categorias`);
+    }
+
+
+  getAllBilleteras(): Observable<any> {
+      return this.http.get<any[]>(`http://localhost:3000/api/billeteras`);
+    }
 
   // Datos del dashboard
   currentMonth = 'Junio 2025';
