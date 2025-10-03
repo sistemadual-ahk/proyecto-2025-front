@@ -1,12 +1,5 @@
 <div class="container">
-  <!-- Sidebar -->
-  <app-sidebar 
-    [isMenuOpen]="isMenuOpen"
-    (closeMenu)="closeMenu()">
-  </app-sidebar>
-
-  <!-- Header -->
-  <app-header (toggleMenu)="toggleMenu()"></app-header>
+  
 
   <!-- Main Content -->
   <div class="main">
@@ -110,24 +103,24 @@
             <div class="popup-action-icon">
               <i class="mdi mdi-swap-horizontal"></i>
             </div>
-            <span>Transferir</span>
+            <span>Transferir desde</span>
+          </button>
+
+          <button class="popup-action-btn" (click)="openWalletSettings()">
+            <div class="popup-action-icon">
+              <i class="mdi mdi-swap-horizontal"></i>
+            </div>
+            <span>Transferir hacia</span>
           </button>
           
           <button class="popup-action-btn" (click)="openWalletHistory()">
             <div class="popup-action-icon">
               <i class="mdi mdi-history"></i>
             </div>
-            <span>Historial</span>
-          </button>
-          
-          <button class="popup-action-btn" (click)="openWalletSettings()">
-            <div class="popup-action-icon">
-              <i class="mdi mdi-cog"></i>
-            </div>
-            <span>Ajustes</span>
+            <span>Ver transacciones</span>
           </button>
         </div>
-
+        
         <!-- Información adicional -->
         <div class="popup-details">
           <div class="popup-detail-item">

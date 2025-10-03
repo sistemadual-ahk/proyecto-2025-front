@@ -2,48 +2,66 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 
+
+export interface SidebarItem {
+  icon?: string;       // opcional: clase de icono (ej. "bx bx-home")
+  label: string;       // texto visible
+  route?: string;      // ruta de navegación
+  key?: string;        // id interno si lo necesitás
+  logout?: boolean;    // marcar item de logout
+  active?: boolean;    // estado activo
+}
+
 @Component({
   selector: 'app-sidebar',
   standalone: true,
   imports: [CommonModule, RouterModule],
   templateUrl: './sidebar.component.html',
-  styleUrl: './sidebar.component.scss'
+  styleUrls: ['./sidebar.component.scss']
 })
 export class SidebarComponent {
-  @Input() isMenuOpen = false;
-  @Output() closeMenu = new EventEmitter<void>();
+  
+  /** Estado abierto/cerrado del sidebar, manejado internamente */
+  isOpen = false;
 
   constructor(private router: Router) {}
 
-  onCloseMenu() {
-    this.closeMenu.emit();
+  onNavigate(route: string) {
+    this.router.navigate([route]); // <-- acá sí navega
   }
 
-  openWallets() {
-    this.router.navigate(['/wallets']);
-    this.onCloseMenu();
+  /** Nombre de usuario para la sección de perfil (opcional) */
+  @Input() userName = '';
+
+
+
+  /** Items de navegación (si no los pasás, podés hardcodearlos en el HTML) */
+  @Input() items: SidebarItem[] = [];
+
+  /** Eventos hacia el padre */
+  @Output() close = new EventEmitter<void>();
+  @Output() logoutEvent = new EventEmitter<void>();
+  @Output() editProfile = new EventEmitter<void>();
+
+  // Métodos para el menú
+  toggleMenu() { this.isOpen = !this.isOpen; }
+  openMenu()   { this.isOpen = true; }
+  closeMenu()  { this.isOpen = false; this.onClose(); }
+
+  onClose() { this.close.emit(); }
+  onEditProfile() { this.editProfile.emit(); this.closeMenu(); }
+
+  onItemClick(item: SidebarItem) {
+    if (item.logout) {
+      this.logoutEvent.emit();
+      this.closeMenu();
+      return;
+    }
+    if (item.route) {
+      this.router.navigate([item.route]);
+      this.closeMenu();
+    }
   }
 
-  openGoals() {
-    this.router.navigate(['/saving-goals']);
-    this.onCloseMenu();
-  }
-
-  openAnalysis() {
-    // Animación suave antes de navegar (igual que "ver todo >")
-    document.body.classList.add('page-transition');
-    setTimeout(() => {
-      this.router.navigate(['/analysis']);
-      setTimeout(() => {
-        document.body.classList.remove('page-transition');
-      }, 300);
-    }, 150);
-    this.onCloseMenu();
-  }
-
-  logout(): void {
-    console.log('Logout');
-    this.router.navigate(['/']);
-    this.onCloseMenu();
-  }
+  onLogout() { this.logoutEvent.emit(); this.closeMenu(); }
 }

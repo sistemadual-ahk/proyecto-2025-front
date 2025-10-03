@@ -1,16 +1,23 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterOutlet } from '@angular/router';
+import { Router, RouterOutlet } from '@angular/router';
+import { HeaderComponent } from './components/header/header.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet],
+  imports: [CommonModule, RouterOutlet, HeaderComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
 export class AppComponent implements OnInit {
   title = 'gastify-frontend';
+
+  constructor(private router: Router) {}
+
+  onNavigate(route: string) {
+    this.router.navigate([route]); // <-- acá sí navega
+  }
 
   ngOnInit() {
     this.preventDoubleTapZoom();

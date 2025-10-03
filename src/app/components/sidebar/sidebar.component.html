@@ -1,4 +1,7 @@
-<div class="sidebar" [class.open]="isMenuOpen">
+<!-- boton sidebar -->
+
+<!-- Sidebar -->
+<div class="sidebar" [class.open]="isOpen">
   <div class="sidebar-content">
     <!-- Profile Section -->
     <div class="profile-section">
@@ -14,41 +17,41 @@
     
     <!-- Navigation Menu -->
     <nav class="sidebar-nav">
-      <a href="#" class="sidebar-nav-item">
+      <a href="#" class="sidebar-nav-item" (click)="onEditProfile()">
         <i class="mdi mdi-account"></i>
         <span>Perfil</span>
       </a>
-      <a routerLink="/home" class="sidebar-nav-item active">
+      <a routerLink="/home" class="sidebar-nav-item" (click)="closeMenu()">
         <i class="mdi mdi-home"></i>
         <span>Inicio</span>
       </a>
-      <a (click)="openWallets()" class="sidebar-nav-item" style="cursor: pointer;">
+      <a routerLink="/wallets" class="sidebar-nav-item" style="cursor: pointer;" (click)="closeMenu()">
         <i class="mdi mdi-wallet"></i>
         <span>Billeteras</span>
       </a>
-      <a href="#" class="sidebar-nav-item">
+      <a routerLink="/activity" class="sidebar-nav-item" (click)="closeMenu()">
         <i class="mdi mdi-sync"></i>
         <span>Actividad</span>
       </a>
-      <a (click)="openAnalysis()" class="sidebar-nav-item" style="cursor: pointer;">
+      <a routerLink="/analysis" class="sidebar-nav-item" style="cursor: pointer;" (click)="closeMenu()">
         <i class="mdi mdi-chart-line"></i>
         <span>Análisis</span>
       </a>
-      <a (click)="openGoals()" class="sidebar-nav-item" style="cursor: pointer;">
+      <a routerLink="/saving-goals" class="sidebar-nav-item" style="cursor: pointer;" (click)="closeMenu()">
         <i class="mdi mdi-target"></i>
         <span>Objetivos</span>
       </a>
-      <a href="#" class="sidebar-nav-item">
+      <a routerLink="/categories" class="sidebar-nav-item" (click)="closeMenu()">
         <i class="mdi mdi-dots-horizontal"></i>
         <span>Categorías</span>
       </a>
-      <a href="#" class="sidebar-nav-item">
+      <a routerLink="/settings" class="sidebar-nav-item" (click)="closeMenu()">
         <i class="mdi mdi-cog"></i>
         <span>Ajustes</span>
       </a>
-      <a (click)="logout()" class="sidebar-nav-item logout">
-        <i class="mdi mdi-logout"></i>
-        <span>Cerrar Sesión</span>
+          <a routerLink="/categories" class="sidebar-nav-item logout" (click)="onLogout()">
+          <i class="mdi mdi-logout"></i>
+          <span>Cerrar Sesión</span>
       </a>
     </nav>
     
@@ -63,4 +66,4 @@
 </div>
 
 <!-- Overlay -->
-<div class="overlay" [class.active]="isMenuOpen" (click)="onCloseMenu()"></div>
+<div class="overlay" [class.active]="isOpen" (click)="closeMenu()"></div>
