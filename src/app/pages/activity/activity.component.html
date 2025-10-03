@@ -101,34 +101,34 @@
     </div>
   </div>
 
-  <!-- Lista de transacciones agrupadas por fecha -->
+  <!-- Lista de gastos agrupados por fecha -->
   <div class="transactions-container">
-    <div class="date-group" *ngFor="let group of groupedTransactions">
+    <div class="date-group" *ngFor="let group of groupedGastos">
       <div class="date-header">{{ group.date }}</div>
       
       <div class="transactions-list">
-        <div class="transaction-item" *ngFor="let transaction of group.transactions">
+        <div class="transaction-item" *ngFor="let gasto of group.gastos">
           <!-- Ícono de categoría -->
-          <div class="category-icon" [style.background-color]="getCategoryColor(transaction.category)">
-            <i [class]="getCategoryIcon(transaction.category)"></i>
+          <div class="category-icon" [style.background-color]="getCategoryColor(gasto.categoria?.nombre || '')">
+            <i [class]="getCategoryIcon(gasto.categoria?.nombre || '')"></i>
           </div>
 
-          <!-- Información de la transacción -->
+          <!-- Información del gasto -->
           <div class="transaction-info">
             <div class="transaction-main">
               <h3 class="transaction-description">
-                {{ transaction.description }}
-                <span *ngIf="transaction.subcategory && transaction.subcategory !== transaction.description" class="subcategory">
-                  - {{ transaction.subcategory }}
+                {{ gasto.descripcion }}
+                <span *ngIf="gasto.categoria?.descripcion && gasto.categoria.descripcion !== gasto.descripcion" class="subcategory">
+                  - {{ gasto.categoria.descripcion }}
                 </span>
               </h3>
-              <p class="transaction-category">{{ transaction.category }}</p>
-              <p class="transaction-time">{{ formatDate(transaction.date) }}, {{ transaction.time }}</p>
+              <p class="transaction-category">{{ gasto.categoria?.nombre || 'Sin categoría' }}</p>
+              <p class="transaction-time">{{ formatDate(gasto.datetime.toString()) }}</p>
             </div>
             
-            <div class="transaction-amount" [class.income]="transaction.type === 'income'">
-              <span class="amount-sign">{{ transaction.type === 'income' ? '+' : '-' }}</span>
-              ${{ transaction.amount.toLocaleString() }}
+            <div class="transaction-amount" [class.income]="gasto.tipo === 'income'">
+              <span class="amount-sign">{{ gasto.tipo === 'income' ? '+' : '-' }}</span>
+              ${{ gasto.monto.toLocaleString() }}
             </div>
           </div>
         </div>
@@ -137,12 +137,12 @@
   </div>
 
   <!-- Estado vacío -->
-  <div class="empty-state" *ngIf="groupedTransactions.length === 0">
+  <div class="empty-state" *ngIf="groupedGastos.length === 0">
     <div class="empty-icon">
       <i class="mdi mdi-receipt-text-outline"></i>
     </div>
-    <h3>No hay transacciones</h3>
-    <p>Aún no has registrado ninguna transacción. ¡Comienza a trackear tus gastos!</p>
+    <h3>No hay gastos</h3>
+    <p>Aún no has registrado ningún gasto. ¡Comienza a trackear tus gastos!</p>
   </div>
   </div>
 </div>

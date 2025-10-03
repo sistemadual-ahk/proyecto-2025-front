@@ -3,7 +3,8 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { SidebarComponent } from '../../components/sidebar/sidebar.component';
 import { Subscription } from 'rxjs';
-import { TransactionService, Transaction } from '../../services/transaction.service';
+import { GastoService } from '../../services/gasto.service';
+import { Gasto } from '../../../models/gasto.model';
 
 @Component({
   selector: 'app-activity',
@@ -15,7 +16,7 @@ import { TransactionService, Transaction } from '../../services/transaction.serv
 export class ActivityComponent implements OnInit, OnDestroy {
   constructor(
     private router: Router,
-    private transactionService: TransactionService
+    private gastoService: GastoService
   ) {}
 
   // Estado del menú
@@ -24,30 +25,53 @@ export class ActivityComponent implements OnInit, OnDestroy {
   // Suscripciones
   private subscription = new Subscription();
 
-  // Transacciones agrupadas
-  groupedTransactions: { date: string; transactions: Transaction[] }[] = [];
+  // Gastos agrupados
+  groupedGastos: { date: string; gastos: Gasto[] }[] = [];
 
   ngOnInit(): void {
-    this.loadTransactions();
-    this.subscribeToTransactions();
+    this.loadGastos();
   }
 
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
   }
 
-  private loadTransactions(): void {
-    // Cargar transacciones agrupadas
-    this.groupedTransactions = this.transactionService.getGroupedTransactions();
-  }
-
-  private subscribeToTransactions(): void {
-    // Suscribirse a cambios en las transacciones
+  private loadGastos(): void {
+    // Cargar gastos desde la API
     this.subscription.add(
-      this.transactionService.transactions$.subscribe(() => {
-        this.groupedTransactions = this.transactionService.getGroupedTransactions();
+      this.gastoService.getAllGastos().subscribe({
+        next: (gastos) => {
+          this.groupedGastos = this.groupGastosByDate(gastos);
+        },
+        error: (error) => {
+          console.error('Error al cargar gastos:', error);
+        }
       })
     );
+  }
+
+  private groupGastosByDate(gastos: Gasto[]): { date: string; gastos: Gasto[] }[] {
+    const groups: { [key: string]: Gasto[] } = {};
+    
+    gastos.forEach(gasto => {
+      const dateKey = this.formatDate(gasto.datetime.toString());
+      if (!groups[dateKey]) {
+        groups[dateKey] = [];
+      }
+      groups[dateKey].push(gasto);
+    });
+    
+    // Convertir a array y ordenar por fecha (más reciente primero)
+    return Object.keys(groups)
+      .map(date => ({
+        date: date,
+        gastos: groups[date]
+      }))
+      .sort((a, b) => {
+        const dateA = new Date(gastos.find(g => this.formatDate(g.datetime.toString()) === a.date)?.datetime || '');
+        const dateB = new Date(gastos.find(g => this.formatDate(g.datetime.toString()) === b.date)?.datetime || '');
+        return dateB.getTime() - dateA.getTime();
+      });
   }
 
   // Función para formatear la fecha
