@@ -4,8 +4,6 @@ import { RegisterComponent } from './pages/register/register.component';
 import { HomeComponent } from './pages/home/home.component';
 import { SavingGoalsComponent } from './pages/saving-goals/saving-goals.component';
 import { WalletsComponent } from './pages/wallets/wallets.component';
-import { AddGastoModalComponent } from './components/gastos/gastos.component';
-import { TestGastoComponent } from './pages/test-gasto/test-gasto.component';
 import { ActivityComponent } from './pages/activity/activity.component';
 import { AnalysisComponent } from './pages/analysis/analysis.component';
 
@@ -14,9 +12,7 @@ export const routes: Routes = [
   { path: 'register', component: RegisterComponent },
   { path: 'home', component: HomeComponent },
   { path: 'saving-goals', component: SavingGoalsComponent },
-  { path: 'wallets', component: WalletsComponent }, 
-  { path: 'test', component: AddGastoModalComponent },
-  { path: 'testGasto', component: TestGastoComponent },
+  { path: 'wallets', component: WalletsComponent },
   { path: 'activity', component: ActivityComponent },
   { path: 'analysis', component: AnalysisComponent }
 ];

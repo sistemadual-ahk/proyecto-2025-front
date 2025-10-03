@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { CategoryService } from '../../services/category.service';
 import { Categoria } from '../../../models/categoria.model';
-import { Gasto } from '../../../models/operation.model';
+import { Gasto } from '../../../models/gasto.model';
 
 @Component({
   selector: 'app-operation',
