@@ -1,23 +1,28 @@
-// src/app/services/gasto/gasto.service.ts
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Gasto } from '../../models/gasto.model';
+import { ApiService } from './api.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class GastoService {
-  private apiBaseUrl = 'http://localhost:3000/api';
-
-  constructor(private http: HttpClient) { }
+export class GastoService extends ApiService {
 
   /**
    * Obtiene todos los gastos de la API.
    * @returns Un Observable que emite un array de gastos.
    */
   getAllGastos(): Observable<Gasto[]> {
-    return this.http.get<Gasto[]>(`${this.apiBaseUrl}/gastos`);
+    return super.getAll<Gasto>('/gastos');
+  }
+
+  /**
+   * Obtiene un gasto por su ID.
+   * @param id El ID del gasto.
+   * @returns Un Observable que emite el gasto encontrado.
+   */
+  getGastoById(id: string | number): Observable<Gasto> {
+    return super.getById<Gasto>('/gastos', id);
   }
 
   /**
@@ -26,6 +31,25 @@ export class GastoService {
    * @returns Un Observable que emite el gasto creado.
    */
   createGasto(gastoData: Partial<Gasto>): Observable<Gasto> {
-    return this.http.post<Gasto>(`${this.apiBaseUrl}/gastos`, gastoData);
+    return super.create<Gasto>('/gastos', gastoData);
+  }
+
+  /**
+   * Actualiza un gasto existente.
+   * @param id El ID del gasto a actualizar.
+   * @param gastoData Los nuevos datos del gasto.
+   * @returns Un Observable que emite el gasto actualizado.
+   */
+  updateGasto(id: string | number, gastoData: Partial<Gasto>): Observable<Gasto> {
+    return super.update<Gasto>('/gastos', id, gastoData);
+  }
+
+  /**
+   * Elimina un gasto.
+   * @param id El ID del gasto a eliminar.
+   * @returns Un Observable que confirma la eliminación.
+   */
+  deleteGasto(id: string | number): Observable<any> {
+    return super.delete('/gastos', id);
   }
 }
