@@ -48,10 +48,10 @@
           <i class="mdi mdi-cog"></i>
           <span>Ajustes</span>
         </a>
-                 <a (click)="logout()" class="sidebar-nav-item logout">
-           <i class="mdi mdi-logout"></i>
-           <span>Cerrar Sesión</span>
-         </a>
+            <a (click)="logout()" class="sidebar-nav-item logout">
+            <i class="mdi mdi-logout"></i>
+            <span>Cerrar Sesión</span>
+        </a>
       </nav>
       
       <!-- Footer -->
@@ -71,10 +71,15 @@
   <div class="main">
     <!-- Header -->
     <header class="header">
-      <button class="menu-btn" (click)="toggleMenu()">
-        <i class="mdi mdi-menu"></i>
-      </button>
+      <div class="header-left">
+        <button class="menu-btn" (click)="toggleMenu()">
+          <i class="mdi mdi-menu"></i>
+        </button>
+      </div>
+
       <h1 class="app-title">Ga<span class="dollar-sign">$</span>tify</h1>
+
+      
       <div class="header-right">
         <button class="notification-btn" (click)="openNotifications()">
           <i class="mdi mdi-bell"></i>
