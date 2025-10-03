@@ -22,9 +22,9 @@ export class UserService {
    * @returns Un Observable con la respuesta del servidor (el usuario sincronizado).
    */
   createUser(payload: any): Observable<any> {
+    
     // La URL debe coincidir con la ruta protegida de tu back-end.
     // Por ejemplo, usamos la ruta que inicia el proceso de sincronización.
     return this.http.post(`${this.apiBaseUrl}/usuarios`, payload);
   }
-
 }
