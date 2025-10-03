@@ -33,7 +33,7 @@
         <div class="input-with-icon">
           <select class="form-input" [(ngModel)]="categoria">
             <option [ngValue]="null" disabled selected>Seleccionar categoría</option>
-            <option *ngFor="let cat of categoriasDisponibles" [value]="cat.id">
+            <option *ngFor="let cat of categoriasDisponibles" [value]="cat._id">
               {{ cat.nombre }}
             </option>
           </select>

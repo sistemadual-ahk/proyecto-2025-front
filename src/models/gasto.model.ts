@@ -1,10 +1,12 @@
+import { Categoria } from "./categoria.model";
+
 export interface Gasto {
   _id?: string;
   monto: number;
   descripcion: string;
-  tipo: string; // "Gasto"
+  tipo: string;
   datetime: Date;
-  usuario: string; // ID del usuario
-  billetera: string; // ID de la billetera
-  categoria: string; // ID de la categoría
+  userId: string;
+  billetera: string;
+  categoria: Categoria;
 }

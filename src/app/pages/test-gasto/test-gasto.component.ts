@@ -64,7 +64,7 @@ export class TestGastoComponent {
       ...gastoPayload,
       tipo: 'Gasto',
       datetime: new Date(),
-      usuario: this.userId,
+      userId: this.userId,
       billetera: this.billeteraId
     };
 
