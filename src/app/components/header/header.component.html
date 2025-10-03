@@ -1,8 +1,15 @@
+<!-- Header -->
 <header class="header">
-  <button class="menu-btn" (click)="onToggleMenu()">
-    <i class="mdi mdi-menu"></i>
-  </button>
+  <div class="header-left">
+    <app-sidebar #sidebar (close)="sidebar.closeMenu()"></app-sidebar>
+    <button class="menu-btn" (click)="sidebar.toggleMenu()">
+      <i class="mdi mdi-menu"></i>
+    </button>
+  </div>
+  
+
   <h1 class="app-title">Ga<span class="dollar-sign">$</span>tify</h1>
+
   <div class="header-right">
     <button class="notification-btn" (click)="openNotifications()">
       <i class="mdi mdi-bell"></i>

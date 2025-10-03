@@ -14,173 +14,15 @@
   overflow-x: hidden;
 }
 
-/* Sidebar */
-.sidebar {
-  position: fixed;
-  top: 0;
-  left: -320px;
-  width: 320px;
-  height: 100vh;
-  background: var(--gastify-blue);
-  z-index: 1000;
-  transition: left 0.3s ease;
-  border-right: 1px solid rgba(255, 255, 255, 0.1);
-}
+/* Sidebar global se maneja en SidebarComponent (se remueven duplicados) */
 
-.sidebar.open {
-  left: 0;
-}
+/* Sección de perfil del sidebar movida al componente */
 
-.sidebar-content {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-}
+/* Navegación del sidebar centralizada en el componente */
 
-/* Profile Section */
-.profile-section {
-  position: relative;
-  display: flex;
-  justify-content: center;
-  padding: 25px 20px 30px;
-}
+/* Footer del sidebar centralizado en el componente */
 
-.profile-image {
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.1);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 3rem;
-  color: rgba(255, 255, 255, 0.7);
-}
-
-.edit-profile-btn {
-  position: absolute;
-  bottom: 30px;
-  right: 35%;
-  transform: translateX(50%);
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: var(--gastify-purple);
-  border: none;
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.1rem;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.edit-profile-btn:hover {
-  background: #4a4a6a;
-}
-
-.profile-name {
-  position: absolute;
-  bottom: 0px;
-  left: 50%;
-  transform: translateX(-50%);
-  color: var(--gastify-light);
-  font-size: 1.1rem;
-  font-weight: 600;
-  text-align: center;
-  white-space: nowrap;
-}
-
-.separator {
-  height: 1px;
-  background: rgba(255, 255, 255, 0.1);
-  margin: 0 25px 30px;
-}
-
-/* Navigation */
-.sidebar-nav {
-  flex: 1;
-  padding: 0 0 30px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.sidebar-nav .sidebar-nav-item {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  padding: 5px 30px;
-  color: var(--gastify-light);
-  text-decoration: none;
-  font-size: 1.1rem;
-  font-weight: 500;
-  transition: background-color 0.3s ease;
-  border-left: 3px solid transparent;
-}
-
-.sidebar-nav .sidebar-nav-item:hover {
-  background: rgba(255, 255, 255, 0.1);
-}
-
-.sidebar-nav .sidebar-nav-item.active {
-  background: rgba(61, 205, 153, 0.2);
-  border-left-color: var(--gastify-green);
-}
-
-.sidebar-nav .sidebar-nav-item i {
-  font-size: 1.4rem;
-  width: 28px;
-  text-align: center;
-}
-
-.sidebar-nav .sidebar-nav-item.logout {
-  margin-top: auto;
-  color: #FF6B6B;
-  cursor: pointer;
-}
-
-.sidebar-nav .sidebar-nav-item.logout:hover {
-  background: rgba(255, 107, 107, 0.2);
-}
-
-/* Footer */
-.sidebar-footer {
-  padding: 30px 25px;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.refresh-info {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 1rem;
-}
-
-.refresh-info i {
-  font-size: 1.2rem;
-}
-
-/* Overlay */
-.overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  z-index: 999;
-  opacity: 0;
-  visibility: hidden;
-  transition: all 0.3s ease;
-}
-
-.overlay.active {
-  opacity: 1;
-  visibility: visible;
-}
+/* Overlay del sidebar centralizado en el componente */
 
 /* Main Content */
 .main {
@@ -189,51 +31,11 @@
   padding-top: 80px;
 }
 
-/* Header */
-.header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 100;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px;
-  background: var(--gastify-dark);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
+/* Orden de capas definido en los componentes */
 
-.header-left, .header-right {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
+/* Sidebar sólido definido en SidebarComponent */
 
-.app-title {
-  font-size: 1.6rem;
-  font-weight: 700;
-  color: var(--gastify-light);
-}
-
-.dollar-sign {
-  color: var(--gastify-green);
-}
-
-.menu-btn, .notification-btn, .profile-btn {
-  background: none;
-  border: none;
-  color: var(--gastify-light);
-  font-size: 1.3rem;
-  cursor: pointer;
-  padding: 8px;
-  border-radius: 50%;
-  transition: background-color 0.3s ease;
-}
-
-.menu-btn:hover, .notification-btn:hover, .profile-btn:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-}
+/* Header global está en HeaderComponent */
 
 /* Date Navigation */
 .date-navigation {

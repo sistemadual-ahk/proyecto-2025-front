@@ -99,15 +99,6 @@ export class ActivityComponent implements OnInit, OnDestroy {
     return colors[category] || '#A8A8A8';
   }
 
-  // Métodos para el menú
-  toggleMenu() {
-    this.isMenuOpen = !this.isMenuOpen;
-  }
-
-  closeMenu() {
-    this.isMenuOpen = false;
-  }
-
   logout(): void {
     console.log('Logout');
     this.router.navigate(['/']);
