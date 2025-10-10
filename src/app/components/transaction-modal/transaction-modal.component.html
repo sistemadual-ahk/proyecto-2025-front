@@ -1,5 +1,5 @@
-<div class="modal-overlay" (click)="onClose()">
-  <div class="modal-content" (click)="$event.stopPropagation()" [style.transform]="'translateY(' + dragTranslateY + 'px)'" [style.transition]="isDragging ? 'none' : 'transform 200ms ease-out'">
+<div class="modal-overlay" (click)="onClose()" [@modalOverlay]>
+  <div class="modal-content" (click)="$event.stopPropagation()" [style.transform]="'translateY(' + dragTranslateY + 'px)'" [style.transition]="isDragging ? 'none' : 'transform 200ms ease-out'" [@modalContent]>
     <!-- Header del modal -->
     <div class="modal-header" (touchstart)="onTouchStart($event)" (touchmove)="onTouchMove($event)" (touchend)="onTouchEnd()" (mousedown)="onMouseDown($event)" (mousemove)="onMouseMove($event)" (mouseup)="onMouseUp()" (mouseleave)="onMouseUp()">
       <div class="modal-handle" aria-hidden="true"></div>

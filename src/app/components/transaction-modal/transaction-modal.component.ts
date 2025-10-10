@@ -2,13 +2,34 @@ import { Component, EventEmitter, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NzSelectModule } from 'ng-zorro-antd/select';
+import { trigger, transition, style, animate } from '@angular/animations';
 
 @Component({
   selector: 'app-transaction-modal',
   standalone: true,
   imports: [CommonModule, FormsModule, NzSelectModule],
   templateUrl: './transaction-modal.component.html',
-  styleUrl: './transaction-modal.component.scss'
+  styleUrl: './transaction-modal.component.scss',
+  animations: [
+    trigger('modalOverlay', [
+      transition(':enter', [
+        style({ opacity: 0 }),
+        animate('200ms ease-out', style({ opacity: 1 }))
+      ]),
+      transition(':leave', [
+        animate('150ms ease-in', style({ opacity: 0 }))
+      ])
+    ]),
+    trigger('modalContent', [
+      transition(':enter', [
+        style({ opacity: 0 }),
+        animate('220ms 40ms ease-out', style({ opacity: 1 }))
+      ]),
+      transition(':leave', [
+        animate('150ms ease-in', style({ opacity: 0 }))
+      ])
+    ])
+  ]
 })
 export class TransactionModalComponent {
   @Output() closeModal = new EventEmitter<void>();

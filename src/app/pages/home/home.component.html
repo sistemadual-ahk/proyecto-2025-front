@@ -37,49 +37,18 @@
     </div>
 
     <!-- Payment Cards Stack -->
-    <div class="cards-stack">
-      <!-- Mercado Pago Card (Front) -->
-      <div class="payment-card mercado-pago-card">
+    <div class="cards-stack" (click)="rotateCards()">
+      <div class="payment-card" *ngFor="let card of cards; let i = index" [ngStyle]="getCardStyle(i)" [style.background]="card.background">
         <div class="card-header">
           <div class="card-logo">
-            <i class="mdi mdi-credit-card"></i>
+            <i class="mdi" [ngClass]="card.icon"></i>
           </div>
-          <div class="card-type">Mercado Pago</div>
+          <div class="card-type">{{ card.typeLabel }}</div>
         </div>
-        <div class="card-number">**** **** **** 1234</div>
+        <div class="card-number">{{ card.number }}</div>
         <div class="card-footer">
-          <div class="card-holder">Titular</div>
-          <div class="card-balance">$15,000</div>
-        </div>
-      </div>
-      
-      <!-- Santander Card (Middle) -->
-      <div class="payment-card santander-card">
-        <div class="card-header">
-          <div class="card-logo">
-            <i class="mdi mdi-bank"></i>
-          </div>
-          <div class="card-type">Santander</div>
-        </div>
-        <div class="card-number">**** **** **** 5678</div>
-        <div class="card-footer">
-          <div class="card-holder">Titular</div>
-          <div class="card-balance">$18,000</div>
-        </div>
-      </div>
-      
-      <!-- Cash Card (Back) -->
-      <div class="payment-card cash-card">
-        <div class="card-header">
-          <div class="card-logo">
-            <i class="mdi mdi-cash-multiple"></i>
-          </div>
-          <div class="card-type">Efectivo</div>
-        </div>
-        <div class="card-number">Disponible</div>
-        <div class="card-footer">
-          <div class="card-holder">En mano</div>
-          <div class="card-balance">$4,300</div>
+          <div class="card-holder">{{ card.holder }}</div>
+          <div class="card-balance">{{ card.balance }}</div>
         </div>
       </div>
     </div>

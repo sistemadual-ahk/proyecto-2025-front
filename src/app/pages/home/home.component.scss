@@ -143,7 +143,7 @@
   border-radius: 16px;
   padding: 20px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: transform 0.3s ease, opacity 0.3s ease, box-shadow 0.3s ease;
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.2);
@@ -154,40 +154,7 @@
   box-shadow: 0 12px 35px rgba(0, 0, 0, 0.4);
 }
 
-/* Mercado Pago Card (Front) */
-.mercado-pago-card {
-  background: linear-gradient(135deg, #009EE3, #0078BE);
-  z-index: 3;
-  transform: translateY(0);
-}
-
-.mercado-pago-card:hover {
-  transform: translateY(-5px) scale(1.02);
-}
-
-/* Santander Card (Middle) */
-.santander-card {
-  background: linear-gradient(135deg, #EC0000, #CC0000);
-  z-index: 2;
-  transform: translateY(10px) scale(0.95);
-  opacity: 0.9;
-}
-
-.santander-card:hover {
-  transform: translateY(5px) scale(0.97);
-}
-
-/* Cash Card (Back) */
-.cash-card {
-  background: linear-gradient(135deg, #51CF66, #40C057);
-  z-index: 1;
-  transform: translateY(20px) scale(0.9);
-  opacity: 0.8;
-}
-
-.cash-card:hover {
-  transform: translateY(15px) scale(0.92);
-}
+/* Clases específicas por marca eliminadas: estilos se calculan dinámicamente */
 
 /* Card Content */
 .card-header {

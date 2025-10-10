@@ -33,10 +33,11 @@ export class HomeComponent implements OnInit, OnDestroy {
   private subscription = new Subscription();
 
   // Datos del dashboard
-  currentMonth = 'Junio 2025';
+  currentViewDate: Date = new Date();
+  currentMonth = this.formatMonthTitle(this.currentViewDate);
   income = 0;
-  expenses = 0;
-  availableBalance = 0;
+  expenses = 4500;
+  availableBalance = 37300;
   balanceChange = '+$200 vs mes anterior';
 
   // Movimientos recientes
@@ -44,6 +45,37 @@ export class HomeComponent implements OnInit, OnDestroy {
   
   // Gastos del usuario
   gastos: Gasto[] = [];
+
+  // Array de tarjetas con datos dinámicos
+  cards = [
+    {
+      typeLabel: 'Mercado Pago',
+      icon: 'mdi-credit-card',
+      number: '**** **** **** 1234',
+      holder: 'Titular',
+      balance: '$15,000',
+      background: 'linear-gradient(135deg, #009EE3, #0078BE)'
+    },
+    {
+      typeLabel: 'Santander',
+      icon: 'mdi-bank',
+      number: '**** **** **** 5678',
+      holder: 'Titular',
+      balance: '$18,000',
+      background: 'linear-gradient(135deg, #EC0000, #CC0000)'
+    },
+    {
+      typeLabel: 'Efectivo',
+      icon: 'mdi-cash-multiple',
+      number: 'Disponible',
+      holder: 'En mano',
+      balance: '$4,300',
+      background: 'linear-gradient(135deg, #51CF66, #40C057)'
+    }
+  ];
+
+  // Flag de animación
+  isAnimating = false;
 
   constructor(
     private router: Router,
@@ -128,13 +160,21 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   // Métodos para navegación
   previousMonth() {
-    // Lógica para mes anterior
-    console.log('Mes anterior');
+    this.currentViewDate = new Date(
+      this.currentViewDate.getFullYear(),
+      this.currentViewDate.getMonth() - 1,
+      1
+    );
+    this.currentMonth = this.formatMonthTitle(this.currentViewDate);
   }
 
   nextMonth() {
-    // Lógica para mes siguiente
-    console.log('Mes siguiente');
+    this.currentViewDate = new Date(
+      this.currentViewDate.getFullYear(),
+      this.currentViewDate.getMonth() + 1,
+      1
+    );
+    this.currentMonth = this.formatMonthTitle(this.currentViewDate);
   }
 
   // Métodos para acciones
@@ -170,6 +210,37 @@ export class HomeComponent implements OnInit, OnDestroy {
     console.log('Abrir análisis');
     this.router.navigate(['/analysis']);
     this.closeMenu();
+  }
+
+  // Rotación de tarjetas con animación
+  rotateCards() {
+    if (this.cards.length <= 1) return;
+    if (this.isAnimating) return;
+    this.isAnimating = true;
+    // Espera a que termine la transición CSS
+    setTimeout(() => {
+      const first = this.cards.shift();
+      if (first) this.cards.push(first);
+      this.isAnimating = false;
+    }, 300);
+  }
+
+  // Estilos dinámicos por índice
+  getCardStyle(index: number) {
+    const total = this.cards.length;
+    const effectiveIndex = this.isAnimating ? (index - 1 + total) % total : index;
+
+    // Cálculo genérico: cada nivel desciende 10px, reduce escala 0.05 y opacidad 0.1
+    const translateY = Math.min(effectiveIndex * 10, 40); // límite suave
+    const scale = Math.max(1 - effectiveIndex * 0.05, 0.8);
+    const opacity = Math.max(1 - effectiveIndex * 0.1, 0.6);
+    const zIndex = total - effectiveIndex;
+
+    return {
+      transform: `translateY(${translateY}px) scale(${scale})`,
+      opacity: opacity,
+      zIndex: zIndex
+    };
   }
 
   addTransaction() {
@@ -241,6 +312,20 @@ export class HomeComponent implements OnInit, OnDestroy {
       'Otros': '#6b7280'
     };
     return colorMap[category] || '#6b7280';
+  }
+
+  // Formateo del título del mes
+  private formatMonthTitle(date: Date): string {
+    const monthYear = date.toLocaleDateString('es-ES', {
+      month: 'long',
+      year: 'numeric'
+    });
+    return this.capitalizeFirstLetter(monthYear);
+  }
+
+  private capitalizeFirstLetter(text: string): string {
+    if (!text) return text;
+    return text.charAt(0).toUpperCase() + text.slice(1);
   }
 
   private formatDateForHome(dateString: string): string {
