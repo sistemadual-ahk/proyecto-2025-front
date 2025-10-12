@@ -18,8 +18,9 @@
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  z-index: 1000;
+  z-index: 10000000;
   animation: fadeIn var(--motion-fade-duration) var(--motion-ease);
+  -webkit-animation: fadeIn var(--motion-fade-duration) var(--motion-ease);
 }
 
 .modal-content {
@@ -37,16 +38,28 @@
   overscroll-behavior: contain;
   -webkit-overflow-scrolling: touch;
   border: 1px solid rgba(255, 255, 255, 0.08);
+  position: relative;
+  transform: translateY(-20px);
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes slideUp {
-  from { transform: translateY(100%); }
-  to { transform: translateY(0); }
+  from {
+    transform: translateY(100%);
+  }
+
+  to {
+    transform: translateY(0);
+  }
 }
 
 // Header del modal
@@ -61,7 +74,8 @@
   position: relative;
 }
 
-.close-btn, .save-btn {
+.close-btn,
+.save-btn {
   background: var(--gastify-purple);
   border: 1px solid rgba(255, 255, 255, 0.12);
   font-size: 20px;
@@ -76,7 +90,7 @@
   align-items: center;
   justify-content: center;
   box-shadow: var(--shadow-sm);
-  
+
   &:hover {
     background: rgba(59, 59, 88, 0.85);
     color: white;
@@ -115,20 +129,20 @@
   transition: all 0.3s ease;
   background-color: transparent;
   color: var(--gastify-light);
-  
+
   &.active {
     color: white;
     font-weight: 600;
-    
+
     &.income-btn {
       background: var(--gastify-green);
     }
-    
+
     &.expense-btn {
       background: #ef4444;
     }
   }
-  
+
   &:not(.active):hover {
     background: rgba(255, 255, 255, 0.08);
     color: #fff;
@@ -151,7 +165,7 @@
 .form-row {
   display: flex;
   gap: 12px;
-  
+
   .form-group {
     flex: 1;
   }
@@ -173,19 +187,20 @@
   background: var(--gastify-blue);
   transition: all 0.3s ease;
   color: #fff;
-  
+  width: 100%;
+
   &:focus {
     outline: none;
     border-color: var(--gastify-green);
     background: var(--gastify-purple);
     box-shadow: var(--ring-green);
   }
-  
+
   &::placeholder {
     color: rgba(255, 255, 255, 0.45);
     font-weight: 400;
   }
-  
+
   &:hover {
     border-color: rgba(255, 255, 255, 0.2);
     background: rgba(59, 59, 88, 0.85);
@@ -222,14 +237,14 @@
   background: var(--gastify-blue);
   color: #fff;
   transition: all 0.3s ease;
-  
+
   &:focus {
     outline: none;
     border-color: var(--gastify-green);
     background: rgba(59, 59, 88, 0.85);
     box-shadow: var(--ring-green);
   }
-  
+
   &::placeholder {
     color: rgba(255, 255, 255, 0.45);
     font-weight: 500;
@@ -254,7 +269,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  
+
   &:hover {
     background: rgba(255, 255, 255, 0.15);
     color: var(--gastify-light);
@@ -264,11 +279,11 @@
 // Inputs con iconos
 .input-with-icon {
   position: relative;
-  
+
   .form-input {
     padding-right: 44px;
   }
-  
+
   i {
     position: absolute;
     right: 12px;
@@ -279,7 +294,7 @@
     pointer-events: none;
     transition: all 0.3s ease;
   }
-  
+
   &:focus-within i {
     color: var(--gastify-green);
   }
@@ -292,39 +307,39 @@
     padding: 18px 16px calc(16px + env(safe-area-inset-bottom, 0));
     max-width: 100%;
   }
-  
+
   .form-row {
     flex-direction: column;
     gap: 12px;
   }
-  
+
   .amount-label {
     font-size: 20px;
   }
-  
+
   .amount-input {
     font-size: 18px;
     height: 46px;
     padding: 0 14px;
   }
-  
+
   .transaction-toggle {
     padding: 5px;
     gap: 5px;
   }
-  
+
   .toggle-btn {
     min-height: 38px;
     padding: 0 14px;
     font-size: 13px;
   }
-  
+
   .form-input {
     height: 46px;
     padding: 0 14px;
     font-size: 13px;
   }
-} 
+}
 
 /* Extra pequeño: <= 360px */
 @media (max-width: 360px) {
@@ -332,9 +347,11 @@
     min-height: 36px;
     border-radius: 14px;
   }
+
   .transaction-toggle {
     border-radius: 18px;
   }
+
   .input-with-icon i {
     font-size: 16px;
   }
@@ -345,19 +362,23 @@
   .modal-content {
     padding: 16px 14px calc(14px + env(safe-area-inset-bottom, 0));
   }
+
   .transaction-toggle {
     padding: 4px;
     gap: 4px;
   }
+
   .toggle-btn {
     min-height: 36px;
     padding: 0 12px;
     font-size: 13px;
   }
+
   .form-input {
     height: 44px;
     padding: 0 12px;
   }
+
   .amount-input {
     height: 44px;
     padding: 0 12px;
@@ -369,6 +390,7 @@
   .modal-overlay {
     animation: none;
   }
+
   .modal-content {
     animation: none;
   }

@@ -1,6 +1,13 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { OnInit, Component, EventEmitter, Injectable, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Observable } from 'rxjs';
+import { privateDecrypt } from 'crypto';
+import { HttpClient } from '@angular/common/http';
+import { CategoriaService, Categoria } from '../../services/categoria.service';
+import { BilleteraService } from '../../services/billetera.service';
+
+
 
 @Component({
   selector: 'app-transaction-modal',
@@ -9,9 +16,26 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './transaction-modal.component.html',
   styleUrl: './transaction-modal.component.scss'
 })
-export class TransactionModalComponent {
+export class TransactionModalComponent implements OnInit {
   @Output() closeModal = new EventEmitter<void>();
   @Output() saveTransaction = new EventEmitter<any>();
+
+  // 1. Declara una propiedad para guardar el arreglo de objetos
+  categorias: Categoria[] = []; 
+  nombresCategorias: string[] = [];
+
+  ngOnInit(): void {
+    // Es mejor suscribirse en ngOnInit que en el constructor
+    this.categoriaService.getCategorias().subscribe(data => {
+      // 'data' es ahora el arreglo de objetos (gracias al 'map' en el servicio)
+      this.categorias = data; 
+      console.log('Arreglo completo guardado:', this.categorias);
+      
+      // Si SÓLO quieres una lista de nombres (Opción 2)
+      this.nombresCategorias = data.map(cat => cat.nombre);
+      console.log('Solo nombres:', this.nombresCategorias);
+    });
+  }
 
   // Estado del formulario
   transactionType: 'income' | 'expense' = 'expense';
@@ -23,21 +47,32 @@ export class TransactionModalComponent {
   subcategory: string = '';
 
   // Opciones para los dropdowns
+  constructor(private billeteraService: BilleteraService ,private categoriaService: CategoriaService, private http: HttpClient) {
+      this.categoriaService.getCategorias().subscribe(data => {
+      console.log('Categorías obtenidas:', data);
+
+    });
+    this.billeteraService.getBilleteras().subscribe(data => {
+      console.log('Billeteras obtenidas:', data);
+    }
+    );
+  }
+
+  getAllGategorias(): Observable<any> {
+      return this.http.get<any[]>(`http://localhost:3000/api/categorias`);
+    }
+
+  getAllBilleteras(): Observable<any> {
+      return this.http.get<any[]>(`http://localhost:3000/api/billeteras`);
+    }
+
   wallets = [
     'Mercado Pago',
     'Santander',
     'Efectivo'
   ];
 
-  categories = [
-    'Alimentación',
-    'Transporte',
-    'Entretenimiento',
-    'Salud',
-    'Educación',
-    'Vivienda',
-    'Otros'
-  ];
+  categories = this.nombresCategorias;
 
   subcategories = {
     'Alimentación': ['Supermercado', 'Restaurante', 'Delivery'],

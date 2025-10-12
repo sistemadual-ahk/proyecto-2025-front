@@ -5,9 +5,9 @@
       <button class="close-btn" (click)="onClose()">
         <i class="mdi mdi-close"></i>
       </button>
-      
+
       <h2 class="modal-title">Registro Gasto</h2>
-      
+
       <button class="save-btn" (click)="onSave()">
         <i class="mdi mdi-check"></i>
       </button>
@@ -15,15 +15,11 @@
 
     <!-- Toggle Ingreso/Gasto -->
     <div class="transaction-toggle">
-      <button 
-        class="toggle-btn income-btn" 
-        [class.active]="transactionType === 'income'"
+      <button class="toggle-btn income-btn" [class.active]="transactionType === 'income'"
         (click)="toggleTransactionType('income')">
         Ingreso
       </button>
-      <button 
-        class="toggle-btn expense-btn" 
-        [class.active]="transactionType === 'expense'"
+      <button class="toggle-btn expense-btn" [class.active]="transactionType === 'expense'"
         (click)="toggleTransactionType('expense')">
         Gasto
       </button>
@@ -34,13 +30,7 @@
       <!-- Campo de monto -->
       <div class="form-group amount-group">
         <label class="amount-label">$ {{ amount.toFixed(1) }}</label>
-        <input 
-          type="number" 
-          class="amount-input" 
-          [(ngModel)]="amount"
-          placeholder="0.0"
-          step="0.1"
-          min="0">
+        <input type="number" class="amount-input" [(ngModel)]="amount" placeholder="0.0" step="0.1" min="0">
         <button class="clear-amount" (click)="amount = 0">
           <i class="mdi mdi-close"></i>
         </button>
@@ -48,26 +38,18 @@
 
       <!-- Campo de descripción -->
       <div class="form-group">
-        <input 
-          type="text" 
-          class="form-input" 
-          [(ngModel)]="description"
-          placeholder="Descripción">
+        <input type="text" class="form-input" [(ngModel)]="description" placeholder="Descripción">
       </div>
 
       <!-- Fecha y Billetera -->
-      <div class="form-row">
         <div class="form-group">
           <label class="form-label">Fecha</label>
           <div class="input-with-icon">
-            <input 
-              type="date" 
-              class="form-input" 
-              [(ngModel)]="date">
+            <input type="date" class="form-input" [(ngModel)]="date">
             <i class="mdi mdi-calendar"></i>
           </div>
         </div>
-        
+
         <div class="form-group">
           <label class="form-label">Billetera</label>
           <div class="input-with-icon">
@@ -80,7 +62,6 @@
             <i class="mdi mdi-wallet"></i>
           </div>
         </div>
-      </div>
 
       <!-- Categoría -->
       <div class="form-group">
@@ -88,8 +69,8 @@
         <div class="input-with-icon">
           <select class="form-input" [(ngModel)]="category">
             <option value="">Seleccionar categoría</option>
-            <option *ngFor="let categoryOption of categories" [value]="categoryOption">
-              {{ categoryOption }}
+            <option *ngFor="let categoryOption of categorias" [value]="categoryOption">
+              {{ categoryOption.nombre }}
             </option>
           </select>
           <i class="mdi mdi-chevron-down"></i>
@@ -111,4 +92,4 @@
       </div>
     </div>
   </div>
-</div> 
+</div>

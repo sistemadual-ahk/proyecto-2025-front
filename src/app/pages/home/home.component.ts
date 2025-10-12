@@ -18,7 +18,6 @@ export class HomeComponent {
   private auth = inject(AuthService);
   private doc = inject(DOCUMENT);
 
-  // Hacer Math disponible en el template
   Math = Math;
 
   // Estado del menú
@@ -99,15 +98,19 @@ export class HomeComponent {
     this.isMenuOpen = false;
   }
 
-  logout(): void {
-    // Aquí iría la lógica de logout (limpiar tokens, etc.)
+logout(): void {
     this.auth.logout({
-      logoutParams: {
-        returnTo: this.doc.location.origin,
-      }})
-    console.log('Logout');
-    this.router.navigate(['/']);
-  }
+        logoutParams: {
+            // Usar window.location.origin es la forma más directa.
+            returnTo: window.location.origin, 
+        }
+    });
+    // Nota: El navegador será redirigido por Auth0, el console.log y el router.navigate 
+    // después de la redirección de Auth0 son inalcanzables.
+    // Los puedes dejar, pero no se ejecutarán.
+    console.log('Logout'); 
+    this.router.navigate(['/']); 
+}
 
   // Métodos para navegación
   previousMonth() {
