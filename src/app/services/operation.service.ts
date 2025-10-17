@@ -10,7 +10,7 @@ export interface Operacion {
   monto: number;
   billetera?: string; // ID de la billetera (Cambio 'wallet' a 'billetera' por consistencia)
   categoria?: string; // ID de la categoría
-billeteraId: string;
+billeteraId?: string;
 categoriaId: string;
   descripcion?: string; // Opcional
   // 🚨 CORRECCIÓN 2: Cambiamos a 'string' para aceptar el formato ISO 8601.

@@ -5,11 +5,15 @@ import { map } from 'rxjs/operators';
 
 // Interfaz básica asumida para la billetera
 export interface Billetera {
-  id: string;
+  id?: number;
   balance: number;
   nombre: string;
-  color: string;
+  proveedor: string;
+  tipo: 'bank' | 'digital' | 'cash';
 }
+
+// Tipo para CREAR una billetera (sin `id`)
+export type NewBilletera = Omit<Billetera, 'id'>;
 
 // Interfaz para la RESPUESTA COMPLETA del API
 interface ApiResponse {
@@ -30,7 +34,7 @@ export class BilleteraService {
       map(response => response.data));
   }
 
-  createBilletera(billetera: Partial<Billetera>): Observable<Billetera> {
+  createBilletera(billetera: NewBilletera): Observable<Billetera> {
     return this.http.post<Billetera>(this.apiUrl, billetera);
   }
 }

@@ -2,7 +2,7 @@ import { OnInit, Component, EventEmitter, Output, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
-import { BilleteraService, Billetera } from '../../services/billetera.service';
+import { BilleteraService, NewBilletera } from '../../services/billetera.service';
 import { CategoriaService, Categoria } from '../../services/categoria.service';
 import { Operacion, OperacionService } from '../../services/operation.service';
 
@@ -44,7 +44,7 @@ export class TransactionModalComponent implements OnInit {
   // --- DATOS CARGADOS DEL BACKEND ---
   // Estos arrays guardan el objeto completo (con ID)
   categorias: Categoria[] = [];
-  billeteras: Billetera[] = [];
+  billetera: NewBilletera[] = [];
 
   // Estos arrays guardan SÓLO los nombres para iterar en el HTML
   nombresCategorias: string[] = [];
@@ -65,7 +65,7 @@ export class TransactionModalComponent implements OnInit {
 
     // Carga de Billeteras
     this.billeteraService.getBilleteras().subscribe(data => {
-      this.billeteras = data;
+      this.billetera = data;
       this.nombresBilleteras = data.map(bill => bill.nombre);
     });
   }
@@ -85,7 +85,7 @@ export class TransactionModalComponent implements OnInit {
   onSave(): void {
 
     // 1. Mapear NOMBRES (del ngModel) a IDs (para el backend)
-    const selectedWallet = this.billeteras.find(b => b.nombre === this.wallet);
+    const selectedWallet = this.billetera.find(b => b.nombre === this.wallet);
     const selectedCategory = this.categorias.find(c => c.nombre === this.category);
 
     if (!selectedWallet || !selectedCategory || this.amount <= 0) {
@@ -99,7 +99,7 @@ export class TransactionModalComponent implements OnInit {
       descripcion: this.description,
       fecha: new Date(this.date).toISOString(),
       tipo: this.transactionType === 'income' ? 'Ingreso' : 'Egreso',
-      billeteraId: selectedWallet.id, // ID
+ 
       categoriaId: selectedCategory.id, // ID
     };
 
