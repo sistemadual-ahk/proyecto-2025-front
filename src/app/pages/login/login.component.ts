@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '@auth0/auth0-angular';
-import { UserService } from '../../services/user.service'; // Asegúrate de que la ruta sea correcta
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-login',
@@ -14,25 +14,19 @@ import { UserService } from '../../services/user.service'; // Asegúrate de que 
 })
 export class LoginComponent implements OnInit {
   loginInternoHabilitado = false;
-  // Implementa OnInit
   username: string = '';
   password: string = '';
   showPassword: boolean = false;
 
-  // 1. INYECTA EL UserService
   constructor(
     public auth: AuthService,
     private router: Router,
-    private userService: UserService // <-- Aquí se inyecta
+    private userService: UserService
   ) {}
 
-  // 2. AÑADE LA LÓGICA DE SINCRONIZACIÓN EN ngOnInit
   ngOnInit() {
-    // Nos suscribimos a isAuthenticated$ para saber cuándo el usuario vuelve de Auth0
     this.auth.isAuthenticated$.subscribe((isAuthenticated) => {
       if (isAuthenticated) {
-        // Si está autenticado, llamamos al UserService para que dispare la
-        // petición al backend. El AuthInterceptor se encargará del token.
         this.auth.user$.subscribe((user) => {
           const name = user?.name;
           const mail = user?.email;
@@ -41,13 +35,13 @@ export class LoginComponent implements OnInit {
 
           this.userService.createUser({ name: name, mail: mail, auth0Id: sub }).subscribe({
             next: (response) => {
-              console.log('Sincronización de usuario exitosa:', response);
-              // Redirigir a home solo DESPUÉS de la sincronización exitosa
               this.router.navigate(['/home']);
             },
             error: (err) => {
-              console.error('Error al sincronizar usuario con el backend:', err);
-              // Manejar el error de sincronización
+              //409 indica que el usuario ya existe y está ok.
+              if (err.status !== 409) {
+                console.error('Error al sincronizar usuario con el backend:', err);
+              }
             },
           });
         });
@@ -55,7 +49,6 @@ export class LoginComponent implements OnInit {
     });
   }
 
-  // 3. ELIMINA EL console.log(this.auth) innecesario
   loginWithGoogle() {
     this.auth.loginWithRedirect({
       appState: {
@@ -67,7 +60,6 @@ export class LoginComponent implements OnInit {
     });
   }
 
-  // ... (El resto de tus métodos se mantiene igual)
   togglePasswordVisibility() {
     this.showPassword = !this.showPassword;
   }

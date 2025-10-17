@@ -15,14 +15,13 @@
 @import 'ng-zorro-antd/switch/style/index.min.css';
 @import 'ng-zorro-antd/select/style/index.min.css';
 
-
 // Variables CSS para la paleta de colores de Ga$tify
 :root {
-  --gastify-dark: #0F152C;      // Fondo principal
-  --gastify-green: #3DCD99;     // Verde principal
-  --gastify-purple: #3B3B58;    // Púrpura secundario
-  --gastify-blue: #15233C;      // Azul oscuro
-  --gastify-light: #FFFFFF;     // Blanco
+  --gastify-dark: #0f152c; // Fondo principal
+  --gastify-green: #3dcd99; // Verde principal
+  --gastify-purple: #3b3b58; // Púrpura secundario
+  --gastify-blue: #15233c; // Azul oscuro
+  --gastify-light: #ffffff; // Blanco
 }
 
 // Estilos globales
@@ -76,7 +75,8 @@ a {
 }
 
 // Prevenir zoom en dispositivos móviles
-html, body {
+html,
+body {
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   -khtml-user-select: none;
@@ -88,7 +88,8 @@ html, body {
 }
 
 // Permitir selección de texto en inputs y textareas
-input, textarea {
+input,
+textarea {
   -webkit-user-select: text;
   -khtml-user-select: text;
   -moz-user-select: text;
@@ -97,7 +98,9 @@ input, textarea {
 }
 
 // Prevenir zoom en elementos interactivos
-button, a, [role="button"] {
+button,
+a,
+[role='button'] {
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
 }
@@ -124,7 +127,8 @@ button, a, [role="button"] {
 }
 
 // Animación para elementos de la lista
-.movement-item, .transaction-item {
+.movement-item,
+.transaction-item {
   animation: slideInUp 0.3s ease-out;
 }
 
