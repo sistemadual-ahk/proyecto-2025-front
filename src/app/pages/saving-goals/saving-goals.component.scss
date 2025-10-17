@@ -5,6 +5,8 @@
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   position: relative;
   overflow-x: hidden;
+  /* espacio para que el título quede debajo del header fijo */
+  padding-top: calc(var(--header-h, 70px) + 10px);
 }
 
 /* Status Bar */
@@ -38,31 +40,33 @@
 .navigation-section {
   display: flex;
   align-items: center;
-  padding: 0 20px;
-  margin-bottom: 30px;
-  
+  justify-content: center;
+  padding: 10px 20px 0;
+  margin-bottom: 20px;
+  position: relative;
+
   .back-btn {
+    position: absolute;
+    left: 20px;
     background: none;
     border: none;
     color: white;
-    font-size: 20px;
+    font-size: 24px;
     cursor: pointer;
     padding: 8px;
-    margin-right: 16px;
     border-radius: 50%;
     transition: background-color 0.3s;
-    
+
     &:hover {
       background-color: rgba(255, 255, 255, 0.1);
     }
   }
-  
+
   .page-title {
-    font-size: 28px;
-    font-weight: bold;
+    font-size: 24px;
+    font-weight: 600;
     color: white;
     margin: 0;
-    flex: 1;
     text-align: center;
   }
 }

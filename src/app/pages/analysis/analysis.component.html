@@ -4,12 +4,7 @@
   <!-- Main Content -->
   <div class="main">
     <!-- Back and Title -->
-    <div class="page-navigation" style="justify-content: center; position: relative;">
-      <button class="back-btn" (click)="goBack()" style="position: absolute; left: 0;">
-        <i class="mdi mdi-arrow-left"></i>
-      </button>
-      <h2 class="page-title">Analisis de Gastos</h2>
-    </div>
+    <app-page-title title="Análisis de Gastos" (back)="goBack()"></app-page-title>
 
     <!-- Tabs & Month Selector -->
     <div class="tabs-row">

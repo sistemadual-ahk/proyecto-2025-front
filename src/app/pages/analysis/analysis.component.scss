@@ -16,32 +16,6 @@
   padding-bottom: 100px;
 }
 
-/*
-  Header interno (título centrado y back a la izquierda)
-*/
-.page-navigation {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-}
-
-.back-btn {
-  position: absolute;
-  left: 0;
-  background: none;
-  border: none;
-  color: #fff;
-  font-size: 22px;
-}
-
-.page-title {
-  font-size: 20px;
-  font-weight: 700;
-  color: #ffffff;
-  text-align: center;
-  margin-top: 5px;
-}
 /* El header global vive en HeaderComponent; se eliminan estilos duplicados */
 /*
   Tabs + selector de mes

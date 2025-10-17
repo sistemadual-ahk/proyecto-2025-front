@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { SidebarComponent } from '../../components/sidebar/sidebar.component';
+import { PageTitleComponent } from '../../components/page-title/page-title.component';
 import { Subscription } from 'rxjs';
 import { GastoService } from '../../services/gasto.service';
 import { Gasto } from '../../../models/gasto.model';
@@ -9,7 +10,7 @@ import { Gasto } from '../../../models/gasto.model';
 @Component({
   selector: 'app-activity',
   standalone: true,
-  imports: [CommonModule, RouterModule, SidebarComponent],
+  imports: [CommonModule, RouterModule, SidebarComponent, PageTitleComponent],
   templateUrl: './activity.component.html',
   styleUrl: './activity.component.scss'
 })
@@ -149,15 +150,6 @@ export class ActivityComponent implements OnInit, OnDestroy {
   }
 
   goBack() {
-    // Agregar clase de transición antes de navegar
-    document.body.classList.add('page-transition');
-    
-    setTimeout(() => {
-      this.router.navigate(['/home']);
-      // Remover la clase después de la navegación
-      setTimeout(() => {
-        document.body.classList.remove('page-transition');
-      }, 300);
-    }, 150);
+    this.router.navigate(['/home']);
   }
 }

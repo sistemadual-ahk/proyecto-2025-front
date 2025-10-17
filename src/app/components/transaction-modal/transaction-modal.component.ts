@@ -38,7 +38,7 @@ export class TransactionModalComponent {
 
   // Estado del formulario
   transactionType: 'income' | 'expense' = 'expense';
-  amount: number = 0;
+  amount: number | null = null;
   description: string = '';
   date: string = new Date().toISOString().split('T')[0];
   wallet: string = '';
@@ -93,9 +93,11 @@ export class TransactionModalComponent {
   }
 
   onSave() {
+    const rawAmount = Number(this.amount);
+    const normalizedAmount = isNaN(rawAmount) ? 0 : Math.abs(rawAmount);
     const transaction = {
       type: this.transactionType,
-      amount: this.transactionType === 'expense' ? -Math.abs(this.amount) : Math.abs(this.amount),
+      amount: this.transactionType === 'expense' ? -normalizedAmount : normalizedAmount,
       description: this.description,
       date: this.date,
       wallet: this.wallet,
@@ -109,7 +111,7 @@ export class TransactionModalComponent {
 
   private resetForm() {
     this.transactionType = 'expense';
-    this.amount = 0;
+    this.amount = null;
     this.description = '';
     this.date = new Date().toISOString().split('T')[0];
     this.wallet = '';

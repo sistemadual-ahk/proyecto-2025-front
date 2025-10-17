@@ -25,7 +25,7 @@
     <div class="transaction-form">
       <!-- Campo de monto -->
       <div class="form-group amount-group">
-        <label class="amount-label">$ {{ amount.toFixed(1) }}</label>
+        <label class="amount-label">$ {{ (amount ?? 0).toFixed(1) }}</label>
         <input 
           type="number" 
           class="amount-input" 

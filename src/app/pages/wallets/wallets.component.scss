@@ -172,6 +172,7 @@
 .main {
   min-height: 100vh;
   padding: 15px;
+  padding-top: calc(var(--header-h, 70px) + 10px);
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -461,11 +462,13 @@
 
   .main {
     padding: 12px;
+    padding-top: calc(var(--header-h, 70px) + 10px);
   }
 
   .action-buttons {
-    flex-direction: column;
+    flex-direction: row;
     gap: 8px;
+    flex-wrap: nowrap;
   }
 
   .total-balance-card {

@@ -3,12 +3,7 @@
   <div class="main">
 
   <!-- Título de la página -->
-  <div class="page-header">
-    <button class="back-btn" (click)="goBack()">
-      <i class="mdi mdi-arrow-left"></i>
-    </button>
-    <h2 class="page-title">Actividad</h2>
-  </div>
+  <app-page-title title="Actividad" (back)="goBack()"></app-page-title>
 
   <!-- Barra de búsqueda -->
   <div class="search-section">

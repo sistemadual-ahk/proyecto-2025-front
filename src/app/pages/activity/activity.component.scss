@@ -28,39 +28,6 @@
 
 /* (El sidebar/header ahora viven en sus componentes. Se remueven estilos duplicados no usados aquí) */
 
-.page-header {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px 0;
-  position: relative;
-  margin-top: 20px;
-}
-
-.back-btn {
-  position: absolute;
-  left: 0;
-  background: none;
-  border: none;
-  color: #fff;
-  font-size: 24px;
-  cursor: pointer;
-  padding: 8px;
-  border-radius: 50%;
-  transition: background-color 0.3s ease;
-}
-
-.back-btn:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-}
-
-.page-title {
-  font-size: 24px;
-  font-weight: 600;
-  color: #fff;
-  margin: 0;
-}
-
 // Barra de búsqueda
 .search-section {
   padding: 0 20px 16px 20px;

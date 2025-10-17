@@ -188,16 +188,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   viewAllMovements() {
     console.log('Ver todos los movimientos');
-    // Agregar clase de transición antes de navegar
-    document.body.classList.add('page-transition');
-
-    setTimeout(() => {
-      this.router.navigate(['/activity']);
-      // Remover la clase después de la navegación
-      setTimeout(() => {
-        document.body.classList.remove('page-transition');
-      }, 300);
-    }, 150);
+    this.router.navigate(['/activity']);
   }
 
   // Métodos para botones inferiores

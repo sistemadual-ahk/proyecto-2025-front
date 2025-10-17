@@ -5,12 +5,7 @@
   <div class="main">
 
     <!-- Navigation and Title -->
-    <div class="page-navigation">
-      <button class="back-btn" (click)="goBack()">
-        <i class="mdi mdi-arrow-left"></i>
-      </button>
-      <h2 class="page-title">Mis billeteras</h2>
-    </div>
+    <app-page-title title="Mis billeteras" (back)="goBack()"></app-page-title>
 
     <!-- Total Balance Card -->
     <div class="total-balance-card">
