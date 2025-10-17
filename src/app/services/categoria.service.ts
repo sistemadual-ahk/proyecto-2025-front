@@ -4,6 +4,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { ApiService } from './api.service';
 
 // 1. Interfaz para el objeto Categoría (ajustada a tu respuesta real)
 export interface Categoria {
@@ -26,18 +27,8 @@ interface ApiResponse {
 @Injectable({
   providedIn: 'root',
 })
-export class CategoriaService {
-  private apiUrl = 'http://localhost:3000/api/categorias';
-
-  constructor(private http: HttpClient) {}
-
-  // 3. Modifica el método para usar el operador map
+export class CategoriaService extends ApiService {
   getCategorias(): Observable<Categoria[]> {
-    // 3a. Especifica que esperas recibir el objeto 'ApiResponse'
-    return this.http.get<ApiResponse>(this.apiUrl).pipe(
-      // 3b. Usas el 'map' para transformar la respuesta (response)
-      // y devolver SOLAMENTE la propiedad 'data', que es el arreglo de categorías.
-      map((response) => response.data)
-    );
+    return super.getAll<Categoria>('/categorias');
   }
 }

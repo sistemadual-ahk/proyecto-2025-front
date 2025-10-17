@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { ApiService } from './api.service';
 
 // Interfaz básica asumida para la billetera
 export interface Billetera {
@@ -21,15 +22,12 @@ interface ApiResponse {
 @Injectable({
   providedIn: 'root',
 })
-export class BilleteraService {
-  private apiUrl = 'http://localhost:3000/api/billeteras';
-
-  constructor(private http: HttpClient) {}
+export class BilleteraService extends ApiService {
   getBilleteras(): Observable<Billetera[]> {
-    return this.http.get<ApiResponse>(this.apiUrl).pipe(map((response) => response.data));
+    return super.getAll<Billetera>('/billeteras');
   }
 
   createBilletera(billetera: Partial<Billetera>): Observable<Billetera> {
-    return this.http.post<Billetera>(this.apiUrl, billetera);
+    return super.create<Billetera>('/billeteras', billetera);
   }
 }

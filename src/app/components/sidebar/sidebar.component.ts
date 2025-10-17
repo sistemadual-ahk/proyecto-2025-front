@@ -70,7 +70,7 @@ export class SidebarComponent {
   closeMenu() {
     this.isOpen = false;
   }
-  
+
   onEditProfile() {
     this.editProfile.emit();
     this.closeMenu();
