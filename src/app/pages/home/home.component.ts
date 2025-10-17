@@ -4,8 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { TransactionModalComponent } from '../../components/transaction-modal/transaction-modal.component';
-import { GastoService } from '../../services/gasto.service';
-import { Gasto } from '../../../models/gasto.model';
+import { OperacionService } from '../../services/operacion.service';
+import { Operacion} from '../../../models/operacion.model';
 
 @Component({
   selector: 'app-home',
@@ -25,7 +25,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   availableBalance = 37300;
   balanceChange = '+$200 vs mes anterior';
   recentMovements: any[] = [];
-  gastos: Gasto[] = [];
+  operaciones: Operacion[] = [];
   cards = [
     {
       typeLabel: 'Mercado Pago',
@@ -58,7 +58,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   constructor(
     private router: Router,
-    private gastoService: GastoService
+    private operacionesService: OperacionService
   ) {}
 
   ngOnInit(): void {
@@ -72,14 +72,14 @@ export class HomeComponent implements OnInit, OnDestroy {
   private loadData(): void {
     // Cargar gastos desde la API
     this.subscription.add(
-      this.gastoService.getAllGastos().subscribe({
-        next: (gastos) => {
-          this.gastos = gastos;
+      this.operacionesService.getAllOperaciones().subscribe({
+        next: (op) => {
+          this.operaciones = op;
           this.calculateStats();
           this.loadRecentMovements();
         },
         error: (error) => {
-          console.error('Error al cargar gastos:', error);
+          console.error('Error al cargar egresos:', error);
         },
       })
     );
@@ -87,29 +87,28 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   private calculateStats(): void {
     // Calcular estadísticas desde los gastos
-    const ingresos = this.gastos.filter((g) => g.tipo === 'income');
-    const gastosData = this.gastos.filter((g) => g.tipo === 'expense');
+    const ingresos = this.operaciones.filter((g) => g.tipo === 'Ingreso');
+    const operacionesData = this.operaciones.filter((g) => g.tipo === 'Egreso');
 
     this.income = ingresos.reduce((sum, g) => sum + g.monto, 0);
-    this.expenses = gastosData.reduce((sum, g) => sum + g.monto, 0);
+    this.expenses = operacionesData.reduce((sum, g) => sum + g.monto, 0);
     this.availableBalance = this.income - this.expenses;
   }
 
   private loadRecentMovements(): void {
-    const recentGastos = this.gastos
-      .sort((a, b) => new Date(b.datetime).getTime() - new Date(a.datetime).getTime())
+    const operacionesRecientes = this.operaciones
+      .sort((a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime())
       .slice(0, 3);
 
-    this.recentMovements = recentGastos.map((gasto) => ({
-      id: gasto._id,
-      type: gasto.tipo,
-      category: gasto.categoria?.nombre || 'Sin categoría',
-      description: gasto.descripcion,
-      subcategory: gasto.categoria?.nombre || '',
-      icon: gasto.categoria?.icono || 'mdi-cash',
-      amount: gasto.tipo === 'income' ? gasto.monto : -gasto.monto,
-      date: this.formatDateForHome(gasto.datetime.toString()),
-      color: gasto.tipo === 'income' ? '#10b981' : gasto.categoria?.color || '#6b7280',
+    this.recentMovements = operacionesRecientes.map((operacion) => ({
+      id: operacion._id,
+      type: operacion.tipo,
+      category: operacion.categoriaId || 'Sin categoría',
+      description: operacion.descripcion,
+      icon: operacion.categoriaId || 'mdi-cash',
+      amount: operacion.tipo === 'Ingreso' ? operacion.monto : -operacion.monto,
+      date: this.formatDateForHome(operacion.fecha.toString()),
+      color: operacion.tipo === 'Ingreso' ? '#10b981' : operacion.categoriaId || '#6b7280',
     }));
   }
 
@@ -188,7 +187,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   addTransaction() {
-    console.log('Agregar gasto');
+    console.log('Agregar operacion');
     this.showTransactionModal = true;
   }
 

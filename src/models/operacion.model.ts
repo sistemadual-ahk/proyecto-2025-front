@@ -1,10 +1,9 @@
 export interface Operacion {
   _id?: string;
-  monto: number;
-  descripcion: string;
   tipo: 'Ingreso' | 'Egreso';
-  categoriaId: string;
+  monto: number;
   billeteraId: string;
-  fecha: string; // Formato: "YYYYMMDD"
-  userId?: string; // Opcional, puede venir del backend
+  categoriaId: string;
+  descripcion?: string;
+  fecha: string;
 }
