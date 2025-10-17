@@ -188,48 +188,6 @@ export class WalletsComponent {
     });
   }
 
-  openHome() {
-    this.router.navigate(['/home']);
-  }
-
-  openWallets() {
-    console.log('Ya estamos en billeteras');
-  }
-
-  openActivity() {
-    console.log('Abrir actividad');
-  }
-
-  openAnalysis() {
-    console.log('Abrir análisis');
-  }
-
-  openGoals() {
-    this.router.navigate(['/saving-goals']);
-  }
-
-  openCategories() {
-    console.log('Abrir categorías');
-  }
-
-  openSettings() {
-    console.log('Abrir ajustes');
-  }
-
-  logout(): void {
-    console.log('Logout');
-    this.router.navigate(['/']);
-  }
-
-  // Métodos del header
-  openNotifications() {
-    console.log('Abrir notificaciones');
-  }
-
-  openUserProfile() {
-    console.log('Abrir perfil de usuario');
-  }
-
   // Formatear números
   formatCurrency(amount: number): string {
     return new Intl.NumberFormat('es-AR', {

@@ -13,25 +13,11 @@ import { PageTitleComponent } from '../../components/page-title/page-title.compo
   styleUrl: './analysis.component.scss'
 })
 export class AnalysisComponent {
-  isMenuOpen = false;
 
-  constructor(private router: Router) {}
-
-  toggleMenu() {
-    this.isMenuOpen = !this.isMenuOpen;
-  }
-
-  closeMenu() {
-    this.isMenuOpen = false;
-  }
+  constructor(private router: Router) { }
 
   goBack() {
     this.router.navigate(['/home']);
-  }
-
-  // Acciones del header (mismo API que Home)
-  openNotifications() {
-    console.log('Abrir notificaciones');
   }
 }
 

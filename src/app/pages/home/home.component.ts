@@ -145,11 +145,6 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.currentMonth = this.formatMonthTitle(this.currentViewDate);
   }
 
-  // Métodos para acciones
-  openNotifications() {
-    console.log('Abrir notificaciones');
-  }
-
   viewAllMovements() {
     this.router.navigate(['/activity']);
   }
