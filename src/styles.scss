@@ -6,6 +6,16 @@
 // Importar Material Design Icons
 @import url('https://cdn.jsdelivr.net/npm/@mdi/font@7.2.96/css/materialdesignicons.min.css');
 
+@import 'ng-zorro-antd/ng-zorro-antd.min.css';
+
+// Importar estilos de los componentes de NG-ZORRO
+@import 'ng-zorro-antd/button/style/index.min.css';
+@import 'ng-zorro-antd/icon/style/index.min.css';
+@import 'ng-zorro-antd/slider/style/index.min.css';
+@import 'ng-zorro-antd/switch/style/index.min.css';
+@import 'ng-zorro-antd/select/style/index.min.css';
+
+
 // Variables CSS para la paleta de colores de Ga$tify
 :root {
   --gastify-dark: #0F152C;      // Fondo principal
@@ -95,4 +105,36 @@ button, a, [role="button"] {
 // Mejorar la experiencia de scroll en iOS
 * {
   -webkit-overflow-scrolling: touch;
+}
+
+// Transiciones suaves entre páginas
+.page-transition {
+  .container {
+    opacity: 0;
+    transform: translateX(20px);
+    transition: all 0.3s ease-in-out;
+  }
+}
+
+// Animaciones para elementos de entrada
+.container {
+  opacity: 1;
+  transform: translateX(0);
+  transition: all 0.3s ease-in-out;
+}
+
+// Animación para elementos de la lista
+.movement-item, .transaction-item {
+  animation: slideInUp 0.3s ease-out;
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

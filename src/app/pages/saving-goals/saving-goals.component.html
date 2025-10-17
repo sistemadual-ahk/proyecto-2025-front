@@ -1,37 +1,8 @@
 <div class="saving-goals-container">
-  <!-- Header con tiempo y estado -->
-  <div class="status-bar">
-    <div class="time">09:30 PM</div>
-    <div class="status-icons">
-      <i class="mdi mdi-wifi"></i>
-      <i class="mdi mdi-signal"></i>
-      <i class="mdi mdi-battery"></i>
-    </div>
-  </div>
-
-  <!-- Header principal -->
-  <header class="main-header">
-    <button class="menu-btn" (click)="openMenu()">
-      <i class="mdi mdi-menu"></i>
-    </button>
-    <h1 class="app-title">Ga<span class="dollar-sign">$</span>tify</h1>
-    <div class="header-right">
-      <button class="notification-btn" (click)="openNotifications()">
-        <i class="mdi mdi-bell"></i>
-      </button>
-      <button class="profile-btn" (click)="openProfile()">
-        <i class="mdi mdi-account-circle"></i>
-      </button>
-    </div>
-  </header>
+  
 
   <!-- Navegación y título -->
-  <div class="navigation-section">
-    <button class="back-btn" (click)="goBack()">
-      <i class="mdi mdi-arrow-left"></i>
-    </button>
-    <h2 class="page-title">Objetivos de ahorro</h2>
-  </div>
+  <app-page-title title="Objetivos" (back)="goBack()"></app-page-title>
 
   <!-- Sección de objetivos de ahorro -->
   <div class="goals-section">

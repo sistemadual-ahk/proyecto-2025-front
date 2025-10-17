@@ -5,6 +5,7 @@ import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '@auth0/auth0-angular';
 import { UserService } from '../../services/user.service'; // Asegúrate de que la ruta sea correcta
 
+
 @Component({
   selector: 'app-login',
   standalone: true,

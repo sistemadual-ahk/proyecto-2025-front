@@ -21,28 +21,7 @@
   overflow-x: hidden;
 }
 
-/* Sidebar */
-.sidebar {
-  position: fixed;
-  top: 0;
-  left: -320px;
-  width: 320px;
-  height: 100vh;
-  background: var(--gastify-blue);
-  z-index: 1000;
-  transition: left 0.3s ease;
-  border-right: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.sidebar.open {
-  left: 0;
-}
-
-.sidebar-content {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-}
+/* Sidebar global se maneja en SidebarComponent */
 
 /* Profile Section */
 .profile-section {
@@ -193,20 +172,13 @@
 .main {
   min-height: 100vh;
   padding: 15px;
+  padding-top: calc(var(--header-h, 70px) + 10px);
   display: flex;
   flex-direction: column;
   overflow: hidden;
 }
 
-/* Header */
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 15px;
-  padding: 5px 0;
-  flex-shrink: 0;
-}
+/* Header global provisto por HeaderComponent */
 
 .menu-btn {
   background: none;
@@ -490,11 +462,13 @@
 
   .main {
     padding: 12px;
+    padding-top: calc(var(--header-h, 70px) + 10px);
   }
 
   .action-buttons {
-    flex-direction: column;
+    flex-direction: row;
     gap: 8px;
+    flex-wrap: nowrap;
   }
 
   .total-balance-card {

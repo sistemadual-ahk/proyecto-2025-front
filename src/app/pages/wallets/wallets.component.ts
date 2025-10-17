@@ -2,11 +2,14 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { AddAccountModalComponent } from '../../components/add-account-modal/add-account-modal.component';
+import { HeaderComponent } from '../../components/header/header.component';
+import { SidebarComponent } from '../../components/sidebar/sidebar.component';
+import { PageTitleComponent } from '../../components/page-title/page-title.component';
 
 @Component({
   selector: 'app-wallets',
   standalone: true,
-  imports: [CommonModule, AddAccountModalComponent],
+  imports: [CommonModule, AddAccountModalComponent, HeaderComponent, SidebarComponent, PageTitleComponent],
   templateUrl: './wallets.component.html',
   styleUrl: './wallets.component.scss'
 })

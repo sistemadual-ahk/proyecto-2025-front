@@ -14,228 +14,36 @@
   overflow-x: hidden;
 }
 
-/* Sidebar */
-.sidebar {
-  position: fixed;
-  top: 0;
-  left: -320px;
-  width: 320px;
-  height: 100vh;
-  background: var(--gastify-blue);
-  z-index: 1000;
-  transition: left 0.3s ease;
-  border-right: 1px solid rgba(255, 255, 255, 0.1);
-}
+/* Sidebar global se maneja en SidebarComponent (se remueven duplicados) */
 
-.sidebar.open {
-  left: 0;
-}
+/* Sección de perfil del sidebar movida al componente */
 
-.sidebar-content {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-}
+/* Navegación del sidebar centralizada en el componente */
 
-/* Profile Section */
-.profile-section {
-  position: relative;
-  display: flex;
-  justify-content: center;
-  padding: 25px 20px 30px;
-}
+/* Footer del sidebar centralizado en el componente */
 
-.profile-image {
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.1);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 3rem;
-  color: rgba(255, 255, 255, 0.7);
-}
-
-.edit-profile-btn {
-  position: absolute;
-  bottom: 30px;
-  right: 35%;
-  transform: translateX(50%);
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: var(--gastify-purple);
-  border: none;
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.1rem;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.edit-profile-btn:hover {
-  background: #4a4a6a;
-}
-
-.profile-name {
-  position: absolute;
-  bottom: 0px;
-  left: 50%;
-  transform: translateX(-50%);
-  color: var(--gastify-light);
-  font-size: 1.1rem;
-  font-weight: 600;
-  text-align: center;
-  white-space: nowrap;
-}
-
-.separator {
-  height: 1px;
-  background: rgba(255, 255, 255, 0.1);
-  margin: 0 25px 30px;
-}
-
-/* Navigation */
-.sidebar-nav {
-  flex: 1;
-  padding: 0 0 30px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.sidebar-nav .sidebar-nav-item {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  padding: 5px 30px;
-  color: var(--gastify-light);
-  text-decoration: none;
-  font-size: 1.1rem;
-  font-weight: 500;
-  transition: background-color 0.3s ease;
-  border-left: 3px solid transparent;
-}
-
-.sidebar-nav .sidebar-nav-item:hover {
-  background: rgba(255, 255, 255, 0.1);
-}
-
-.sidebar-nav .sidebar-nav-item.active {
-  background: rgba(61, 205, 153, 0.2);
-  border-left-color: var(--gastify-green);
-}
-
-.sidebar-nav .sidebar-nav-item i {
-  font-size: 1.4rem;
-  width: 28px;
-  text-align: center;
-}
-
-.sidebar-nav .sidebar-nav-item.logout {
-  margin-top: auto;
-  color: #FF6B6B;
-  cursor: pointer;
-}
-
-.sidebar-nav .sidebar-nav-item.logout:hover {
-  background: rgba(255, 107, 107, 0.2);
-}
-
-/* Footer */
-.sidebar-footer {
-  padding: 30px 25px;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.refresh-info {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 1rem;
-}
-
-.refresh-info i {
-  font-size: 1.2rem;
-}
-
-/* Overlay */
-.overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  z-index: 999;
-  opacity: 0;
-  visibility: hidden;
-  transition: all 0.3s ease;
-}
-
-.overlay.active {
-  opacity: 1;
-  visibility: visible;
-}
+/* Overlay del sidebar centralizado en el componente */
 
 /* Main Content */
 .main {
   min-height: 100vh;
   padding: 20px;
+  padding-top: 80px;
 }
 
-/* Header */
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 0px;
-  padding: 10px 0;
-}
+/* Orden de capas definido en los componentes */
 
-.header-left, .header-right {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
+/* Sidebar sólido definido en SidebarComponent */
 
-.app-title {
-  font-size: 1.6rem;
-  font-weight: 700;
-  margin: 0;
-  color: var(--gastify-light);
-}
-
-.dollar-sign {
-  color: var(--gastify-green);
-}
-
-.menu-btn, .notification-btn, .profile-btn {
-  background: none;
-  border: none;
-  color: var(--gastify-light);
-  font-size: 1.3rem;
-  cursor: pointer;
-  padding: 8px;
-  border-radius: 50%;
-  transition: background-color 0.3s ease;
-}
-
-.menu-btn:hover, .notification-btn:hover, .profile-btn:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-}
+/* Header global está en HeaderComponent */
 
 /* Date Navigation */
 .date-navigation {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 25px;
-  padding: 0px 0;
+  margin-top: 10px;
+  margin-bottom: 5px;
 }
 
 .current-month {
@@ -335,7 +143,7 @@
   border-radius: 16px;
   padding: 20px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: transform 0.3s ease, opacity 0.3s ease, box-shadow 0.3s ease;
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.2);
@@ -346,40 +154,7 @@
   box-shadow: 0 12px 35px rgba(0, 0, 0, 0.4);
 }
 
-/* Mercado Pago Card (Front) */
-.mercado-pago-card {
-  background: linear-gradient(135deg, #009EE3, #0078BE);
-  z-index: 3;
-  transform: translateY(0);
-}
-
-.mercado-pago-card:hover {
-  transform: translateY(-5px) scale(1.02);
-}
-
-/* Santander Card (Middle) */
-.santander-card {
-  background: linear-gradient(135deg, #EC0000, #CC0000);
-  z-index: 2;
-  transform: translateY(10px) scale(0.95);
-  opacity: 0.9;
-}
-
-.santander-card:hover {
-  transform: translateY(5px) scale(0.97);
-}
-
-/* Cash Card (Back) */
-.cash-card {
-  background: linear-gradient(135deg, #51CF66, #40C057);
-  z-index: 1;
-  transform: translateY(20px) scale(0.9);
-  opacity: 0.8;
-}
-
-.cash-card:hover {
-  transform: translateY(15px) scale(0.92);
-}
+/* Clases específicas por marca eliminadas: estilos se calculan dinámicamente */
 
 /* Card Content */
 .card-header {
@@ -451,6 +226,7 @@
   font-weight: 600;
   margin: 0;
   color: var(--gastify-light);
+  margin-left:5px
 }
 
 .view-all-btn {
@@ -508,6 +284,13 @@
   font-weight: 600;
   margin: 0 0 2px 0;
   color: var(--gastify-light);
+}
+
+.movement-subcategory {
+  font-size: 0.85rem;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.8);
+  margin-left: 4px;
 }
 
 .movement-date {
@@ -591,6 +374,10 @@
 
 /* Responsive Design */
 @media (max-width: 480px) {
+  .header {
+    padding: 10px;
+  }
+  
   .sidebar {
     width: 260px;
     left: -260px;
@@ -598,10 +385,11 @@
   
   .main {
     padding: 5px;
+    padding-top: 70px;
   }
   
   .app-title {
-    font-size: 1.4rem;
+    font-size: 1.3rem;
   }
   
   .current-month {

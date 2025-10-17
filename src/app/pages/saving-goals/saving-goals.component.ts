@@ -1,15 +1,20 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { HeaderComponent } from '../../components/header/header.component';
+import { SidebarComponent } from '../../components/sidebar/sidebar.component';
+import { PageTitleComponent } from '../../components/page-title/page-title.component';
 
 @Component({
   selector: 'app-saving-goals',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, HeaderComponent, SidebarComponent, PageTitleComponent],
   templateUrl: './saving-goals.component.html',
   styleUrl: './saving-goals.component.scss'
 })
 export class SavingGoalsComponent {
+  // Estado del menú
+  isMenuOpen = false;
   
   // Datos de los objetivos de ahorro
   savingGoals = [
@@ -60,16 +65,12 @@ export class SavingGoalsComponent {
     this.router.navigate(['/home']);
   }
 
-  openMenu() {
-    console.log('Abrir menú');
+  toggleMenu() {
+    this.isMenuOpen = !this.isMenuOpen;
   }
 
-  openNotifications() {
-    console.log('Abrir notificaciones');
-  }
-
-  openProfile() {
-    console.log('Abrir perfil');
+  closeMenu() {
+    this.isMenuOpen = false;
   }
 
   // Métodos para objetivos

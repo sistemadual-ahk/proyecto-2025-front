@@ -1,15 +1,13 @@
-// src/app/interceptors/auth.interceptor.ts
 import { Injectable } from '@angular/core';
 import { HttpRequest, HttpHandler, HttpEvent, HttpInterceptor} from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { AuthService } from '@auth0/auth0-angular';
 import { switchMap, first } from 'rxjs/operators';
+import { environment } from '../../environments/environment';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
-
-  // URL base de tu API, asegúrate de que coincida con la configuración de tu backend
-  private apiBaseUrl = 'http://localhost:3000/api';
+  private apiBaseUrl = environment.API_BACK_URL;
 
   constructor(private auth: AuthService) {}
 
