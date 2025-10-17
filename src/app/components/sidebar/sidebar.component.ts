@@ -22,6 +22,7 @@ export interface SidebarItem {
 export class SidebarComponent {
   isOpen = false;
   perfilHabilitado = false;
+  ajustesHabilitado = false;
   @Input() userName = '';
   @Input() items: SidebarItem[] = [];
   @Output() closeEvent = new EventEmitter<void>();
@@ -29,6 +30,15 @@ export class SidebarComponent {
   @Output() editProfile = new EventEmitter<void>();
 
   constructor(private router: Router, public auth: AuthService) {}
+
+  get currentDate(): string {
+    const fecha = new Date();
+    const meses = ['Ene.', 'Feb.', 'Mar.', 'Abr.', 'May.', 'Jun.', 'Jul.', 'Ago.', 'Sep.', 'Oct.', 'Nov.', 'Dic.'];
+    const dia = fecha.getDate();
+    const mes = meses[fecha.getMonth()];
+    const año = fecha.getFullYear();
+    return `${dia} ${mes} ${año}`;
+  }
 
   onNavigate(route: string) {
     this.router.navigate([route]);

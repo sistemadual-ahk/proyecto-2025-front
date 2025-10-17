@@ -14,9 +14,6 @@
           <i class="mdi mdi-account"></i>
         </ng-template>
       </div>
-      <button class="edit-profile-btn">
-        <i class="mdi mdi-pencil"></i>
-      </button>
       <div class="profile-name" *ngIf="auth.user$ | async as user">{{ user.name || 'Usuario' }}</div>
       <div class="profile-name" *ngIf="!(auth.user$ | async)">Usuario</div>
     </div>
@@ -67,7 +64,7 @@
         <i class="mdi mdi-dots-horizontal"></i>
         <span>Categorías</span>
       </a>
-      <a routerLink="/settings" class="sidebar-nav-item" (click)="closeMenu()">
+      <a *ngIf="ajustesHabilitado" routerLink="/settings" class="sidebar-nav-item" (click)="closeMenu()">
         <i class="mdi mdi-cog"></i>
         <span>Ajustes</span>
       </a>
@@ -81,7 +78,7 @@
     <div class="sidebar-footer">
       <div class="refresh-info">
         <i class="mdi mdi-refresh"></i>
-        <span>22 Abr. 2025</span>
+        <span>{{ currentDate }}</span>
       </div>
     </div>
   </div>
