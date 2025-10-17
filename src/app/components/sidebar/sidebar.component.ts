@@ -29,11 +29,27 @@ export class SidebarComponent {
   @Output() logoutEvent = new EventEmitter<void>();
   @Output() editProfile = new EventEmitter<void>();
 
-  constructor(private router: Router, public auth: AuthService) {}
+  constructor(
+    private router: Router,
+    public auth: AuthService
+  ) {}
 
   get currentDate(): string {
     const fecha = new Date();
-    const meses = ['Ene.', 'Feb.', 'Mar.', 'Abr.', 'May.', 'Jun.', 'Jul.', 'Ago.', 'Sep.', 'Oct.', 'Nov.', 'Dic.'];
+    const meses = [
+      'Ene.',
+      'Feb.',
+      'Mar.',
+      'Abr.',
+      'May.',
+      'Jun.',
+      'Jul.',
+      'Ago.',
+      'Sep.',
+      'Oct.',
+      'Nov.',
+      'Dic.',
+    ];
     const dia = fecha.getDate();
     const mes = meses[fecha.getMonth()];
     const año = fecha.getFullYear();
@@ -53,12 +69,8 @@ export class SidebarComponent {
   }
   closeMenu() {
     this.isOpen = false;
-    this.onClose();
   }
-
-  onClose() {
-    this.closeEvent.emit();
-  }
+  
   onEditProfile() {
     this.editProfile.emit();
     this.closeMenu();

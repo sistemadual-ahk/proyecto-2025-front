@@ -32,12 +32,7 @@
               <div class="transaction-main">
                 <h3 class="transaction-description">
                   {{ operacion.descripcion }}
-                  <span
-                    *ngIf="
-                      operacion.categoriaId
-                    "
-                    class="subcategory"
-                  >
+                  <span *ngIf="operacion.categoriaId" class="subcategory">
                     - {{ operacion.categoriaId }}
                   </span>
                 </h3>

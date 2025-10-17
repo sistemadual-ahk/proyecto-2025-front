@@ -5,7 +5,7 @@ import { Router, RouterModule } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { TransactionModalComponent } from '../../components/transaction-modal/transaction-modal.component';
 import { OperacionService } from '../../services/operacion.service';
-import { Operacion} from '../../../models/operacion.model';
+import { Operacion } from '../../../models/operacion.model';
 
 @Component({
   selector: 'app-home',

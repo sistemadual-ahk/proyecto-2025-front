@@ -52,7 +52,9 @@ export class ActivityComponent implements OnInit, OnDestroy {
     );
   }
 
-  private groupOperacionesByDate(operaciones: Operacion[]): { date: string; operaciones: Operacion[] }[] {
+  private groupOperacionesByDate(
+    operaciones: Operacion[]
+  ): { date: string; operaciones: Operacion[] }[] {
     const groups: { [key: string]: Operacion[] } = {};
 
     operaciones.forEach((op) => {

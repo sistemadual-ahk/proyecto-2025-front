@@ -7,21 +7,28 @@
     <div class="profile-section">
       <div class="profile-image">
         <ng-container *ngIf="auth.user$ | async as user; else defaultIcon">
-          <img *ngIf="user.picture" [src]="user.picture" [alt]="user.name || 'Usuario'" class="profile-picture" />
+          <img
+            *ngIf="user.picture"
+            [src]="user.picture"
+            [alt]="user.name || 'Usuario'"
+            class="profile-picture"
+          />
           <i *ngIf="!user.picture" class="mdi mdi-account"></i>
         </ng-container>
         <ng-template #defaultIcon>
           <i class="mdi mdi-account"></i>
         </ng-template>
       </div>
-      <div class="profile-name" *ngIf="auth.user$ | async as user">{{ user.name || 'Usuario' }}</div>
-      <div class="profile-name" *ngIf="!(auth.user$ | async)">Usuario</div>
+      <div class="profile-name" *ngIf="auth.user$ | async as user">
+        {{ user.name || 'Usuario' }}
+      </div>
+      <div class="profile-name" *ngIf="(auth.user$ | async) === null">Usuario</div>
     </div>
     <div class="separator"></div>
 
     <!-- Navigation Menu -->
     <nav class="sidebar-nav">
-      <a  *ngIf="perfilHabilitado" href="#" class="sidebar-nav-item" (click)="onEditProfile()">
+      <a *ngIf="perfilHabilitado" href="#" class="sidebar-nav-item" (click)="onEditProfile()">
         <i class="mdi mdi-account"></i>
         <span>Perfil</span>
       </a>
@@ -64,7 +71,12 @@
         <i class="mdi mdi-dots-horizontal"></i>
         <span>Categorías</span>
       </a>
-      <a *ngIf="ajustesHabilitado" routerLink="/settings" class="sidebar-nav-item" (click)="closeMenu()">
+      <a
+        *ngIf="ajustesHabilitado"
+        routerLink="/settings"
+        class="sidebar-nav-item"
+        (click)="closeMenu()"
+      >
         <i class="mdi mdi-cog"></i>
         <span>Ajustes</span>
       </a>
