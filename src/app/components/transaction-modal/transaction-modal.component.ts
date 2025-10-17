@@ -1,176 +1,127 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { OnInit, Component, EventEmitter, Output, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { NzSelectModule } from 'ng-zorro-antd/select';
-import { trigger, transition, style, animate } from '@angular/animations';
+import { HttpClient } from '@angular/common/http';
+import { BilleteraService, Billetera } from '../../services/billetera.service';
+import { CategoriaService, Categoria } from '../../services/categoria.service';
+import { Operacion, OperacionService } from '../../services/operation.service';
+
+//hola
 
 @Component({
   selector: 'app-transaction-modal',
   standalone: true,
-  imports: [CommonModule, FormsModule, NzSelectModule],
+  // Mantenemos FormsModule para soportar [(ngModel)]
+  imports: [CommonModule, FormsModule],
   templateUrl: './transaction-modal.component.html',
-  styleUrl: './transaction-modal.component.scss',
-  animations: [
-    trigger('modalOverlay', [
-      transition(':enter', [
-        style({ opacity: 0 }),
-        animate('200ms ease-out', style({ opacity: 1 }))
-      ]),
-      transition(':leave', [
-        animate('150ms ease-in', style({ opacity: 0 }))
-      ])
-    ]),
-    trigger('modalContent', [
-      transition(':enter', [
-        style({ opacity: 0 }),
-        animate('220ms 40ms ease-out', style({ opacity: 1 }))
-      ]),
-      transition(':leave', [
-        animate('150ms ease-in', style({ opacity: 0 }))
-      ])
-    ])
-  ]
+  styleUrls: ['./transaction-modal.component.scss']
 })
-export class TransactionModalComponent {
+export class TransactionModalComponent implements OnInit {
+  isDragging = false;
+  dragTranslateY = 0;
+  startY = 0;
+  currentY = 0;
+  closeThreshold = 100;
+
+  // --- INYECCIÓN DE DEPENDENCIAS ---
+  private operacionService: OperacionService = inject(OperacionService);
+  private billeteraService: BilleteraService = inject(BilleteraService);
+  private categoriaService: CategoriaService = inject(CategoriaService);
+  private http: HttpClient = inject(HttpClient); // Dejamos la inyección aunque no se use directamente
+
+  // --- OUTPUTS ---
   @Output() closeModal = new EventEmitter<void>();
   @Output() saveTransaction = new EventEmitter<any>();
-  selectedValue = null;
 
-  // Estado del formulario
+  // --- ESTADO DEL FORMULARIO (Template-Driven requiere estas variables) ---
   transactionType: 'income' | 'expense' = 'expense';
-  amount: number | null = null;
+  amount: number = 0;
   description: string = '';
   date: string = new Date().toISOString().split('T')[0];
-  wallet: string = '';
-  category: string = '';
-  subcategory: string = '';
+  wallet: string = ''; // Almacena el NOMBRE de la billetera seleccionada
+  category: string = ''; // Almacena el NOMBRE de la categoría seleccionada
 
-  // Opciones para los dropdowns
-  wallets = [
-    'Mercado Pago',
-    'Santander',
-    'Efectivo'
-  ];
+  // --- DATOS CARGADOS DEL BACKEND ---
+  // Estos arrays guardan el objeto completo (con ID)
+  categorias: Categoria[] = [];
+  billeteras: Billetera[] = [];
 
-  categories = [
-    'Alimentación',
-    'Transporte',
-    'Entretenimiento',
-    'Salud',
-    'Educación',
-    'Vivienda',
-    'Otros'
-  ];
+  // Estos arrays guardan SÓLO los nombres para iterar en el HTML
+  nombresCategorias: string[] = [];
+  nombresBilleteras: string[] = [];
 
-  subcategories = {
-    'Alimentación': ['Supermercado', 'Restaurante', 'Delivery'],
-    'Transporte': ['Combustible', 'Transporte público', 'Taxi'],
-    'Entretenimiento': ['Cine', 'Conciertos', 'Deportes'],
-    'Salud': ['Farmacia', 'Médico', 'Odontólogo'],
-    'Educación': ['Libros', 'Cursos', 'Material escolar'],
-    'Vivienda': ['Alquiler', 'Servicios', 'Mantenimiento'],
-    'Otros': ['Regalos', 'Donaciones', 'Impuestos']
-  };
+  constructor() { }
 
-  get currentSubcategories(): string[] {
-    return this.subcategories[this.category as keyof typeof this.subcategories] || [];
+  ngOnInit(): void {
+    this.loadData();
   }
 
-  // Estado para gesto de arrastre hacia abajo
-  private startY: number | null = null;
-  private currentY: number | null = null;
-  isDragging: boolean = false;
-  dragTranslateY: number = 0;
-  private readonly closeThreshold: number = 120; // px
+  loadData(): void {
+    // Carga de Categorías
+    this.categoriaService.getCategorias().subscribe(data => {
+      this.categorias = data;
+      this.nombresCategorias = data.map(cat => cat.nombre);
+    });
 
-  // Métodos
-  toggleTransactionType(type: 'income' | 'expense') {
+    // Carga de Billeteras
+    this.billeteraService.getBilleteras().subscribe(data => {
+      this.billeteras = data;
+      this.nombresBilleteras = data.map(bill => bill.nombre);
+    });
+  }
+
+  // --- LÓGICA AUXILIAR ---
+
+
+  toggleTransactionType(type: 'income' | 'expense'): void {
     this.transactionType = type;
   }
 
-  onClose() {
+  onClose(): void {
+    this.resetForm();
     this.closeModal.emit();
   }
 
-  onSave() {
-    const rawAmount = Number(this.amount);
-    const normalizedAmount = isNaN(rawAmount) ? 0 : Math.abs(rawAmount);
-    const transaction = {
-      type: this.transactionType,
-      amount: this.transactionType === 'expense' ? -normalizedAmount : normalizedAmount,
-      description: this.description,
-      date: this.date,
-      wallet: this.wallet,
-      category: this.category,
-      subcategory: this.subcategory
+  onSave(): void {
+
+    // 1. Mapear NOMBRES (del ngModel) a IDs (para el backend)
+    const selectedWallet = this.billeteras.find(b => b.nombre === this.wallet);
+    const selectedCategory = this.categorias.find(c => c.nombre === this.category);
+
+    if (!selectedWallet || !selectedCategory || this.amount <= 0) {
+      console.error("Validación fallida: El monto debe ser > 0 y debe seleccionar billetera/categoría.");
+      return;
+    }
+
+    // 2. Construir el objeto para el backend (usando IDs)
+    const operacionData: Omit<Operacion, '_id' | 'user'> = {
+      monto: Math.abs(this.amount),
+      descripcion: this.description,
+      fecha: new Date(this.date).toISOString(),
+      tipo: this.transactionType === 'income' ? 'Ingreso' : 'Egreso',
+      billeteraId: selectedWallet.id, // ID
+      categoriaId: selectedCategory.id, // ID
     };
-    
-    this.saveTransaction.emit(transaction);
-    this.resetForm();
+
+    // 3. Llamada al servicio
+    this.operacionService.createOperacion(operacionData).subscribe({
+      next: (response) => {
+        console.log('Operación guardada exitosamente:', response);
+        this.saveTransaction.emit(response);
+        this.onClose();
+      },
+      error: (error) => {
+        console.error('Error al guardar la operación:', error);
+      }
+    });
   }
 
-  private resetForm() {
+  private resetForm(): void {
     this.transactionType = 'expense';
-    this.amount = null;
-    this.description = '';
+    this.amount = 0;
+    this.description = null as any;
     this.date = new Date().toISOString().split('T')[0];
-    this.wallet = '';
-    this.category = '';
-    this.subcategory = '';
+    this.wallet = null as any;
+    this.category = null as any;
   }
-
-  // Gesto táctil
-  onTouchStart(event: TouchEvent) {
-    if (event.touches.length !== 1) return;
-    this.isDragging = true;
-    this.startY = event.touches[0].clientY;
-    this.currentY = this.startY;
-  }
-
-  onTouchMove(event: TouchEvent) {
-    if (!this.isDragging || this.startY === null) return;
-    this.currentY = event.touches[0].clientY;
-    const delta = this.currentY - this.startY;
-    this.dragTranslateY = Math.max(0, delta);
-  }
-
-  onTouchEnd() {
-    if (!this.isDragging) return;
-    const dragged = (this.currentY ?? 0) - (this.startY ?? 0);
-    if (dragged > this.closeThreshold) {
-      this.onClose();
-    }
-    this.isDragging = false;
-    this.startY = null;
-    this.currentY = null;
-    this.dragTranslateY = 0;
-  }
-
-  // Gesto con mouse (desktop)
-  onMouseDown(event: MouseEvent) {
-    // Solo botón izquierdo
-    if (event.button !== 0) return;
-    this.isDragging = true;
-    this.startY = event.clientY;
-    this.currentY = this.startY;
-  }
-
-  onMouseMove(event: MouseEvent) {
-    if (!this.isDragging || this.startY === null) return;
-    this.currentY = event.clientY;
-    const delta = this.currentY - this.startY;
-    this.dragTranslateY = Math.max(0, delta);
-  }
-
-  onMouseUp() {
-    if (!this.isDragging) return;
-    const dragged = (this.currentY ?? 0) - (this.startY ?? 0);
-    if (dragged > this.closeThreshold) {
-      this.onClose();
-    }
-    this.isDragging = false;
-    this.startY = null;
-    this.currentY = null;
-    this.dragTranslateY = 0;
-  }
-} 
+}

@@ -6,6 +6,8 @@ import { Subscription } from 'rxjs';
 import { TransactionModalComponent } from '../../components/transaction-modal/transaction-modal.component';
 import { GastoService } from '../../services/gasto.service';
 import { AuthService } from '@auth0/auth0-angular';
+import { Observable } from 'rxjs';
+import { HttpClient } from '@angular/common/http'; 
 import { Gasto } from '../../../models/gasto.model';
 
 
@@ -20,7 +22,6 @@ export class HomeComponent implements OnInit, OnDestroy {
   private auth = inject(AuthService);
   private doc = inject(DOCUMENT);
 
-  // Hacer Math disponible en el template
   Math = Math;
 
   // Estado del menú
@@ -28,7 +29,6 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   // Estado del modal de gastos
   showTransactionModal = false;
-
   // Suscripciones
   private subscription = new Subscription();
 
@@ -147,16 +147,19 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.isMenuOpen = false;
   }
 
-  logout(): void {
-    // Aquí iría la lógica de logout (limpiar tokens, etc.)
+logout(): void {
     this.auth.logout({
-      logoutParams: {
-        returnTo: this.doc.location.origin,
-      }
-    })
-    console.log('Logout');
-    this.router.navigate(['/']);
-  }
+        logoutParams: {
+            // Usar window.location.origin es la forma más directa.
+            returnTo: window.location.origin, 
+        }
+    });
+    // Nota: El navegador será redirigido por Auth0, el console.log y el router.navigate 
+    // después de la redirección de Auth0 son inalcanzables.
+    // Los puedes dejar, pero no se ejecutarán.
+    console.log('Logout'); 
+    this.router.navigate(['/']); 
+}
 
   // Métodos para navegación
   previousMonth() {
@@ -245,35 +248,6 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   saveTransaction(transaction: any) {
     console.log('Gasto guardado:', transaction);
-
-    // Crear el gasto usando el servicio
-    const gastoData = {
-      monto: Math.abs(transaction.amount),
-      descripcion: transaction.description || transaction.category,
-      tipo: transaction.type,
-      datetime: new Date(transaction.date),
-      userId: 'user-id', // TODO: Obtener del usuario autenticado
-      billetera: transaction.wallet,
-      categoria: {
-        _id: '',
-        userId: 'user-id',
-        nombre: transaction.category,
-        descripcion: transaction.subcategory
-      }
-    };
-
-    this.subscription.add(
-      this.gastoService.createGasto(gastoData).subscribe({
-        next: (gasto) => {
-          console.log('Gasto creado:', gasto);
-          this.loadData(); // Recargar datos
-          this.closeTransactionModal();
-        },
-        error: (error) => {
-          console.error('Error al crear gasto:', error);
-        }
-      })
-    );
   }
 
   // Métodos auxiliares para iconos y colores
