@@ -229,5 +229,4 @@ export class HomeComponent implements OnInit, OnDestroy {
   redondearAmount(amount: number): number {
     return Math.round(amount);
   }
-
 } 

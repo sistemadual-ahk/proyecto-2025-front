@@ -1,30 +1,53 @@
-// src/app/services/user/user.service.ts
+
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-// Ya no necesitamos importar ni usar el AuthService de Auth0
+import { Observable, BehaviorSubject } from 'rxjs';
+import { tap } from 'rxjs/operators';
+import { ApiService } from './api.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root'
 })
-export class UserService {
+export class UserService extends ApiService {
+  private userDataSubject = new BehaviorSubject<any>(null);
+  public userData$ = this.userDataSubject.asObservable();
 
-  // URL base de tu API, asegúrate de que coincida con la configuración de tu backend
-  private apiBaseUrl = 'http://localhost:3000/api';
+  constructor(http: HttpClient) {
+    super(http);
+    this.loadUserFromStorage();
+  }
 
-  constructor(private http: HttpClient) { }
+  createUser(payload: any): Observable<any> {
+    return super.create<any>('/usuarios', payload).pipe(
+      tap(response => {
+        this.setUserData(response);
+      })
+    );
+  }
+  private setUserData(userData: any): void {
+    localStorage.setItem('user_data', JSON.stringify(userData));
+    this.userDataSubject.next(userData);
+  }
 
-  /**
-   * Este método hace la llamada al back-end para sincronizar el usuario.
-   * El AuthInterceptor añadirá el token de seguridad automáticamente.
-   *    * @param payload Datos opcionales del usuario a enviar (aunque el back-end
-   * usará principalmente la información del token).
-   * @returns Un Observable con la respuesta del servidor (el usuario sincronizado).
-   */
-  createUser(payload: any): Observable<any> {
-    
-    // La URL debe coincidir con la ruta protegida de tu back-end.
-    // Por ejemplo, usamos la ruta que inicia el proceso de sincronización.
-    return this.http.post(`${this.apiBaseUrl}/usuarios`, payload);
-  }
+  private loadUserFromStorage(): void {
+    const storedUser = localStorage.getItem('user_data');
+    if (storedUser) {
+      try {
+        const userData = JSON.parse(storedUser);
+        this.userDataSubject.next(userData);
+      } catch (error) {
+        console.error('Error al parsear datos de usuario desde localStorage:', error);
+        localStorage.removeItem('user_data');
+      }
+    }
+  }
+
+  getUserData(): any {
+    return this.userDataSubject.value;
+  }
+
+  clearUserData(): void {
+    localStorage.removeItem('user_data');
+    this.userDataSubject.next(null);
+  }
 }

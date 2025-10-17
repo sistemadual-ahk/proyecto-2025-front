@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { SidebarComponent } from '../sidebar/sidebar.component';
 import { AuthService } from '@auth0/auth0-angular';
 import { Router } from '@angular/router';
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-header',
@@ -21,7 +22,8 @@ export class HeaderComponent {
 
   constructor(
     private router: Router,
-    private auth: AuthService
+    private auth: AuthService,
+    private userService: UserService
   ) { }
 
   onPreviousMonthClick() { this.previousMonth.emit(); }
@@ -38,11 +40,14 @@ export class HeaderComponent {
   }
 
   logout() {
+    this.userService.clearUserData();
+
     this.auth.logout({
       logoutParams: {
         returnTo: window.location.origin,
       }
     });
-    this.router.navigate(['/']);
+
+    this.router.navigate(['/login']);
   }
 }

@@ -5,7 +5,7 @@ import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@a
 import { routes } from './app.routes';
 import { provideClientHydration } from '@angular/platform-browser';
 import { provideAuth0 } from '@auth0/auth0-angular';
-import { AuthInterceptor } from './interceptors/token.interceptor'; 
+import { AuthInterceptor } from './interceptors/token.interceptor';
 import { registerLocaleData } from '@angular/common';
 import es from '@angular/common/locales/es';
 import { FormsModule } from '@angular/forms';
@@ -19,10 +19,7 @@ export const appConfig: ApplicationConfig = {
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
     provideClientHydration(),
-    
-    // Configura HttpClient para usar interceptores de DI (necesario)
-    provideHttpClient(withInterceptorsFromDi()), 
-    
+    provideHttpClient(withInterceptorsFromDi()),
     provideNzI18n(es_ES),
     importProvidersFrom(FormsModule),
     provideAnimationsAsync(),
@@ -32,18 +29,17 @@ export const appConfig: ApplicationConfig = {
       clientId: '17HyCTqd1XCr5uGcMCMJlmTQmUwz8clj',
       authorizationParams: {
         redirect_uri: window.location.origin,
-        // ✅ CRÍTICO: DEBES REEMPLAZAR ESTO con el valor de tu AUTH0_AUDIENCE del backend
-        audience: 'https://dev-zztnl4usqwhq2jl2.us.auth0.com/api/v2/', 
-      }
+        audience: 'https://dev-zztnl4usqwhq2jl2.us.auth0.com/api/v2/',
+      },
+      cacheLocation: 'localstorage',
+      useRefreshTokens: true,
     }),
-    
-    // ⚠️ 2. REGISTRO DEL INTERCEPTOR (La pieza faltante)
+
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,
-      multi: true, // Esto permite múltiples interceptores
+      multi: true,
     },
-    
-    // NOTA: Se eliminó el 'provideHttpClient()' redundante.
+
   ]
 };
