@@ -258,3 +258,13 @@ La aplicación está optimizada para:
 - **Tomas Ramirez**  
 
 **¡Gracias por usar Ga$tify! 💚**
+
+## 📄 Pantallas y qué hay en cada una (`src/app/pages`)
+
+- **home (HomeComponent)**: Dashboard con navegación de mes, tarjetas de Ingresos/Gastos, stack de tarjetas de pago, lista de movimientos recientes y acciones rápidas (ir a Objetivos, Análisis y agregar transacción con modal).
+- **activity (ActivityComponent)**: Historial de movimientos agrupados por fecha, barra de búsqueda, íconos por categoría, descripción/subcategoría, hora y monto; incluye estado vacío si no hay datos.
+- **analysis (AnalysisComponent)**: Vista de análisis con pestañas (semanal, mensual, anual), selector de mes, tarjeta de “Gastos por categoría” (donut + leyenda), evolución de gastos en el tiempo e insights (alertas y consejos).
+- **login (LoginComponent)**: Inicio de sesión con logo, formulario de usuario/email y contraseña (toggle de visibilidad), enlace de recuperación, botón de login y botón para conectar con Google, acceso a registro.
+- **register (RegisterComponent)**: Registro con avatar editable, formulario (usuario, email, contraseña y confirmación con toggles, fecha de nacimiento), aceptación de términos, botón “Siguiente” y enlace a iniciar sesión.
+- **saving-goals (SavingGoalsComponent)**: Objetivos de ahorro con tarjetas que muestran progreso y montos (actual/objetivo), sección de tips de ahorro y botón para crear un nuevo objetivo.
+- **wallets (WalletsComponent)**: Gestión de billeteras con balance total, acciones de historial/nueva transferencia, listado de cuentas con icono/tipo/estado, alta de cuenta (modal) y popup de detalles con acciones (predeterminada, editar, eliminar, transferir, ver transacciones).
