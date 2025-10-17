@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterOutlet } from '@angular/router';
+import { Router, RouterOutlet, NavigationEnd } from '@angular/router';
 import { HeaderComponent } from './components/header/header.component';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -12,19 +13,25 @@ import { HeaderComponent } from './components/header/header.component';
 })
 export class AppComponent implements OnInit {
   title = 'gastify-frontend';
+  showHeader = true;
 
   constructor(private router: Router) {}
 
-  onNavigate(route: string) {
-    this.router.navigate([route]); // <-- acá sí navega
-  }
-
   ngOnInit() {
     this.preventDoubleTapZoom();
+    this.router.events
+      .pipe(filter(event => event instanceof NavigationEnd))
+      .subscribe((event: NavigationEnd) => {
+        const hiddenHeaderRoutes = ['/login', '/register', '/'];
+        this.showHeader = !hiddenHeaderRoutes.includes(event.urlAfterRedirects);
+      });
+  }
+
+  onNavigate(route: string) {
+    this.router.navigate([route]);
   }
 
   private preventDoubleTapZoom() {
-    // Prevenir zoom al hacer doble tap
     let lastTouchEnd = 0;
     const preventZoom = (e: TouchEvent) => {
       const now = (new Date()).getTime();
@@ -34,7 +41,6 @@ export class AppComponent implements OnInit {
       lastTouchEnd = now;
     };
 
-    // Agregar event listeners para prevenir zoom
     document.addEventListener('touchend', preventZoom, false);
     document.addEventListener('touchstart', (e) => {
       if (e.touches.length > 1) {
@@ -42,7 +48,6 @@ export class AppComponent implements OnInit {
       }
     }, { passive: false });
 
-    // Prevenir zoom con gestos de pellizco
     document.addEventListener('gesturestart', (e) => {
       e.preventDefault();
     }, { passive: false });
