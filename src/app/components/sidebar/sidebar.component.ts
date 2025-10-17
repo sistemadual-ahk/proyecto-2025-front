@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
+import { AuthService } from '@auth0/auth0-angular';
 
 export interface SidebarItem {
   icon?: string; // opcional: clase de icono (ej. "bx bx-home")
@@ -19,25 +20,45 @@ export interface SidebarItem {
   styleUrls: ['./sidebar.component.scss'],
 })
 export class SidebarComponent {
-  /** Estado abierto/cerrado del sidebar, manejado internamente */
   isOpen = false;
-
-  constructor(private router: Router) {}
-
-  onNavigate(route: string) {
-    this.router.navigate([route]); // <-- acá sí navega
-  }
-
-  /** Nombre de usuario para la sección de perfil (opcional) */
+  perfilHabilitado = false;
+  ajustesHabilitado = false;
   @Input() userName = '';
-
-  /** Items de navegación (si no los pasás, podés hardcodearlos en el HTML) */
   @Input() items: SidebarItem[] = [];
-
-  /** Eventos hacia el padre */
   @Output() closeEvent = new EventEmitter<void>();
   @Output() logoutEvent = new EventEmitter<void>();
   @Output() editProfile = new EventEmitter<void>();
+
+  constructor(
+    private router: Router,
+    public auth: AuthService
+  ) {}
+
+  get currentDate(): string {
+    const fecha = new Date();
+    const meses = [
+      'Ene.',
+      'Feb.',
+      'Mar.',
+      'Abr.',
+      'May.',
+      'Jun.',
+      'Jul.',
+      'Ago.',
+      'Sep.',
+      'Oct.',
+      'Nov.',
+      'Dic.',
+    ];
+    const dia = fecha.getDate();
+    const mes = meses[fecha.getMonth()];
+    const año = fecha.getFullYear();
+    return `${dia} ${mes} ${año}`;
+  }
+
+  onNavigate(route: string) {
+    this.router.navigate([route]);
+  }
 
   // Métodos para el menú
   toggleMenu() {
@@ -48,12 +69,8 @@ export class SidebarComponent {
   }
   closeMenu() {
     this.isOpen = false;
-    this.onClose();
   }
-
-  onClose() {
-    this.closeEvent.emit();
-  }
+  
   onEditProfile() {
     this.editProfile.emit();
     this.closeMenu();

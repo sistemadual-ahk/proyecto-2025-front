@@ -4,8 +4,8 @@ import { RouterModule, Router } from '@angular/router';
 import { SidebarComponent } from '../../components/sidebar/sidebar.component';
 import { PageTitleComponent } from '../../components/page-title/page-title.component';
 import { Subscription } from 'rxjs';
-import { GastoService } from '../../services/gasto.service';
-import { Gasto } from '../../../models/gasto.model';
+import { OperacionService } from '../../services/operacion.service';
+import { Operacion } from '../../../models/operacion.model';
 import { formatDate } from '../../utils/formatDate';
 
 @Component({
@@ -18,7 +18,7 @@ import { formatDate } from '../../utils/formatDate';
 export class ActivityComponent implements OnInit, OnDestroy {
   constructor(
     private router: Router,
-    private gastoService: GastoService
+    private operacionService: OperacionService
   ) {}
 
   // Estado del menú
@@ -27,54 +27,56 @@ export class ActivityComponent implements OnInit, OnDestroy {
   // Suscripciones
   private subscription = new Subscription();
 
-  // Gastos agrupados
-  groupedGastos: { date: string; gastos: Gasto[] }[] = [];
+  // Operaciones agrupados
+  groupedOperaciones: { date: string; operaciones: Operacion[] }[] = [];
 
   ngOnInit(): void {
-    this.loadGastos();
+    this.loadOperaciones();
   }
 
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
   }
 
-  private loadGastos(): void {
-    // Cargar gastos desde la API
+  private loadOperaciones(): void {
+    // Cargar operaciones desde la API
     this.subscription.add(
-      this.gastoService.getAllGastos().subscribe({
-        next: (gastos) => {
-          this.groupedGastos = this.groupGastosByDate(gastos);
+      this.operacionService.getAllOperaciones().subscribe({
+        next: (op) => {
+          this.groupedOperaciones = this.groupOperacionesByDate(op);
         },
         error: (error) => {
-          console.error('Error al cargar gastos:', error);
+          console.error('Error al cargar operaciones:', error);
         },
       })
     );
   }
 
-  private groupGastosByDate(gastos: Gasto[]): { date: string; gastos: Gasto[] }[] {
-    const groups: { [key: string]: Gasto[] } = {};
+  private groupOperacionesByDate(
+    operaciones: Operacion[]
+  ): { date: string; operaciones: Operacion[] }[] {
+    const groups: { [key: string]: Operacion[] } = {};
 
-    gastos.forEach((gasto) => {
-      const dateKey = formatDate(gasto.datetime.toString());
+    operaciones.forEach((op) => {
+      const dateKey = formatDate(op.fecha.toString());
       if (!groups[dateKey]) {
         groups[dateKey] = [];
       }
-      groups[dateKey].push(gasto);
+      groups[dateKey].push(op);
     });
 
     // Convertir a array y ordenar por fecha (más reciente primero)
     return Object.keys(groups)
       .map((date) => ({
         date: date,
-        gastos: groups[date],
+        operaciones: groups[date],
       }))
       .sort((a, b) => {
         const dateA = new Date(
-          gastos.find((g) => formatDate(g.datetime.toString()) === a.date)?.datetime || ''
+          operaciones.find((g) => formatDate(g.fecha.toString()) === a.date)?.fecha || ''
         );
         const dateB = new Date(
-          gastos.find((g) => formatDate(g.datetime.toString()) === b.date)?.datetime || ''
+          operaciones.find((g) => formatDate(g.fecha.toString()) === b.date)?.fecha || ''
         );
         return dateB.getTime() - dateA.getTime();
       });
