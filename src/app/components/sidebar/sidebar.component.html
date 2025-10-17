@@ -14,7 +14,7 @@
       <div class="profile-name">Ezequiel</div>
     </div>
     <div class="separator"></div>
-    
+
     <!-- Navigation Menu -->
     <nav class="sidebar-nav">
       <a href="#" class="sidebar-nav-item" (click)="onEditProfile()">
@@ -25,7 +25,12 @@
         <i class="mdi mdi-home"></i>
         <span>Inicio</span>
       </a>
-      <a routerLink="/wallets" class="sidebar-nav-item" style="cursor: pointer;" (click)="closeMenu()">
+      <a
+        routerLink="/wallets"
+        class="sidebar-nav-item"
+        style="cursor: pointer"
+        (click)="closeMenu()"
+      >
         <i class="mdi mdi-wallet"></i>
         <span>Billeteras</span>
       </a>
@@ -33,11 +38,21 @@
         <i class="mdi mdi-sync"></i>
         <span>Actividad</span>
       </a>
-      <a routerLink="/analysis" class="sidebar-nav-item" style="cursor: pointer;" (click)="closeMenu()">
+      <a
+        routerLink="/analysis"
+        class="sidebar-nav-item"
+        style="cursor: pointer"
+        (click)="closeMenu()"
+      >
         <i class="mdi mdi-chart-line"></i>
         <span>Análisis</span>
       </a>
-      <a routerLink="/saving-goals" class="sidebar-nav-item" style="cursor: pointer;" (click)="closeMenu()">
+      <a
+        routerLink="/saving-goals"
+        class="sidebar-nav-item"
+        style="cursor: pointer"
+        (click)="closeMenu()"
+      >
         <i class="mdi mdi-target"></i>
         <span>Objetivos</span>
       </a>
@@ -49,12 +64,12 @@
         <i class="mdi mdi-cog"></i>
         <span>Ajustes</span>
       </a>
-          <a href="javascript:void(0)" class="sidebar-nav-item logout" (click)="onLogout()">
-          <i class="mdi mdi-logout"></i>
-          <span>Cerrar Sesión</span>
+      <a href="javascript:void(0)" class="sidebar-nav-item logout" (click)="onLogout()">
+        <i class="mdi mdi-logout"></i>
+        <span>Cerrar Sesión</span>
       </a>
     </nav>
-    
+
     <!-- Footer -->
     <div class="sidebar-footer">
       <div class="refresh-info">

@@ -7,13 +7,12 @@ import { TransactionModalComponent } from '../../components/transaction-modal/tr
 import { GastoService } from '../../services/gasto.service';
 import { Gasto } from '../../../models/gasto.model';
 
-
 @Component({
   selector: 'app-home',
   standalone: true,
   imports: [CommonModule, FormsModule, RouterModule, TransactionModalComponent],
   templateUrl: './home.component.html',
-  styleUrl: './home.component.scss'
+  styleUrl: './home.component.scss',
 })
 export class HomeComponent implements OnInit, OnDestroy {
   isMenuOpen = false;
@@ -34,7 +33,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       number: '**** **** **** 1234',
       holder: 'Titular',
       balance: '$15,000',
-      background: 'linear-gradient(135deg, #009EE3, #0078BE)'
+      background: 'linear-gradient(135deg, #009EE3, #0078BE)',
     },
     {
       typeLabel: 'Santander',
@@ -42,7 +41,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       number: '**** **** **** 5678',
       holder: 'Titular',
       balance: '$18,000',
-      background: 'linear-gradient(135deg, #EC0000, #CC0000)'
+      background: 'linear-gradient(135deg, #EC0000, #CC0000)',
     },
     {
       typeLabel: 'Efectivo',
@@ -50,8 +49,8 @@ export class HomeComponent implements OnInit, OnDestroy {
       number: 'Disponible',
       holder: 'En mano',
       balance: '$4,300',
-      background: 'linear-gradient(135deg, #51CF66, #40C057)'
-    }
+      background: 'linear-gradient(135deg, #51CF66, #40C057)',
+    },
   ];
 
   // Flag de animación
@@ -60,7 +59,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   constructor(
     private router: Router,
     private gastoService: GastoService
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.loadData();
@@ -81,15 +80,15 @@ export class HomeComponent implements OnInit, OnDestroy {
         },
         error: (error) => {
           console.error('Error al cargar gastos:', error);
-        }
+        },
       })
     );
   }
 
   private calculateStats(): void {
     // Calcular estadísticas desde los gastos
-    const ingresos = this.gastos.filter(g => g.tipo === 'income');
-    const gastosData = this.gastos.filter(g => g.tipo === 'expense');
+    const ingresos = this.gastos.filter((g) => g.tipo === 'income');
+    const gastosData = this.gastos.filter((g) => g.tipo === 'expense');
 
     this.income = ingresos.reduce((sum, g) => sum + g.monto, 0);
     this.expenses = gastosData.reduce((sum, g) => sum + g.monto, 0);
@@ -101,7 +100,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       .sort((a, b) => new Date(b.datetime).getTime() - new Date(a.datetime).getTime())
       .slice(0, 3);
 
-    this.recentMovements = recentGastos.map(gasto => ({
+    this.recentMovements = recentGastos.map((gasto) => ({
       id: gasto._id,
       type: gasto.tipo,
       category: gasto.categoria?.nombre || 'Sin categoría',
@@ -110,7 +109,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       icon: gasto.categoria?.icono || 'mdi-cash',
       amount: gasto.tipo === 'income' ? gasto.monto : -gasto.monto,
       date: this.formatDateForHome(gasto.datetime.toString()),
-      color: gasto.tipo === 'income' ? '#10b981' : gasto.categoria?.color || '#6b7280'
+      color: gasto.tipo === 'income' ? '#10b981' : gasto.categoria?.color || '#6b7280',
     }));
   }
 
@@ -184,7 +183,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     return {
       transform: `translateY(${translateY}px) scale(${scale})`,
       opacity: opacity,
-      zIndex: zIndex
+      zIndex: zIndex,
     };
   }
 
@@ -200,7 +199,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   private formatMonthTitle(date: Date): string {
     const monthYear = date.toLocaleDateString('es-ES', {
       month: 'long',
-      year: 'numeric'
+      year: 'numeric',
     });
     return this.capitalizeFirstLetter(monthYear);
   }
@@ -221,12 +220,15 @@ export class HomeComponent implements OnInit, OnDestroy {
     } else if (date.toDateString() === yesterday.toDateString()) {
       return 'Ayer, ' + date.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
     } else {
-      return date.toLocaleDateString('es-ES', { day: 'numeric', month: 'short' }) + ', ' +
-        date.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+      return (
+        date.toLocaleDateString('es-ES', { day: 'numeric', month: 'short' }) +
+        ', ' +
+        date.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })
+      );
     }
   }
 
   redondearAmount(amount: number): number {
     return Math.round(amount);
   }
-} 
+}

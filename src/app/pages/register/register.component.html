@@ -4,126 +4,120 @@
     <button class="btn-back" (click)="navegarAInicio()">
       <i class="mdi mdi-arrow-left"></i>
     </button>
-     <!-- Title -->
-     <div class="title-section">
+    <!-- Title -->
+    <div class="title-section">
       <h2 class="welcome-title">Hola!</h2>
       <p class="welcome-subtitle">Comencemos a crear tu cuenta</p>
     </div>
     <!-- Logo -->
-     <div class="profile-section">
+    <div class="profile-section">
       <div class="profile-image">
-      <i class="mdi mdi-account"></i>
-             <button class="edit-profile-btn">
-         <i class="mdi mdi-camera"></i>
-       </button>
-    </div>
-    <!-- Register Form -->
-    <form class="register-form" (ngSubmit)="onSubmit()">
-      <!-- Username Field -->
-      <div class="input-group">
-        <div class="input-icon">
-          <i class="mdi mdi-account"></i>
-        </div>
-        <input 
-          type="text" 
-          class="form-input" 
-          placeholder="Nombre de usuario"
-          [(ngModel)]="username"
-          name="username"
-          required>
-      </div>
-
-      <!-- Email Field -->
-      <div class="input-group">
-        <div class="input-icon">
-          <i class="mdi mdi-email"></i>
-        </div>
-        <input 
-          type="email" 
-          class="form-input" 
-          placeholder="Correo electrónico"
-          [(ngModel)]="email"
-          name="email"
-          required>
-      </div>
-
-      <!-- Password Field -->
-      <div class="input-group">
-        <div class="input-icon">
-          <i class="mdi mdi-lock"></i>
-        </div>
-        <input 
-          [type]="showPassword ? 'text' : 'password'" 
-          class="form-input" 
-          placeholder="Contraseña"
-          [(ngModel)]="password"
-          name="password"
-          required>
-        <button 
-          type="button" 
-          class="password-toggle"
-          (click)="togglePasswordVisibility()">
-          <i [class]="showPassword ? 'mdi mdi-eye-off' : 'mdi mdi-eye'"></i>
+        <i class="mdi mdi-account"></i>
+        <button class="edit-profile-btn">
+          <i class="mdi mdi-camera"></i>
         </button>
       </div>
-
-      <!-- Confirm Password Field -->
-      <div class="input-group">
-        <div class="input-icon">
-          <i class="mdi mdi-lock-check"></i>
+      <!-- Register Form -->
+      <form class="register-form" (ngSubmit)="onSubmit()">
+        <!-- Username Field -->
+        <div class="input-group">
+          <div class="input-icon">
+            <i class="mdi mdi-account"></i>
+          </div>
+          <input
+            type="text"
+            class="form-input"
+            placeholder="Nombre de usuario"
+            [(ngModel)]="username"
+            name="username"
+            required
+          />
         </div>
-        <input 
-          [type]="showConfirmPassword ? 'text' : 'password'" 
-          class="form-input" 
-          placeholder="Confirmar contraseña"
-          [(ngModel)]="confirmPassword"
-          name="confirmPassword"
-          required>
-        <button 
-          type="button" 
-          class="password-toggle"
-          (click)="toggleConfirmPasswordVisibility()">
-          <i [class]="showConfirmPassword ? 'mdi mdi-eye-off' : 'mdi mdi-eye'"></i>
-        </button>
-      </div>
 
-      <!-- Date of Birth Field -->
-      <div class="input-group">
-        <div class="input-icon">
-          <i class="mdi mdi-calendar"></i>
+        <!-- Email Field -->
+        <div class="input-group">
+          <div class="input-icon">
+            <i class="mdi mdi-email"></i>
+          </div>
+          <input
+            type="email"
+            class="form-input"
+            placeholder="Correo electrónico"
+            [(ngModel)]="email"
+            name="email"
+            required
+          />
         </div>
-        <input 
-          type="date" 
-          class="form-input" 
-          placeholder="Fecha de nacimiento"
-          [(ngModel)]="dateOfBirth"
-          name="dateOfBirth"
-          required>
+
+        <!-- Password Field -->
+        <div class="input-group">
+          <div class="input-icon">
+            <i class="mdi mdi-lock"></i>
+          </div>
+          <input
+            [type]="showPassword ? 'text' : 'password'"
+            class="form-input"
+            placeholder="Contraseña"
+            [(ngModel)]="password"
+            name="password"
+            required
+          />
+          <button type="button" class="password-toggle" (click)="togglePasswordVisibility()">
+            <i [class]="showPassword ? 'mdi mdi-eye-off' : 'mdi mdi-eye'"></i>
+          </button>
+        </div>
+
+        <!-- Confirm Password Field -->
+        <div class="input-group">
+          <div class="input-icon">
+            <i class="mdi mdi-lock-check"></i>
+          </div>
+          <input
+            [type]="showConfirmPassword ? 'text' : 'password'"
+            class="form-input"
+            placeholder="Confirmar contraseña"
+            [(ngModel)]="confirmPassword"
+            name="confirmPassword"
+            required
+          />
+          <button type="button" class="password-toggle" (click)="toggleConfirmPasswordVisibility()">
+            <i [class]="showConfirmPassword ? 'mdi mdi-eye-off' : 'mdi mdi-eye'"></i>
+          </button>
+        </div>
+
+        <!-- Date of Birth Field -->
+        <div class="input-group">
+          <div class="input-icon">
+            <i class="mdi mdi-calendar"></i>
+          </div>
+          <input
+            type="date"
+            class="form-input"
+            placeholder="Fecha de nacimiento"
+            [(ngModel)]="dateOfBirth"
+            name="dateOfBirth"
+            required
+          />
+        </div>
+
+        <!-- Terms and Conditions -->
+        <div class="terms-section">
+          <label class="checkbox-label">
+            <input type="checkbox" [(ngModel)]="acceptTerms" name="acceptTerms" required />
+            <span class="checkmark"></span>
+            Acepto los<a href="#" class="terms-link">términos y condiciones</a>
+          </label>
+        </div>
+
+        <!-- Next Button -->
+        <button type="submit" class="btn-next">Siguiente</button>
+      </form>
+
+      <!-- Login Link -->
+      <div class="login-section">
+        <p class="login-text">¿Ya tienes cuenta?</p>
+        <a (click)="navegarALogin()" class="login-link">Inicia sesión</a>
       </div>
-
-      <!-- Terms and Conditions -->
-      <div class="terms-section">
-        <label class="checkbox-label">
-          <input 
-            type="checkbox" 
-            [(ngModel)]="acceptTerms"
-            name="acceptTerms"
-            required>
-          <span class="checkmark"></span>
-          Acepto los<a href="#" class="terms-link">términos y condiciones</a>
-        </label>
-      </div>
-
-      <!-- Next Button -->
-      <button type="submit" class="btn-next">
-        Siguiente
-      </button>
-    </form>
-
-    <!-- Login Link -->
-    <div class="login-section">
-      <p class="login-text">¿Ya tienes cuenta?</p>
-      <a (click)="navegarALogin()" class="login-link">Inicia sesión</a>
     </div>
   </div>
-</div> 
+</div>

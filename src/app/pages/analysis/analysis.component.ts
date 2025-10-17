@@ -10,15 +10,12 @@ import { PageTitleComponent } from '../../components/page-title/page-title.compo
   standalone: true,
   imports: [CommonModule, HeaderComponent, SidebarComponent, PageTitleComponent],
   templateUrl: './analysis.component.html',
-  styleUrl: './analysis.component.scss'
+  styleUrl: './analysis.component.scss',
 })
 export class AnalysisComponent {
-
-  constructor(private router: Router) { }
+  constructor(private router: Router) {}
 
   goBack() {
     this.router.navigate(['/home']);
   }
 }
-
-

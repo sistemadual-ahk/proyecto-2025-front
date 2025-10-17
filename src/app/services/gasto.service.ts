@@ -5,10 +5,9 @@ import { Gasto } from '../../models/gasto.model';
 import { Operacion } from '../../models/operacion.model';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class GastoService {
-  
   constructor(private operacionService: OperacionService) {}
 
   /**
@@ -16,14 +15,14 @@ export class GastoService {
    * @returns Un Observable que emite un array de gastos.
    */
   getAllGastos(): Observable<Gasto[]> {
-    return new Observable(observer => {
+    return new Observable((observer) => {
       this.operacionService.getEgresos().subscribe({
         next: (operaciones) => {
           // Convertir Operacion[] a Gasto[]
           const gastos = operaciones.map(this.operacionToGasto);
           observer.next(gastos);
         },
-        error: (error) => observer.error(error)
+        error: (error) => observer.error(error),
       });
     });
   }
@@ -34,7 +33,7 @@ export class GastoService {
    * @returns Un Observable que emite el gasto encontrado.
    */
   getGastoById(id: string | number): Observable<Gasto> {
-    return new Observable(observer => {
+    return new Observable((observer) => {
       this.operacionService.getOperacionById(id).subscribe({
         next: (operacion) => {
           if (operacion.tipo === 'Egreso') {
@@ -43,7 +42,7 @@ export class GastoService {
             observer.error(new Error('La operación no es un egreso'));
           }
         },
-        error: (error) => observer.error(error)
+        error: (error) => observer.error(error),
       });
     });
   }
@@ -55,12 +54,12 @@ export class GastoService {
    */
   createGasto(gastoData: Partial<Gasto>): Observable<Gasto> {
     const operacionData = this.gastoToOperacion(gastoData);
-    return new Observable(observer => {
+    return new Observable((observer) => {
       this.operacionService.createOperacion(operacionData).subscribe({
         next: (operacion) => {
           observer.next(this.operacionToGasto(operacion));
         },
-        error: (error) => observer.error(error)
+        error: (error) => observer.error(error),
       });
     });
   }
@@ -73,12 +72,12 @@ export class GastoService {
    */
   updateGasto(id: string | number, gastoData: Partial<Gasto>): Observable<Gasto> {
     const operacionData = this.gastoToOperacion(gastoData);
-    return new Observable(observer => {
+    return new Observable((observer) => {
       this.operacionService.updateOperacion(id, operacionData).subscribe({
         next: (operacion) => {
           observer.next(this.operacionToGasto(operacion));
         },
-        error: (error) => observer.error(error)
+        error: (error) => observer.error(error),
       });
     });
   }
@@ -110,8 +109,8 @@ export class GastoService {
         _id: operacion.categoriaId,
         userId: operacion.userId || '',
         nombre: '', // Se llenaría con datos adicionales si es necesario
-        descripcion: ''
-      }
+        descripcion: '',
+      },
     };
   }
 
@@ -128,7 +127,7 @@ export class GastoService {
       categoriaId: gasto.categoria?._id || '',
       billeteraId: gasto.billetera || '',
       fecha: this.dateToFecha(gasto.datetime || new Date()),
-      userId: gasto.userId
+      userId: gasto.userId,
     };
   }
 

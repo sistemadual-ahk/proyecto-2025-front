@@ -4,10 +4,9 @@ import { ApiService } from './api.service';
 import { Categoria } from '../../models/categoria.model';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class CategoryService extends ApiService {
-
   getAllCategories(): Observable<Categoria[]> {
     return super.getAll<Categoria>('/categorias');
   }

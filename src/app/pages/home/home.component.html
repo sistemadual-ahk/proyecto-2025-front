@@ -75,10 +75,7 @@
             <h4 class="movement-category">
               {{ movement.description }}
               <span
-                *ngIf="
-                  movement.subcategory &&
-                  movement.subcategory !== movement.description
-                "
+                *ngIf="movement.subcategory && movement.subcategory !== movement.description"
                 class="movement-subcategory"
               >
                 - {{ movement.subcategory }}
@@ -86,13 +83,8 @@
             </h4>
             <p class="movement-date">{{ movement.date }}</p>
           </div>
-          <div
-            class="movement-amount"
-            [class.income]="movement.type === 'income'"
-          >
-            {{ movement.amount > 0 ? "+" : "" }}${{
-              redondearAmount(movement.amount)
-            }}
+          <div class="movement-amount" [class.income]="movement.type === 'income'">
+            {{ movement.amount > 0 ? '+' : '' }}${{ redondearAmount(movement.amount) }}
           </div>
         </div>
       </div>
@@ -117,9 +109,6 @@
   </div>
 
   <!-- Modal de Transacción -->
-  <app-transaction-modal
-    *ngIf="showTransactionModal"
-    (closeModal)="closeTransactionModal()"
-  >
+  <app-transaction-modal *ngIf="showTransactionModal" (closeModal)="closeTransactionModal()">
   </app-transaction-modal>
 </div>

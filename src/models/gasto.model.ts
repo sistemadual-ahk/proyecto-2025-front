@@ -1,4 +1,4 @@
-import { Categoria } from "./categoria.model";
+import { Categoria } from './categoria.model';
 
 export interface Gasto {
   _id?: string;

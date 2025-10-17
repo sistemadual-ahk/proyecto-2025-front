@@ -10,7 +10,7 @@ import { UserService } from '../../services/user.service';
   standalone: true,
   imports: [CommonModule, SidebarComponent],
   templateUrl: './header.component.html',
-  styleUrls: ['./header.component.scss']
+  styleUrls: ['./header.component.scss'],
 })
 export class HeaderComponent {
   @Input() title = 'Gastify';
@@ -24,12 +24,20 @@ export class HeaderComponent {
     private router: Router,
     private auth: AuthService,
     private userService: UserService
-  ) { }
+  ) {}
 
-  onPreviousMonthClick() { this.previousMonth.emit(); }
-  onNextMonthClick() { this.nextMonth.emit(); }
-  onNotificationsClick() { this.notificationsClick.emit(); }
-  onProfileClick() { this.profileClick.emit(); }
+  onPreviousMonthClick() {
+    this.previousMonth.emit();
+  }
+  onNextMonthClick() {
+    this.nextMonth.emit();
+  }
+  onNotificationsClick() {
+    this.notificationsClick.emit();
+  }
+  onProfileClick() {
+    this.profileClick.emit();
+  }
 
   openNotifications() {
     this.notificationsClick.emit();
@@ -45,7 +53,7 @@ export class HeaderComponent {
     this.auth.logout({
       logoutParams: {
         returnTo: window.location.origin,
-      }
+      },
     });
 
     this.router.navigate(['/login']);

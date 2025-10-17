@@ -10,12 +10,12 @@ import { PageTitleComponent } from '../../components/page-title/page-title.compo
   standalone: true,
   imports: [CommonModule, HeaderComponent, SidebarComponent, PageTitleComponent],
   templateUrl: './saving-goals.component.html',
-  styleUrl: './saving-goals.component.scss'
+  styleUrl: './saving-goals.component.scss',
 })
 export class SavingGoalsComponent {
   // Estado del menú
   isMenuOpen = false;
-  
+
   // Datos de los objetivos de ahorro
   savingGoals = [
     {
@@ -24,7 +24,7 @@ export class SavingGoalsComponent {
       currentAmount: 1200,
       targetAmount: 3000,
       progress: 40, // 1200/3000 * 100
-      color: 'var(--gastify-purple)'
+      color: 'var(--gastify-purple)',
     },
     {
       id: 2,
@@ -32,8 +32,8 @@ export class SavingGoalsComponent {
       currentAmount: 750,
       targetAmount: 1200,
       progress: 62.5, // 750/1200 * 100
-      color: 'var(--gastify-green)'
-    }
+      color: 'var(--gastify-green)',
+    },
   ];
 
   // Tips de ahorro
@@ -42,20 +42,21 @@ export class SavingGoalsComponent {
       id: 1,
       icon: 'mdi-bell-ring',
       title: 'Intenta ahorrar automáticamente',
-      description: 'Programa transferencias periódicas a tus objetivos para alcanzarlos más rápidamente'
+      description:
+        'Programa transferencias periódicas a tus objetivos para alcanzarlos más rápidamente',
     },
     {
       id: 2,
       icon: 'mdi-thought-bubble',
       title: 'Reduce las compras impulsivas',
-      description: 'Considera una \'espera de 48 horas\' antes de adquirir objetos no esenciales'
+      description: "Considera una 'espera de 48 horas' antes de adquirir objetos no esenciales",
     },
     {
       id: 3,
       icon: 'mdi-help-circle',
       title: 'Desafía tus gastos',
-      description: '¿Puedes encontrar una alternativa más barata para ciertos servicios?'
-    }
+      description: '¿Puedes encontrar una alternativa más barata para ciertos servicios?',
+    },
   ];
 
   constructor(private router: Router) {}
@@ -82,4 +83,4 @@ export class SavingGoalsComponent {
   viewTip(tipId: number) {
     console.log('Ver tip:', tipId);
   }
-} 
+}

@@ -8,7 +8,7 @@ import { Gasto } from '../../../models/gasto.model';
   standalone: true,
   imports: [],
   templateUrl: './operation.component.html',
-  styleUrl: './operation.component.scss'
+  styleUrl: './operation.component.scss',
 })
 export class AddGastoModalComponent {
   @Output() closeModal = new EventEmitter<void>();
@@ -47,7 +47,7 @@ export class AddGastoModalComponent {
     this.save.emit({
       descripcion: this.descripcion.trim(),
       monto: Math.max(0, this.monto),
-      categoria: this.categoria
+      categoria: this.categoria,
     });
 
     this.resetForm();
@@ -59,4 +59,3 @@ export class AddGastoModalComponent {
     this.categoria = null;
   }
 }
-

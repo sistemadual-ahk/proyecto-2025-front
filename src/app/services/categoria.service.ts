@@ -24,12 +24,12 @@ interface ApiResponse {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class CategoriaService {
   private apiUrl = 'http://localhost:3000/api/categorias';
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   // 3. Modifica el método para usar el operador map
   getCategorias(): Observable<Categoria[]> {
@@ -37,7 +37,7 @@ export class CategoriaService {
     return this.http.get<ApiResponse>(this.apiUrl).pipe(
       // 3b. Usas el 'map' para transformar la respuesta (response)
       // y devolver SOLAMENTE la propiedad 'data', que es el arreglo de categorías.
-      map(response => response.data) 
+      map((response) => response.data)
     );
   }
 }

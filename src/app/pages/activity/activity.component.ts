@@ -13,13 +13,13 @@ import { formatDate } from '../../utils/formatDate';
   standalone: true,
   imports: [CommonModule, RouterModule, SidebarComponent, PageTitleComponent],
   templateUrl: './activity.component.html',
-  styleUrl: './activity.component.scss'
+  styleUrl: './activity.component.scss',
 })
 export class ActivityComponent implements OnInit, OnDestroy {
   constructor(
     private router: Router,
     private gastoService: GastoService
-  ) { }
+  ) {}
 
   // Estado del menú
   isMenuOpen = false;
@@ -47,7 +47,7 @@ export class ActivityComponent implements OnInit, OnDestroy {
         },
         error: (error) => {
           console.error('Error al cargar gastos:', error);
-        }
+        },
       })
     );
   }
@@ -55,7 +55,7 @@ export class ActivityComponent implements OnInit, OnDestroy {
   private groupGastosByDate(gastos: Gasto[]): { date: string; gastos: Gasto[] }[] {
     const groups: { [key: string]: Gasto[] } = {};
 
-    gastos.forEach(gasto => {
+    gastos.forEach((gasto) => {
       const dateKey = formatDate(gasto.datetime.toString());
       if (!groups[dateKey]) {
         groups[dateKey] = [];
@@ -65,13 +65,17 @@ export class ActivityComponent implements OnInit, OnDestroy {
 
     // Convertir a array y ordenar por fecha (más reciente primero)
     return Object.keys(groups)
-      .map(date => ({
+      .map((date) => ({
         date: date,
-        gastos: groups[date]
+        gastos: groups[date],
       }))
       .sort((a, b) => {
-        const dateA = new Date(gastos.find(g => formatDate(g.datetime.toString()) === a.date)?.datetime || '');
-        const dateB = new Date(gastos.find(g => formatDate(g.datetime.toString()) === b.date)?.datetime || '');
+        const dateA = new Date(
+          gastos.find((g) => formatDate(g.datetime.toString()) === a.date)?.datetime || ''
+        );
+        const dateB = new Date(
+          gastos.find((g) => formatDate(g.datetime.toString()) === b.date)?.datetime || ''
+        );
         return dateB.getTime() - dateA.getTime();
       });
   }

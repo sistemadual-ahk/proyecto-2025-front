@@ -9,7 +9,7 @@ import { environment } from '../../environments/environment';
 export class AuthInterceptor implements HttpInterceptor {
   private apiBaseUrl = environment.API_BACK_URL;
 
-  constructor(private auth: AuthService) { }
+  constructor(private auth: AuthService) {}
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
     if (!request.url.startsWith(this.apiBaseUrl)) {
@@ -18,11 +18,11 @@ export class AuthInterceptor implements HttpInterceptor {
 
     return this.auth.getAccessTokenSilently().pipe(
       first(),
-      switchMap(token => {
+      switchMap((token) => {
         const authReq = request.clone({
           setHeaders: {
-            Authorization: `Bearer ${token}`
-          }
+            Authorization: `Bearer ${token}`,
+          },
         });
         return next.handle(authReq);
       })

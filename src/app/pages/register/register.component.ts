@@ -8,7 +8,7 @@ import { Router } from '@angular/router';
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './register.component.html',
-  styleUrl: './register.component.scss'
+  styleUrl: './register.component.scss',
 })
 export class RegisterComponent {
   username: string = '';
@@ -38,9 +38,9 @@ export class RegisterComponent {
       password: this.password,
       confirmPassword: this.confirmPassword,
       dateOfBirth: this.dateOfBirth,
-      acceptTerms: this.acceptTerms
+      acceptTerms: this.acceptTerms,
     });
-    
+
     // Por ahora, redirigir a home
     this.router.navigate(['/home']);
   }
@@ -56,4 +56,4 @@ export class RegisterComponent {
   navegarAInicio(): void {
     this.router.navigate(['/']);
   }
-} 
+}

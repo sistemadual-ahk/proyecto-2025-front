@@ -9,7 +9,7 @@ type WalletType = 'bank' | 'digital' | 'cash';
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './add-account-modal.component.html',
-  styleUrl: './add-account-modal.component.scss'
+  styleUrl: './add-account-modal.component.scss',
 })
 export class AddAccountModalComponent {
   @Output() closeModal = new EventEmitter<void>();
@@ -30,7 +30,7 @@ export class AddAccountModalComponent {
   providersByType: Record<WalletType, string[]> = {
     bank: ['Santander', 'BBVA', 'Galicia', 'Macro', 'Provincia'],
     digital: ['Mercado Pago', 'Ualá', 'Naranja X'],
-    cash: ['Efectivo']
+    cash: ['Efectivo'],
   };
 
   get currentProviders(): string[] {
@@ -57,7 +57,7 @@ export class AddAccountModalComponent {
       name: this.name.trim(),
       type: this.type,
       provider: this.provider || undefined,
-      initialBalance: Math.max(0, Math.floor(this.initialBalance))
+      initialBalance: Math.max(0, Math.floor(this.initialBalance)),
     });
     this.resetForm();
   }
@@ -69,6 +69,3 @@ export class AddAccountModalComponent {
     this.initialBalance = 0;
   }
 }
-
-
-

@@ -1,12 +1,11 @@
 <!-- Header -->
 <header class="header">
   <div class="header-left">
-    <app-sidebar #sidebar (close)="sidebar.closeMenu()" (logoutEvent)="logout()"></app-sidebar>
+    <app-sidebar #sidebar (closeEvent)="sidebar.closeMenu()" (logoutEvent)="logout()"></app-sidebar>
     <button class="menu-btn" (click)="sidebar.toggleMenu()">
       <i class="mdi mdi-menu"></i>
     </button>
   </div>
-  
 
   <h1 class="app-title">Ga<span class="dollar-sign">$</span>tify</h1>
 

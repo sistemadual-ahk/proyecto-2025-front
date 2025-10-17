@@ -14,5 +14,5 @@ export const routes: Routes = [
   { path: 'saving-goals', component: SavingGoalsComponent },
   { path: 'wallets', component: WalletsComponent },
   { path: 'activity', component: ActivityComponent },
-  { path: 'analysis', component: AnalysisComponent }
+  { path: 'analysis', component: AnalysisComponent },
 ];

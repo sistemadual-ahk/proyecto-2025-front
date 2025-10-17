@@ -4,12 +4,12 @@ import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ApiService {
   protected readonly API_BASE_URL = environment.API_BACK_URL;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   getAll<T>(route: string): Observable<T[]> {
     return this.http.get<T[]>(`${this.API_BASE_URL}${route}`);

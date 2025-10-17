@@ -1,6 +1,4 @@
 <div class="saving-goals-container">
-  
-
   <!-- Navegación y título -->
   <app-page-title title="Objetivos" (back)="goBack()"></app-page-title>
 
@@ -10,9 +8,11 @@
       <h3 class="goal-title">{{ goal.title }}</h3>
       <div class="progress-container">
         <div class="progress-bar">
-          <div class="progress-fill" 
-               [style.width.%]="goal.progress"
-               [style.background-color]="goal.color"></div>
+          <div
+            class="progress-fill"
+            [style.width.%]="goal.progress"
+            [style.background-color]="goal.color"
+          ></div>
         </div>
         <div class="goal-amounts">
           <span class="current-amount">${{ goal.currentAmount.toLocaleString() }}</span>
@@ -26,7 +26,7 @@
   <!-- Sección de tips de ahorro -->
   <div class="tips-section">
     <h3 class="tips-title">Tips de ahorro</h3>
-    
+
     <div class="tip-card" *ngFor="let tip of savingTips">
       <div class="tip-icon">
         <i [class]="tip.icon"></i>
@@ -45,4 +45,4 @@
       <span>Nuevo Objetivo</span>
     </button>
   </div>
-</div> 
+</div>
