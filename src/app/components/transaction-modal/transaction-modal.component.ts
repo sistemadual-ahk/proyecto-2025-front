@@ -4,7 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { BilleteraService, Billetera } from '../../services/billetera.service';
 import { CategoriaService, Categoria } from '../../services/categoria.service';
-import { Operacion, OperacionService } from '../../services/operation.service';
+import { OperacionService } from '../../services/operacion.service';
+import { Operacion } from '../../../models/operacion.model';
 
 //hola
 
