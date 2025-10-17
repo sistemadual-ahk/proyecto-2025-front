@@ -24,7 +24,7 @@
 
     <!-- Navigation Menu -->
     <nav class="sidebar-nav">
-      <a href="#" class="sidebar-nav-item" (click)="onEditProfile()">
+      <a  *ngIf="perfilHabilitado" href="#" class="sidebar-nav-item" (click)="onEditProfile()">
         <i class="mdi mdi-account"></i>
         <span>Perfil</span>
       </a>

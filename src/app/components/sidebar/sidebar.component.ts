@@ -20,25 +20,19 @@ export interface SidebarItem {
   styleUrls: ['./sidebar.component.scss'],
 })
 export class SidebarComponent {
-  /** Estado abierto/cerrado del sidebar, manejado internamente */
   isOpen = false;
+  perfilHabilitado = false;
+  @Input() userName = '';
+  @Input() items: SidebarItem[] = [];
+  @Output() closeEvent = new EventEmitter<void>();
+  @Output() logoutEvent = new EventEmitter<void>();
+  @Output() editProfile = new EventEmitter<void>();
 
   constructor(private router: Router, public auth: AuthService) {}
 
   onNavigate(route: string) {
-    this.router.navigate([route]); // <-- acá sí navega
+    this.router.navigate([route]);
   }
-
-  /** Nombre de usuario para la sección de perfil (opcional) */
-  @Input() userName = '';
-
-  /** Items de navegación (si no los pasás, podés hardcodearlos en el HTML) */
-  @Input() items: SidebarItem[] = [];
-
-  /** Eventos hacia el padre */
-  @Output() closeEvent = new EventEmitter<void>();
-  @Output() logoutEvent = new EventEmitter<void>();
-  @Output() editProfile = new EventEmitter<void>();
 
   // Métodos para el menú
   toggleMenu() {
