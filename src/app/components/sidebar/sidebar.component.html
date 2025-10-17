@@ -6,18 +6,29 @@
     <!-- Profile Section -->
     <div class="profile-section">
       <div class="profile-image">
-        <i class="mdi mdi-account"></i>
+        <ng-container *ngIf="auth.user$ | async as user; else defaultIcon">
+          <img
+            *ngIf="user.picture"
+            [src]="user.picture"
+            [alt]="user.name || 'Usuario'"
+            class="profile-picture"
+          />
+          <i *ngIf="!user.picture" class="mdi mdi-account"></i>
+        </ng-container>
+        <ng-template #defaultIcon>
+          <i class="mdi mdi-account"></i>
+        </ng-template>
       </div>
-      <button class="edit-profile-btn">
-        <i class="mdi mdi-pencil"></i>
-      </button>
-      <div class="profile-name">Ezequiel</div>
+      <div class="profile-name" *ngIf="auth.user$ | async as user">
+        {{ user.name || 'Usuario' }}
+      </div>
+      <div class="profile-name" *ngIf="(auth.user$ | async) === null">Usuario</div>
     </div>
     <div class="separator"></div>
-    
+
     <!-- Navigation Menu -->
     <nav class="sidebar-nav">
-      <a href="#" class="sidebar-nav-item" (click)="onEditProfile()">
+      <a *ngIf="perfilHabilitado" href="#" class="sidebar-nav-item" (click)="onEditProfile()">
         <i class="mdi mdi-account"></i>
         <span>Perfil</span>
       </a>
@@ -25,7 +36,12 @@
         <i class="mdi mdi-home"></i>
         <span>Inicio</span>
       </a>
-      <a routerLink="/wallets" class="sidebar-nav-item" style="cursor: pointer;" (click)="closeMenu()">
+      <a
+        routerLink="/wallets"
+        class="sidebar-nav-item"
+        style="cursor: pointer"
+        (click)="closeMenu()"
+      >
         <i class="mdi mdi-wallet"></i>
         <span>Billeteras</span>
       </a>
@@ -33,11 +49,21 @@
         <i class="mdi mdi-sync"></i>
         <span>Actividad</span>
       </a>
-      <a routerLink="/analysis" class="sidebar-nav-item" style="cursor: pointer;" (click)="closeMenu()">
+      <a
+        routerLink="/analysis"
+        class="sidebar-nav-item"
+        style="cursor: pointer"
+        (click)="closeMenu()"
+      >
         <i class="mdi mdi-chart-line"></i>
         <span>Análisis</span>
       </a>
-      <a routerLink="/saving-goals" class="sidebar-nav-item" style="cursor: pointer;" (click)="closeMenu()">
+      <a
+        routerLink="/saving-goals"
+        class="sidebar-nav-item"
+        style="cursor: pointer"
+        (click)="closeMenu()"
+      >
         <i class="mdi mdi-target"></i>
         <span>Objetivos</span>
       </a>
@@ -45,21 +71,26 @@
         <i class="mdi mdi-dots-horizontal"></i>
         <span>Categorías</span>
       </a>
-      <a routerLink="/settings" class="sidebar-nav-item" (click)="closeMenu()">
+      <a
+        *ngIf="ajustesHabilitado"
+        routerLink="/settings"
+        class="sidebar-nav-item"
+        (click)="closeMenu()"
+      >
         <i class="mdi mdi-cog"></i>
         <span>Ajustes</span>
       </a>
-          <a href="javascript:void(0)" class="sidebar-nav-item logout" (click)="onLogout()">
-          <i class="mdi mdi-logout"></i>
-          <span>Cerrar Sesión</span>
+      <a href="javascript:void(0)" class="sidebar-nav-item logout" (click)="onLogout()">
+        <i class="mdi mdi-logout"></i>
+        <span>Cerrar Sesión</span>
       </a>
     </nav>
-    
+
     <!-- Footer -->
     <div class="sidebar-footer">
       <div class="refresh-info">
         <i class="mdi mdi-refresh"></i>
-        <span>22 Abr. 2025</span>
+        <span>{{ currentDate }}</span>
       </div>
     </div>
   </div>

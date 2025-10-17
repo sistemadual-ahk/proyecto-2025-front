@@ -4,10 +4,9 @@ import { ApiService } from './api.service';
 import { Operacion } from '../../models/operacion.model';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class OperacionService extends ApiService {
-
   /**
    * Obtiene todas las operaciones del usuario actual.
    * @returns Un Observable que emite un array de todas las operaciones.

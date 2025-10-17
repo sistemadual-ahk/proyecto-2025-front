@@ -16,19 +16,24 @@
 }
 
 // Permitir selección en inputs y textareas
-input, textarea {
+input,
+textarea {
   -webkit-user-select: text;
   user-select: text;
 }
 
 // Mejorar la experiencia de scroll
-html, body {
+html,
+body {
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
 }
 
 // Prevenir zoom en elementos interactivos
-button, a, [role="button"], .clickable {
+button,
+a,
+[role='button'],
+.clickable {
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
 }
@@ -38,7 +43,7 @@ button, a, [role="button"], .clickable {
   * {
     -webkit-tap-highlight-color: transparent;
   }
-  
+
   // Prevenir zoom en imágenes
   img {
     touch-action: manipulation;

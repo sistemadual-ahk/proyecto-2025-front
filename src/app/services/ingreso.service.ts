@@ -4,10 +4,9 @@ import { ApiService } from './api.service';
 import { Operacion } from '../../models/operacion.model';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class IngresoService extends ApiService {
-
   /**
    * Obtiene todos los ingresos del usuario actual.
    * @returns Un Observable que emite un array de operaciones de tipo Ingreso.

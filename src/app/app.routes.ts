@@ -6,13 +6,20 @@ import { SavingGoalsComponent } from './pages/saving-goals/saving-goals.componen
 import { WalletsComponent } from './pages/wallets/wallets.component';
 import { ActivityComponent } from './pages/activity/activity.component';
 import { AnalysisComponent } from './pages/analysis/analysis.component';
+import { AuthGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
+  // Rutas públicas (sin autenticación)
   { path: '', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
-  { path: 'home', component: HomeComponent },
-  { path: 'saving-goals', component: SavingGoalsComponent },
-  { path: 'wallets', component: WalletsComponent },
-  { path: 'activity', component: ActivityComponent },
-  { path: 'analysis', component: AnalysisComponent }
+
+  // Rutas protegidas (requieren autenticación)
+  { path: 'home', component: HomeComponent, canActivate: [AuthGuard] },
+  { path: 'saving-goals', component: SavingGoalsComponent, canActivate: [AuthGuard] },
+  { path: 'wallets', component: WalletsComponent, canActivate: [AuthGuard] },
+  { path: 'activity', component: ActivityComponent, canActivate: [AuthGuard] },
+  { path: 'analysis', component: AnalysisComponent, canActivate: [AuthGuard] },
+
+  // Ruta wildcard - redirige al login si la ruta no existe
+  { path: '**', redirectTo: '' },
 ];

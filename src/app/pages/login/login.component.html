@@ -2,34 +2,30 @@
   <div class="login-content">
     <!-- Logo -->
     <div class="logo-section">
-      <img src="assets/images/gastifyLogo.png" alt="Ga$tify Logo" class="logo-image">
+      <img src="assets/images/gastifyLogo.png" alt="Ga$tify Logo" class="logo-image" />
     </div>
 
     <!-- Welcome Message -->
     <div class="welcome-section">
-      <h2 class="welcome-message">¡Bienvenido de vuelta!</h2>
+      <h2 class="welcome-message">¡Bienvenido!</h2>
       <p class="welcome-subtitle">Inicia sesión para continuar gestionando tus finanzas</p>
-
-      <ul *ngIf="auth.user$ | async as user">
-      <li>{{ user.name }}</li>
-      <li>{{ user.email }}</li>
-    </ul>
     </div>
 
     <!-- Login Form -->
-    <form class="login-form" (ngSubmit)="onSubmit()">
+    <form *ngIf="loginInternoHabilitado" class="login-form" (ngSubmit)="onSubmit()">
       <!-- Username/Email Field -->
       <div class="input-group">
         <div class="input-icon">
           <i class="mdi mdi-account"></i>
         </div>
-        <input 
-          type="text" 
-          class="form-input" 
+        <input
+          type="text"
+          class="form-input"
           placeholder="Usuario o email"
           [(ngModel)]="username"
           name="username"
-          required>
+          required
+        />
       </div>
 
       <!-- Password Field -->
@@ -37,17 +33,15 @@
         <div class="input-icon">
           <i class="mdi mdi-lock"></i>
         </div>
-        <input 
-          [type]="showPassword ? 'text' : 'password'" 
-          class="form-input" 
+        <input
+          [type]="showPassword ? 'text' : 'password'"
+          class="form-input"
           placeholder="Contraseña"
           [(ngModel)]="password"
           name="password"
-          required>
-        <button 
-          type="button" 
-          class="password-toggle"
-          (click)="togglePasswordVisibility()">
+          required
+        />
+        <button type="button" class="password-toggle" (click)="togglePasswordVisibility()">
           <i [class]="showPassword ? 'mdi mdi-eye-off' : 'mdi mdi-eye'"></i>
         </button>
       </div>
@@ -58,21 +52,19 @@
       </div>
 
       <!-- Login Button -->
-      <button type="submit" class="btn-login">
-        Iniciar Sesión
-      </button>
+      <button type="submit" class="btn-login">Iniciar Sesión</button>
     </form>
 
     <!-- Google Login -->
     <div class="google-section">
       <button class="btn-google" (click)="loginWithGoogle()">
-        <img src="assets/images/google-icon.png" alt="Google" class="google-icon">
+        <img src="assets/images/google-icon.png" alt="Google" class="google-icon" />
         Conectar con Google
       </button>
     </div>
 
     <!-- Register Link -->
-    <div class="register-section">
+    <div *ngIf="loginInternoHabilitado" class="register-section">
       <p class="register-text">¿No tienes cuenta?</p>
       <a routerLink="/register" class="register-link">Registrate</a>
     </div>

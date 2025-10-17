@@ -9,9 +9,15 @@ import { PageTitleComponent } from '../../components/page-title/page-title.compo
 @Component({
   selector: 'app-wallets',
   standalone: true,
-  imports: [CommonModule, AddAccountModalComponent, HeaderComponent, SidebarComponent, PageTitleComponent],
+  imports: [
+    CommonModule,
+    AddAccountModalComponent,
+    HeaderComponent,
+    SidebarComponent,
+    PageTitleComponent,
+  ],
   templateUrl: './wallets.component.html',
-  styleUrl: './wallets.component.scss'
+  styleUrl: './wallets.component.scss',
 })
 export class WalletsComponent {
   // Estado del menú
@@ -19,7 +25,7 @@ export class WalletsComponent {
   showAddAccountModal = false;
   showWalletPopup = false;
   selectedWallet: any = null;
-  
+
   // Datos de las billeteras
   wallets = [
     {
@@ -29,7 +35,7 @@ export class WalletsComponent {
       icon: 'mdi-wallet',
       iconColor: 'var(--gastify-green)',
       balance: 1250000,
-      isDefault: true
+      isDefault: true,
     },
     {
       id: 2,
@@ -37,7 +43,7 @@ export class WalletsComponent {
       type: 'digital',
       icon: 'mdi-credit-card',
       iconColor: '#3b82f6',
-      balance: 150000
+      balance: 150000,
     },
     {
       id: 3,
@@ -45,7 +51,7 @@ export class WalletsComponent {
       type: 'bank',
       icon: 'mdi-bank',
       iconColor: '#ef4444',
-      balance: 180000
+      balance: 180000,
     },
     {
       id: 4,
@@ -53,8 +59,8 @@ export class WalletsComponent {
       type: 'cash',
       icon: 'mdi-cash-multiple',
       iconColor: '#f59e0b',
-      balance: 43000
-    }
+      balance: 43000,
+    },
   ];
 
   // Calcular total
@@ -95,16 +101,21 @@ export class WalletsComponent {
     this.showAddAccountModal = false;
   }
 
-  saveAccount(newAccount: { name: string; type: 'bank' | 'digital' | 'cash'; provider?: string; initialBalance: number; }) {
+  saveAccount(newAccount: {
+    name: string;
+    type: 'bank' | 'digital' | 'cash';
+    provider?: string;
+    initialBalance: number;
+  }) {
     const iconByType: Record<'bank' | 'digital' | 'cash', string> = {
       bank: 'mdi-bank',
       digital: 'mdi-credit-card',
-      cash: 'mdi-cash-multiple'
+      cash: 'mdi-cash-multiple',
     };
     const colorByType: Record<'bank' | 'digital' | 'cash', string> = {
       bank: '#ef4444',
       digital: '#3b82f6',
-      cash: '#f59e0b'
+      cash: '#f59e0b',
     };
 
     this.wallets.unshift({
@@ -114,7 +125,7 @@ export class WalletsComponent {
       icon: iconByType[newAccount.type],
       iconColor: colorByType[newAccount.type],
       balance: newAccount.initialBalance,
-      isDefault: false
+      isDefault: false,
     });
 
     this.showAddAccountModal = false;
@@ -149,7 +160,7 @@ export class WalletsComponent {
   setAsDefault() {
     if (this.selectedWallet) {
       // Remover la billetera predeterminada anterior
-      this.wallets.forEach(wallet => wallet.isDefault = false);
+      this.wallets.forEach((wallet) => (wallet.isDefault = false));
       // Establecer la nueva billetera predeterminada
       this.selectedWallet.isDefault = true;
       this.closeWalletPopup();
@@ -163,7 +174,7 @@ export class WalletsComponent {
 
   deleteWallet() {
     if (this.selectedWallet && confirm('¿Estás seguro de que quieres eliminar esta billetera?')) {
-      const index = this.wallets.findIndex(w => w.id === this.selectedWallet.id);
+      const index = this.wallets.findIndex((w) => w.id === this.selectedWallet.id);
       if (index > -1) {
         this.wallets.splice(index, 1);
         this.closeWalletPopup();
@@ -173,9 +184,9 @@ export class WalletsComponent {
 
   getWalletTypeLabel(type: string): string {
     const typeLabels: Record<string, string> = {
-      'bank': 'Cuenta bancaria',
-      'digital': 'Billetera digital',
-      'cash': 'Efectivo'
+      bank: 'Cuenta bancaria',
+      digital: 'Billetera digital',
+      cash: 'Efectivo',
     };
     return typeLabels[type] || type;
   }
@@ -184,7 +195,7 @@ export class WalletsComponent {
     return new Date().toLocaleDateString('es-AR', {
       day: '2-digit',
       month: 'short',
-      year: 'numeric'
+      year: 'numeric',
     });
   }
 
@@ -194,8 +205,7 @@ export class WalletsComponent {
       style: 'currency',
       currency: 'ARS',
       minimumFractionDigits: 0,
-      maximumFractionDigits: 0
+      maximumFractionDigits: 0,
     }).format(amount);
   }
 }
-

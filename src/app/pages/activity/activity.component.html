@@ -1,60 +1,62 @@
 <div class="container">
   <!-- Main Content -->
   <div class="main">
+    <!-- Título de la página -->
+    <app-page-title title="Actividad" (back)="goBack()"></app-page-title>
 
-  <!-- Título de la página -->
-  <app-page-title title="Actividad" (back)="goBack()"></app-page-title>
-
-  <!-- Barra de búsqueda -->
-  <div class="search-section">
-    <div class="search-bar">
-      <i class="mdi mdi-magnify search-icon"></i>
-      <input type="text" placeholder="Buscar" class="search-input">
+    <!-- Barra de búsqueda -->
+    <div class="search-section">
+      <div class="search-bar">
+        <i class="mdi mdi-magnify search-icon"></i>
+        <input type="text" placeholder="Buscar" class="search-input" />
+      </div>
     </div>
-  </div>
 
-  <!-- Lista de gastos agrupados por fecha -->
-  <div class="transactions-container">
-    <div class="date-group" *ngFor="let group of groupedGastos">
-      <div class="date-header">{{ group.date }}</div>
-      
-      <div class="transactions-list">
-        <div class="transaction-item" *ngFor="let gasto of group.gastos">
-          <!-- Ícono de categoría -->
-          <div class="category-icon" [style.background-color]="gasto.categoria.color || '#A8A8A8'">
-            <i [class]="gasto.categoria.icono || 'mdi-dots-horizontal'"></i>
-          </div>
+    <!-- Lista de operaciones agrupados por fecha -->
+    <div class="transactions-container">
+      <div class="date-group" *ngFor="let group of groupedOperaciones">
+        <div class="date-header">{{ group.date }}</div>
 
-          <!-- Información del gasto -->
-          <div class="transaction-info">
-            <div class="transaction-main">
-              <h3 class="transaction-description">
-                {{ gasto.descripcion }}
-                <span *ngIf="gasto.categoria?.descripcion && gasto.categoria.descripcion !== gasto.descripcion" class="subcategory">
-                  - {{ gasto.categoria.descripcion }}
-                </span>
-              </h3>
-              <p class="transaction-category">{{ gasto.categoria.nombre || 'Sin categoría' }}</p>
-              <p class="transaction-time">{{ formatearFecha(gasto.datetime.toString()) }}</p>
+        <div class="transactions-list">
+          <div class="transaction-item" *ngFor="let operacion of group.operaciones">
+            <!-- Ícono de categoría -->
+            <div
+              class="category-icon"
+              [style.background-color]="operacion.categoriaId || '#A8A8A8'"
+            >
+              <i [class]="operacion.categoriaId || 'mdi-dots-horizontal'"></i>
             </div>
-            
-            <div class="transaction-amount" [class.income]="gasto.tipo === 'income'">
-              <span class="amount-sign">{{ gasto.tipo === 'income' ? '+' : '-' }}</span>
-              ${{ gasto.monto.toLocaleString() }}
+
+            <!-- Información del operacion -->
+            <div class="transaction-info">
+              <div class="transaction-main">
+                <h3 class="transaction-description">
+                  {{ operacion.descripcion }}
+                  <span *ngIf="operacion.categoriaId" class="subcategory">
+                    - {{ operacion.categoriaId }}
+                  </span>
+                </h3>
+                <p class="transaction-category">{{ operacion.categoriaId || 'Sin categoría' }}</p>
+                <p class="transaction-time">{{ formatearFecha(operacion.fecha.toString()) }}</p>
+              </div>
+
+              <div class="transaction-amount" [class.income]="operacion.tipo === 'Ingreso'">
+                <span class="amount-sign">{{ operacion.tipo === 'Ingreso' ? '+' : '-' }}</span>
+                ${{ operacion.monto.toLocaleString() }}
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- Estado vacío -->
-  <div class="empty-state" *ngIf="groupedGastos.length === 0">
-    <div class="empty-icon">
-      <i class="mdi mdi-receipt-text-outline"></i>
+    <!-- Estado vacío -->
+    <div class="empty-state" *ngIf="groupedOperaciones.length === 0">
+      <div class="empty-icon">
+        <i class="mdi mdi-receipt-text-outline"></i>
+      </div>
+      <h3>No hay operaciones</h3>
+      <p>Aún no has registrado ningun gasto. ¡Comienza a trackear tus gastos!</p>
     </div>
-    <h3>No hay gastos</h3>
-    <p>Aún no has registrado ningún gasto. ¡Comienza a trackear tus gastos!</p>
-  </div>
   </div>
 </div>

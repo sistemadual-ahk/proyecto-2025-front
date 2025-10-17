@@ -4,9 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { BilleteraService, NewBilletera } from '../../services/billetera.service';
 import { CategoriaService, Categoria } from '../../services/categoria.service';
-import { Operacion, OperacionService } from '../../services/operation.service';
-
-//hola
+import { OperacionService } from '../../services/operacion.service';
+import { Operacion } from '../../../models/operacion.model';
 
 @Component({
   selector: 'app-transaction-modal',
@@ -14,7 +13,7 @@ import { Operacion, OperacionService } from '../../services/operation.service';
   // Mantenemos FormsModule para soportar [(ngModel)]
   imports: [CommonModule, FormsModule],
   templateUrl: './transaction-modal.component.html',
-  styleUrls: ['./transaction-modal.component.scss']
+  styleUrls: ['./transaction-modal.component.scss'],
 })
 export class TransactionModalComponent implements OnInit {
   isDragging = false;
@@ -50,7 +49,7 @@ export class TransactionModalComponent implements OnInit {
   nombresCategorias: string[] = [];
   nombresBilleteras: string[] = [];
 
-  constructor() { }
+  constructor() {}
 
   ngOnInit(): void {
     this.loadData();
@@ -58,9 +57,9 @@ export class TransactionModalComponent implements OnInit {
 
   loadData(): void {
     // Carga de Categorías
-    this.categoriaService.getCategorias().subscribe(data => {
+    this.categoriaService.getCategorias().subscribe((data) => {
       this.categorias = data;
-      this.nombresCategorias = data.map(cat => cat.nombre);
+      this.nombresCategorias = data.map((cat) => cat.nombre);
     });
 
     // Carga de Billeteras
@@ -72,7 +71,6 @@ export class TransactionModalComponent implements OnInit {
 
   // --- LÓGICA AUXILIAR ---
 
-
   toggleTransactionType(type: 'income' | 'expense'): void {
     this.transactionType = type;
   }
@@ -83,13 +81,14 @@ export class TransactionModalComponent implements OnInit {
   }
 
   onSave(): void {
-
     // 1. Mapear NOMBRES (del ngModel) a IDs (para el backend)
     const selectedWallet = this.billetera.find(b => b.nombre === this.wallet);
     const selectedCategory = this.categorias.find(c => c.nombre === this.category);
 
     if (!selectedWallet || !selectedCategory || this.amount <= 0) {
-      console.error("Validación fallida: El monto debe ser > 0 y debe seleccionar billetera/categoría.");
+      console.error(
+        'Validación fallida: El monto debe ser > 0 y debe seleccionar billetera/categoría.'
+      );
       return;
     }
 
@@ -112,7 +111,7 @@ export class TransactionModalComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error al guardar la operación:', error);
-      }
+      },
     });
   }
 

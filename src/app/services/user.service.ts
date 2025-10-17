@@ -1,4 +1,3 @@
-
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
@@ -6,7 +5,7 @@ import { tap } from 'rxjs/operators';
 import { ApiService } from './api.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class UserService extends ApiService {
   private userDataSubject = new BehaviorSubject<any>(null);
@@ -19,7 +18,7 @@ export class UserService extends ApiService {
 
   createUser(payload: any): Observable<any> {
     return super.create<any>('/usuarios', payload).pipe(
-      tap(response => {
+      tap((response) => {
         this.setUserData(response);
       })
     );

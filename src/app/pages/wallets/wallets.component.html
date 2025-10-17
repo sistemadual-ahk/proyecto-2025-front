@@ -1,9 +1,6 @@
 <div class="container">
-  
-
   <!-- Main Content -->
   <div class="main">
-
     <!-- Navigation and Title -->
     <app-page-title title="Mis billeteras" (back)="goBack()"></app-page-title>
 
@@ -21,7 +18,7 @@
         </div>
         <span class="action-text">Historial de transferencias</span>
       </button>
-      
+
       <button class="action-btn" (click)="openNewTransfer()">
         <div class="action-icon">
           <i class="mdi mdi-swap-horizontal"></i>
@@ -32,7 +29,12 @@
 
     <!-- Wallets List -->
     <div class="wallets-list">
-      <div class="wallet-item" *ngFor="let wallet of wallets" (click)="openWalletPopup(wallet)" style="cursor: pointer;">
+      <div
+        class="wallet-item"
+        *ngFor="let wallet of wallets"
+        (click)="openWalletPopup(wallet)"
+        style="cursor: pointer"
+      >
         <div class="wallet-icon" [style.background-color]="wallet.iconColor">
           <i [class]="wallet.icon"></i>
         </div>
@@ -59,10 +61,11 @@
   </div>
 
   <!-- Modal: Agregar cuenta -->
-  <app-add-account-modal 
+  <app-add-account-modal
     *ngIf="showAddAccountModal"
     (closeModal)="closeAddAccountModal()"
-    (saveAccount)="saveAccount($event)">
+    (saveAccount)="saveAccount($event)"
+  >
   </app-add-account-modal>
 
   <!-- Popup: Detalles de billetera -->
@@ -107,7 +110,7 @@
             </div>
             <span>Transferir hacia</span>
           </button>
-          
+
           <button class="popup-action-btn" (click)="openWalletHistory()">
             <div class="popup-action-icon">
               <i class="mdi mdi-history"></i>
@@ -115,7 +118,7 @@
             <span>Ver transacciones</span>
           </button>
         </div>
-        
+
         <!-- Información adicional -->
         <div class="popup-details">
           <div class="popup-detail-item">
@@ -134,7 +137,11 @@
 
         <!-- Botones de acción principales -->
         <div class="popup-main-actions">
-          <button class="popup-main-btn primary" (click)="setAsDefault()" *ngIf="!selectedWallet?.isDefault">
+          <button
+            class="popup-main-btn primary"
+            (click)="setAsDefault()"
+            *ngIf="!selectedWallet?.isDefault"
+          >
             <i class="mdi mdi-star"></i>
             Establecer como predeterminada
           </button>
