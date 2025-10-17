@@ -1,21 +1,25 @@
 <div class="modal-overlay" (click)="onClose()" [@modalOverlay]>
   <div class="modal-content" (click)="$event.stopPropagation()" [style.transform]="'translateY(' + dragTranslateY + 'px)'" [style.transition]="isDragging ? 'none' : 'transform 200ms ease-out'" [@modalContent]>
     <!-- Header del modal -->
-    <div class="modal-header" (touchstart)="onTouchStart($event)" (touchmove)="onTouchMove($event)" (touchend)="onTouchEnd()" (mousedown)="onMouseDown($event)" (mousemove)="onMouseMove($event)" (mouseup)="onMouseUp()" (mouseleave)="onMouseUp()">
-      <div class="modal-handle" aria-hidden="true"></div>
+    <div class="modal-header">
+      <button class="close-btn" (click)="onClose()">
+        <i class="mdi mdi-close"></i>
+      </button>
+
+      <h2 class="modal-title">Registro Gasto</h2>
+
+      <button class="save-btn" (click)="onSave()">
+        <i class="mdi mdi-check"></i>
+      </button>
     </div>
 
-    <!-- Toggle Ingreso/Gasto -->
+    <!-- Toggle Ingreso/Gasto --> 
     <div class="transaction-toggle">
-      <button 
-        class="toggle-btn income-btn" 
-        [class.active]="transactionType === 'income'"
+      <button class="toggle-btn income-btn" [class.active]="transactionType === 'income'"
         (click)="toggleTransactionType('income')">
         Ingreso
       </button>
-      <button 
-        class="toggle-btn expense-btn" 
-        [class.active]="transactionType === 'expense'"
+      <button class="toggle-btn expense-btn" [class.active]="transactionType === 'expense'"
         (click)="toggleTransactionType('expense')">
         Gasto
       </button>
@@ -25,70 +29,54 @@
     <div class="transaction-form">
       <!-- Campo de monto -->
       <div class="form-group amount-group">
-        <label class="amount-label">$ {{ (amount ?? 0).toFixed(1) }}</label>
-        <input 
-          type="number" 
-          class="amount-input" 
-          [(ngModel)]="amount"
-          placeholder="0.0"
-          step="0.1"
-          min="0">
+        <label class="amount-label">$ {{ (amount).toFixed(1) }}</label>
+        <input type="number" class="amount-input" [(ngModel)]="amount" placeholder="0.0" step="0.1" min="0">
+        <button class="clear-amount" (click)="amount = 0">
+          <i class="mdi mdi-close"></i>
+        </button>
       </div>
 
       <!-- Campo de descripción -->
       <div class="form-group">
-        <input 
-          type="text" 
-          class="form-input" 
-          [(ngModel)]="description"
-          placeholder="¿Qué compraste? (ej: Almuerzo, Gasolina, etc.)">
+        <input type="text" class="form-input" [(ngModel)]="description" placeholder="Descripción" placeholder="¿Qué compraste? (ej: Almuerzo, Gasolina, etc.)">
       </div>
 
       <!-- Fecha y Billetera -->
-      <div class="form-row">
         <div class="form-group">
           <label class="form-label">Fecha</label>
-          <div class="date-input-group">
-            <input 
-              type="date" 
-              class="form-input" 
-              [(ngModel)]="date">
-            <i class="mdi mdi-calendar date-icon"></i>
+          <div class="input-with-icon">
+            <input type="date" class="form-input" [(ngModel)]="date">
+            <i class="mdi mdi-calendar"></i>
           </div>
         </div>
-      </div>  
-        
+
         <div class="form-group">
           <label class="form-label">Billetera</label>
-          <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Selecciona una billetera" [(ngModel)]="selectedValue">
-          <nz-option nzLabel="Mercado Pago" nzValue="Mercado Pago"></nz-option>
-          <nz-option nzLabel="Santander" nzValue="Santander"></nz-option>
-          <nz-option nzLabel="Uala" nzValue="Uala"></nz-option>
-        </nz-select>
-      </div>
+          <div class="input-with-icon">
+            <select class="form-input" [(ngModel)]="wallet" name="wallet">
+              <option value="">Seleccionar billetera</option>
+              <option *ngFor="let walletOption of nombresBilleteras" [value]="walletOption">
+                {{ walletOption }}
+              </option>
+            </select>
+            <i class="mdi mdi-wallet"></i>
+          </div>
+        </div>
 
       <!-- Categoría -->
       <div class="form-group">
         <label class="form-label">Categoria</label>
-        <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Selecciona una categoría" [(ngModel)]="selectedValue">
-          <nz-option nzLabel="Supermercado" nzValue="Supermercado"></nz-option>
-          <nz-option nzLabel="Comida" nzValue="Comida"></nz-option>
-          <nz-option nzLabel="Gasolina" nzValue="Gasolina"></nz-option>
-        </nz-select>
+        <div class="input-with-icon">
+          <select class="form-input" [(ngModel)]="category" name="category">
+            <option value="">Seleccionar categoría</option>
+            <option *ngFor="let categoryOption of nombresCategorias" [value]="categoryOption">
+              {{ categoryOption }}
+            </option>
+          </select>
+          <i class="mdi mdi-chevron-down"></i>
+        </div>
       </div>
 
-      <!-- Subcategoría -->
-      <div class="form-group">
-        <label class="form-label">Subcategoria</label>
-        <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Selecciona una subcategoría" [(ngModel)]="selectedValue">
-          <nz-option nzLabel="Shell" nzValue="Shell"></nz-option>
-          <nz-option nzLabel="Hamburguesa" nzValue="Hamburguesa"></nz-option>
-          <nz-option nzLabel="Mercadería" nzValue="Mercadería"></nz-option>
-        </nz-select>
-      </div>
-
-      <button class="save-btn" (click)="onSave()">
-        <i class="mdi mdi-check"></i>
-      </button>
+    </div>
   </div>
-</div> 
+</div>

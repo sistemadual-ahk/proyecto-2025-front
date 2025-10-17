@@ -1,63 +1,75 @@
 <div class="modal-overlay" (click)="onClose()">
-  <div class="modal-content" (click)="$event.stopPropagation()">
-    <!-- Header -->
+  <!-- 
+    CRÍTICO: Cambiamos de [formGroup] a ngForm.
+    CRÍTICO: Cambiamos (ngSubmit)="saveTransaction()" a (ngSubmit)="onSave()".
+  -->
+  <form class="modal-content" #accountForm="ngForm" (ngSubmit)="onSave()" (click)="$event.stopPropagation()">
+
+    <!-- Header del modal -->
     <div class="modal-header">
-      <button class="close-btn" (click)="onClose()">
+      <!-- CRÍTICO: Cambiamos (click)="closeModal()" a (click)="onClose()" -->
+      <button class="close-btn" type="button" (click)="onClose()">
         <i class="mdi mdi-close"></i>
       </button>
-      <h2 class="modal-title">Agregar cuenta</h2>
-      <button class="save-btn" (click)="onSave()">
+
+      <h2 class="modal-title">Nueva Billetera</h2>
+
+      <!-- El botón de guardar es de tipo submit para activar onSave() -->
+      <button class="save-btn" type="submit">
         <i class="mdi mdi-check"></i>
       </button>
     </div>
 
-    <!-- Tipo de cuenta -->
-    <div class="type-toggle">
-      <button class="toggle-chip" [class.active]="type==='bank'" (click)="setType('bank')">
-        <i class="mdi mdi-bank"></i>
-        Banco
+    <!-- Selección de Tipo de Billetera (Bank, Digital, Cash) -->
+    <div class="transaction-toggle">
+      <button class="toggle-btn bank-btn" type="button" [class.active]="type === 'bank'" (click)="setType('bank')">
+        <i class="mdi mdi-bank"></i> Banco
       </button>
-      <button class="toggle-chip" [class.active]="type==='digital'" (click)="setType('digital')">
-        <i class="mdi mdi-credit-card"></i>
-        Digital
+      <button class="toggle-btn digital-btn" type="button" [class.active]="type === 'digital'"
+        (click)="setType('digital')">
+        <i class="mdi mdi-credit-card"></i> Digital
       </button>
-      <button class="toggle-chip" [class.active]="type==='cash'" (click)="setType('cash')">
-        <i class="mdi mdi-cash"></i>
-        Efectivo
+      <button class="toggle-btn cash-btn" type="button" [class.active]="type === 'cash'" (click)="setType('cash')">
+        <i class="mdi mdi-cash-multiple"></i> Efectivo
       </button>
     </div>
 
-    <div class="form">
-      <!-- Nombre -->
+    <!-- Formulario -->
+    <div class="account-form">
+
+      <!-- Campo de Nombre de la Billetera (Usando [(ngModel)]) -->
       <div class="form-group">
-        <label class="form-label">Nombre</label>
-        <input class="form-input" type="text" [(ngModel)]="name" placeholder="Ej: Mi cuenta sueldo" />
+        <label class="form-label">Nombre de la Billetera</label>
+        <input type="text" class="form-input" name="name" [(ngModel)]="name" required
+          placeholder="Ej: Cuenta de Ahorro">
       </div>
 
-      <!-- Proveedor (cuando aplica) -->
+      <!-- Campo de Proveedor (Usando currentProviders y [(ngModel)]) -->
       <div class="form-group" *ngIf="type !== 'cash'">
-        <label class="form-label">Proveedor</label>
+        <label class="form-label">Proveedor / Banco</label>
         <div class="input-with-icon">
-          <select class="form-input" [(ngModel)]="provider">
-            <option value="">Seleccionar</option>
-            <option *ngFor="let p of currentProviders" [value]="p">{{ p }}</option>
+          <select class="form-input" name="provider" [(ngModel)]="provider" required>
+            <option [ngValue]="''" disabled>Seleccionar proveedor</option>
+            <option *ngFor="let p of currentProviders" [ngValue]="p">{{ p }}</option>
           </select>
           <i class="mdi mdi-chevron-down"></i>
         </div>
       </div>
 
-      <!-- Saldo inicial -->
-      <div class="form-group">
-        <label class="form-label">Saldo inicial</label>
+      <!-- Campo de Saldo Inicial (Usando [(ngModel)]) -->
+      <div class="form-group amount-group">
+        <label class="form-label">Saldo Inicial</label>
         <div class="input-with-icon">
-          <input class="form-input" type="number" [(ngModel)]="initialBalance" placeholder="0" min="0" />
+          <input type="number" class="form-input" name="initialBalance" [(ngModel)]="initialBalance" required
+            placeholder="0.00" step="1" min="0">
           <i class="mdi mdi-currency-usd"></i>
         </div>
       </div>
+
+      <!-- Mensaje de error (Validación básica) -->
+      <div *ngIf="accountForm.submitted && accountForm.invalid" class="error-message">
+        Asegúrate de rellenar todos los campos correctamente.
+      </div>
     </div>
-  </div>
-  
+  </form>
 </div>
-
-
-
