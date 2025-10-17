@@ -21,8 +21,8 @@
       <div class="transactions-list">
         <div class="transaction-item" *ngFor="let gasto of group.gastos">
           <!-- Ícono de categoría -->
-          <div class="category-icon" [style.background-color]="getCategoryColor(gasto.categoria?.nombre || '')">
-            <i [class]="getCategoryIcon(gasto.categoria?.nombre || '')"></i>
+          <div class="category-icon" [style.background-color]="getCategoryColor(gasto.categoria.nombre || '')">
+            <i [class]="getCategoryIcon(gasto.categoria.nombre || '')"></i>
           </div>
 
           <!-- Información del gasto -->
@@ -34,7 +34,7 @@
                   - {{ gasto.categoria.descripcion }}
                 </span>
               </h3>
-              <p class="transaction-category">{{ gasto.categoria?.nombre || 'Sin categoría' }}</p>
+              <p class="transaction-category">{{ gasto.categoria.nombre || 'Sin categoría' }}</p>
               <p class="transaction-time">{{ formatDate(gasto.datetime.toString()) }}</p>
             </div>
             
