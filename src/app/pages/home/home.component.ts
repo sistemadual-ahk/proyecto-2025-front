@@ -248,35 +248,6 @@ logout(): void {
 
   saveTransaction(transaction: any) {
     console.log('Gasto guardado:', transaction);
-
-    // Crear el gasto usando el servicio
-    const gastoData = {
-      monto: Math.abs(transaction.amount),
-      descripcion: transaction.description || transaction.category,
-      tipo: transaction.type,
-      datetime: new Date(transaction.date),
-      userId: 'user-id', // TODO: Obtener del usuario autenticado
-      billetera: transaction.wallet,
-      categoria: {
-        _id: '',
-        userId: 'user-id',
-        nombre: transaction.category,
-        descripcion: transaction.subcategory
-      }
-    };
-
-    this.subscription.add(
-      this.gastoService.createGasto(gastoData).subscribe({
-        next: (gasto) => {
-          console.log('Gasto creado:', gasto);
-          this.loadData(); // Recargar datos
-          this.closeTransactionModal();
-        },
-        error: (error) => {
-          console.error('Error al crear gasto:', error);
-        }
-      })
-    );
   }
 
   // Métodos auxiliares para iconos y colores

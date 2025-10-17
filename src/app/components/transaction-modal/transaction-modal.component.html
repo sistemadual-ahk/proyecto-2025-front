@@ -1,7 +1,7 @@
 <div class="modal-overlay" (click)="onClose()" [@modalOverlay]>
   <div class="modal-content" (click)="$event.stopPropagation()" [style.transform]="'translateY(' + dragTranslateY + 'px)'" [style.transition]="isDragging ? 'none' : 'transform 200ms ease-out'" [@modalContent]>
     <!-- Header del modal -->
-    <div class="modal-header" (touchstart)="onTouchStart($event)" (touchmove)="onTouchMove($event)" (touchend)="onTouchEnd()" (mousedown)="onMouseDown($event)" (mousemove)="onMouseMove($event)" (mouseup)="onMouseUp()" (mouseleave)="onMouseUp()">
+    <div class="modal-header">
       <button class="close-btn" (click)="onClose()">
         <i class="mdi mdi-close"></i>
       </button>
@@ -29,7 +29,7 @@
     <div class="transaction-form">
       <!-- Campo de monto -->
       <div class="form-group amount-group">
-        <label class="amount-label">$ {{ (amount ?? 0).toFixed(1) }}</label>
+        <label class="amount-label">$ {{ (amount).toFixed(1) }}</label>
         <input type="number" class="amount-input" [(ngModel)]="amount" placeholder="0.0" step="0.1" min="0">
         <button class="clear-amount" (click)="amount = 0">
           <i class="mdi mdi-close"></i>

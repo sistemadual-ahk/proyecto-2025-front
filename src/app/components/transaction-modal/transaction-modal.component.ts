@@ -17,6 +17,11 @@ import { Operacion, OperacionService } from '../../services/operation.service';
   styleUrls: ['./transaction-modal.component.scss']
 })
 export class TransactionModalComponent implements OnInit {
+  isDragging = false;
+  dragTranslateY = 0;
+  startY = 0;
+  currentY = 0;
+  closeThreshold = 100;
 
   // --- INYECCIÓN DE DEPENDENCIAS ---
   private operacionService: OperacionService = inject(OperacionService);
@@ -78,6 +83,7 @@ export class TransactionModalComponent implements OnInit {
   }
 
   onSave(): void {
+
     // 1. Mapear NOMBRES (del ngModel) a IDs (para el backend)
     const selectedWallet = this.billeteras.find(b => b.nombre === this.wallet);
     const selectedCategory = this.categorias.find(c => c.nombre === this.category);
@@ -92,9 +98,9 @@ export class TransactionModalComponent implements OnInit {
       monto: Math.abs(this.amount),
       descripcion: this.description,
       fecha: new Date(this.date).toISOString(),
-      tipo: this.transactionType,
-      billetera: selectedWallet.id, // ID
-      categoria: selectedCategory.id, // ID
+      tipo: this.transactionType === 'income' ? 'Ingreso' : 'Egreso',
+      billeteraId: selectedWallet.id, // ID
+      categoriaId: selectedCategory.id, // ID
     };
 
     // 3. Llamada al servicio
@@ -113,64 +119,9 @@ export class TransactionModalComponent implements OnInit {
   private resetForm(): void {
     this.transactionType = 'expense';
     this.amount = 0;
-    this.description = '';
+    this.description = null as any;
     this.date = new Date().toISOString().split('T')[0];
-    this.wallet = '';
-    this.category = '';
+    this.wallet = null as any;
+    this.category = null as any;
   }
-
-  // Gesto táctil
-  /*onTouchStart(event: TouchEvent) {
-    if (event.touches.length !== 1) return;
-    this.isDragging = true;
-    this.startY = event.touches[0].clientY;
-    this.currentY = this.startY;
-  }
-
-  onTouchMove(event: TouchEvent) {
-    if (!this.isDragging || this.startY === null) return;
-    this.currentY = event.touches[0].clientY;
-    const delta = this.currentY - this.startY;
-    this.dragTranslateY = Math.max(0, delta);
-  }
-
-  onTouchEnd() {
-    if (!this.isDragging) return;
-    const dragged = (this.currentY ?? 0) - (this.startY ?? 0);
-    if (dragged > this.closeThreshold) {
-      this.onClose();
-    }
-    this.isDragging = false;
-    this.startY = null;
-    this.currentY = null;
-    this.dragTranslateY = 0;
-  }
-
-  // Gesto con mouse (desktop)
-  onMouseDown(event: MouseEvent) {
-    // Solo botón izquierdo
-    if (event.button !== 0) return;
-    this.isDragging = true;
-    this.startY = event.clientY;
-    this.currentY = this.startY;
-  }
-
-  onMouseMove(event: MouseEvent) {
-    if (!this.isDragging || this.startY === null) return;
-    this.currentY = event.clientY;
-    const delta = this.currentY - this.startY;
-    this.dragTranslateY = Math.max(0, delta);
-  }
-
-  onMouseUp() {
-    if (!this.isDragging) return;
-    const dragged = (this.currentY ?? 0) - (this.startY ?? 0);
-    if (dragged > this.closeThreshold) {
-      this.onClose();
-    }
-    this.isDragging = false;
-    this.startY = null;
-    this.currentY = null;
-    this.dragTranslateY = 0;
-  }*/
 }

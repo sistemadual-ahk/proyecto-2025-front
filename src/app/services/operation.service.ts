@@ -4,12 +4,14 @@ import { Observable } from 'rxjs';
 
 // Define una interfaz para la Operacion si no la tienes
 export interface Operacion {
-  _id: string;
+  _id?: string;
   // 🚨 CORRECCIÓN 1: Cambiamos a 'income' | 'expense' para coincidir con el frontend.
-  tipo: 'income' | 'expense'; 
+  tipo: 'Ingreso' | 'Egreso'; 
   monto: number;
-  billetera: string; // ID de la billetera (Cambio 'wallet' a 'billetera' por consistencia)
-  categoria: string; // ID de la categoría
+  billetera?: string; // ID de la billetera (Cambio 'wallet' a 'billetera' por consistencia)
+  categoria?: string; // ID de la categoría
+billeteraId: string;
+categoriaId: string;
   descripcion?: string; // Opcional
   // 🚨 CORRECCIÓN 2: Cambiamos a 'string' para aceptar el formato ISO 8601.
   fecha: string;
