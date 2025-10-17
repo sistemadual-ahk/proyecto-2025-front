@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
+import { AuthService } from '@auth0/auth0-angular';
 
 export interface SidebarItem {
   icon?: string; // opcional: clase de icono (ej. "bx bx-home")
@@ -22,7 +23,7 @@ export class SidebarComponent {
   /** Estado abierto/cerrado del sidebar, manejado internamente */
   isOpen = false;
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, public auth: AuthService) {}
 
   onNavigate(route: string) {
     this.router.navigate([route]); // <-- acá sí navega

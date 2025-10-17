@@ -11,7 +11,8 @@
       <button class="edit-profile-btn">
         <i class="mdi mdi-pencil"></i>
       </button>
-      <div class="profile-name">Ezequiel</div>
+      <div class="profile-name" *ngIf="auth.user$ | async as user">{{ user.name || 'Usuario' }}</div>
+      <div class="profile-name" *ngIf="!(auth.user$ | async)">Usuario</div>
     </div>
     <div class="separator"></div>
 
