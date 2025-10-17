@@ -30,8 +30,7 @@ export class AuthGuard implements CanActivate {
         if (isAuthenticated) {
           return true;
         } else {
-          console.log('Usuario no autenticado. Redirigiendo al login...');
-          return this.router.createUrlTree(['/login']);
+          return this.router.createUrlTree(['/']);
         }
       })
     );

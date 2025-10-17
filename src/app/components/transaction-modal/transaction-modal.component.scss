@@ -211,11 +211,11 @@
 // Campo de fecha mejorado
 .date-input-group {
   position: relative;
-  
-  .form-input[type="date"] {
+
+  .form-input[type='date'] {
     padding-right: 44px;
     cursor: pointer;
-    
+
     // Ocultar el ícono nativo del calendario en algunos navegadores
     &::-webkit-calendar-picker-indicator {
       background: transparent;
@@ -228,7 +228,7 @@
       top: 0;
       width: 100%;
     }
-    
+
     // Firefox
     &::-moz-calendar-picker-indicator {
       background: transparent;
@@ -242,7 +242,7 @@
       width: 100%;
     }
   }
-  
+
   .date-icon {
     position: absolute;
     right: 12px;
@@ -254,7 +254,7 @@
     transition: all 0.3s ease;
     z-index: 1;
   }
-  
+
   &:focus-within .date-icon {
     color: var(--gastify-green);
   }
@@ -439,11 +439,10 @@
   }
 }
 
-
 // Estilos para los selects de ng-zorro que mantienen la estética actual
 nz-select {
   width: 100%;
-  
+
   // Select principal - mantiene el estilo de los inputs actuales
   ::ng-deep .ant-select-selector {
     background: var(--gastify-blue) !important;
@@ -455,39 +454,39 @@ nz-select {
     font-size: 14px !important;
     transition: all 0.3s ease !important;
   }
-  
+
   // Placeholder
   ::ng-deep .ant-select-selection-placeholder {
     color: rgba(255, 255, 255, 0.45) !important;
     font-weight: 400 !important;
   }
-  
+
   // Texto seleccionado
   ::ng-deep .ant-select-selection-item {
     color: #fff !important;
     font-size: 14px !important;
   }
-  
+
   // Ícono de flecha
   ::ng-deep .ant-select-arrow {
     color: rgba(255, 255, 255, 0.55) !important;
     font-size: 18px !important;
     transition: all 0.3s ease !important;
   }
-  
+
   // Hover state - igual que los inputs actuales
   &:hover ::ng-deep .ant-select-selector {
     border-color: rgba(255, 255, 255, 0.2) !important;
     background: rgba(59, 59, 88, 0.85) !important;
   }
-  
+
   // Focus state - igual que los inputs actuales
   &:focus-within ::ng-deep .ant-select-selector {
     border-color: var(--gastify-green) !important;
     background: var(--gastify-purple) !important;
     box-shadow: 0 0 0 3px rgba(61, 205, 153, 0.25) !important;
   }
-  
+
   // Focus state del ícono
   &:focus-within ::ng-deep .ant-select-arrow {
     color: var(--gastify-green) !important;
@@ -500,23 +499,23 @@ nz-select {
   border: 1px solid rgba(255, 255, 255, 0.12) !important;
   border-radius: 14px !important;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28) !important;
-  
+
   .ant-select-item {
     color: #fff !important;
     font-size: 14px !important;
     padding: 8px 12px !important;
     transition: all 0.3s ease !important;
-    
+
     &:hover {
       background: var(--gastify-purple) !important;
     }
-    
+
     &.ant-select-item-option-selected {
       background: var(--gastify-green) !important;
       color: #fff !important;
       font-weight: 600 !important;
     }
-    
+
     &.ant-select-item-option-active {
       background: rgba(255, 255, 255, 0.08) !important;
     }

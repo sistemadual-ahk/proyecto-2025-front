@@ -6,18 +6,25 @@
     <!-- Profile Section -->
     <div class="profile-section">
       <div class="profile-image">
-        <i class="mdi mdi-account"></i>
+        <ng-container *ngIf="auth.user$ | async as user; else defaultIcon">
+          <img *ngIf="user.picture" [src]="user.picture" [alt]="user.name || 'Usuario'" class="profile-picture" />
+          <i *ngIf="!user.picture" class="mdi mdi-account"></i>
+        </ng-container>
+        <ng-template #defaultIcon>
+          <i class="mdi mdi-account"></i>
+        </ng-template>
       </div>
       <button class="edit-profile-btn">
         <i class="mdi mdi-pencil"></i>
       </button>
-      <div class="profile-name">Ezequiel</div>
+      <div class="profile-name" *ngIf="auth.user$ | async as user">{{ user.name || 'Usuario' }}</div>
+      <div class="profile-name" *ngIf="!(auth.user$ | async)">Usuario</div>
     </div>
     <div class="separator"></div>
 
     <!-- Navigation Menu -->
     <nav class="sidebar-nav">
-      <a href="#" class="sidebar-nav-item" (click)="onEditProfile()">
+      <a  *ngIf="perfilHabilitado" href="#" class="sidebar-nav-item" (click)="onEditProfile()">
         <i class="mdi mdi-account"></i>
         <span>Perfil</span>
       </a>

@@ -72,7 +72,7 @@
   Tarjetas base
 */
 .card {
-  background: #15233C;
+  background: #15233c;
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 20px;
   margin-top: 10px;
@@ -93,9 +93,9 @@
   margin: 0 auto;
   background: conic-gradient(
     #9b59b6 0 80deg,
-    #45B7D1 80deg 160deg,
-    #4ECDC4 160deg 260deg,
-    #FF6B6B 260deg 310deg,
+    #45b7d1 80deg 160deg,
+    #4ecdc4 160deg 260deg,
+    #ff6b6b 260deg 310deg,
     #f472b6 310deg 360deg
   );
   display: grid;
@@ -107,7 +107,7 @@
   content: '';
   width: 110px;
   height: 110px;
-  background: #0F152C;
+  background: #0f152c;
   border-radius: 50%;
   position: absolute;
 }
@@ -134,12 +134,28 @@
   flex-wrap: wrap;
 }
 
-.dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-right: 4px; }
-.dot-food { background: #FF6B6B; }
-.dot-health { background: #96CEB4; }
-.dot-transport { background: #45B7D1; }
-.dot-entertainment { background: #f472b6; }
-.dot-others { background: #A8A8A8; }
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 4px;
+}
+.dot-food {
+  background: #ff6b6b;
+}
+.dot-health {
+  background: #96ceb4;
+}
+.dot-transport {
+  background: #45b7d1;
+}
+.dot-entertainment {
+  background: #f472b6;
+}
+.dot-others {
+  background: #a8a8a8;
+}
 
 /*
   Placeholder de evolución (línea)
@@ -192,7 +208,9 @@
   gap: 4px;
 }
 
-.insight-title { font-weight: 700; }
+.insight-title {
+  font-weight: 700;
+}
 
 .insight-text {
   color: rgba(255, 255, 255, 0.85);
@@ -201,16 +219,14 @@
 }
 
 @media (max-width: 480px) {
-    /* sin estilos de header/sidebar en esta vista */
-    
-    .main {
-      padding: 5px;
-      padding-top: 70px;
-    }
-    
-    .app-title {
-      font-size: 1.3rem;
-    }
+  /* sin estilos de header/sidebar en esta vista */
 
+  .main {
+    padding: 5px;
+    padding-top: 70px;
+  }
 
+  .app-title {
+    font-size: 1.3rem;
+  }
 }

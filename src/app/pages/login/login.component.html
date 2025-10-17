@@ -7,17 +7,12 @@
 
     <!-- Welcome Message -->
     <div class="welcome-section">
-      <h2 class="welcome-message">¡Bienvenido de vuelta!</h2>
+      <h2 class="welcome-message">¡Bienvenido!</h2>
       <p class="welcome-subtitle">Inicia sesión para continuar gestionando tus finanzas</p>
-
-      <ul *ngIf="auth.user$ | async as user">
-        <li>{{ user.name }}</li>
-        <li>{{ user.email }}</li>
-      </ul>
     </div>
 
     <!-- Login Form -->
-    <form class="login-form" (ngSubmit)="onSubmit()">
+    <form *ngIf="loginInternoHabilitado" class="login-form" (ngSubmit)="onSubmit()">
       <!-- Username/Email Field -->
       <div class="input-group">
         <div class="input-icon">
@@ -69,7 +64,7 @@
     </div>
 
     <!-- Register Link -->
-    <div class="register-section">
+    <div *ngIf="loginInternoHabilitado" class="register-section">
       <p class="register-text">¿No tienes cuenta?</p>
       <a routerLink="/register" class="register-link">Registrate</a>
     </div>
