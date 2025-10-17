@@ -13,6 +13,7 @@ import { UserService } from '../../services/user.service'; // Asegúrate de que 
   styleUrl: './login.component.scss',
 })
 export class LoginComponent implements OnInit {
+  loginInternoHabilitado = false;
   // Implementa OnInit
   username: string = '';
   password: string = '';
