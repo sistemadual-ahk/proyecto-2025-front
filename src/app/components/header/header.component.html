@@ -1,7 +1,7 @@
 <!-- Header -->
 <header class="header">
   <div class="header-left">
-    <app-sidebar #sidebar (close)="sidebar.closeMenu()"></app-sidebar>
+    <app-sidebar #sidebar (close)="sidebar.closeMenu()" (logoutEvent)="logout()"></app-sidebar>
     <button class="menu-btn" (click)="sidebar.toggleMenu()">
       <i class="mdi mdi-menu"></i>
     </button>

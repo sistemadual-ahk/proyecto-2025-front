@@ -1,38 +1,33 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SidebarComponent } from '../sidebar/sidebar.component';
+import { AuthService } from '@auth0/auth0-angular';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-header',
   standalone: true,
   imports: [CommonModule, SidebarComponent],
-  templateUrl: './header.component.html', // tu HTML va en header.component.html
+  templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss']
 })
 export class HeaderComponent {
-  /** Título centrado (ej. "Gastify") */
   @Input() title = 'Gastify';
-
-  /** Mes actual mostrado en el header (ej. "Junio 2025") */
   @Input() currentMonth = '';
-
-  /** Navegar a mes anterior/siguiente */
   @Output() previousMonth = new EventEmitter<void>();
   @Output() nextMonth = new EventEmitter<void>();
-
-  /** Click en notificaciones y perfil */
   @Output() notificationsClick = new EventEmitter<void>();
   @Output() profileClick = new EventEmitter<void>();
 
-  // Sin estados duplicados: delegamos al Sidebar vía template ref
+  constructor(
+    private router: Router,
+    private auth: AuthService
+  ) { }
 
-
-  
-  // Métodos helpers para el template
-  onPreviousMonthClick()   { this.previousMonth.emit(); }
-  onNextMonthClick()       { this.nextMonth.emit(); }
-  onNotificationsClick()   { this.notificationsClick.emit(); }
-  onProfileClick()         { this.profileClick.emit(); }
+  onPreviousMonthClick() { this.previousMonth.emit(); }
+  onNextMonthClick() { this.nextMonth.emit(); }
+  onNotificationsClick() { this.notificationsClick.emit(); }
+  onProfileClick() { this.profileClick.emit(); }
 
   openNotifications() {
     this.notificationsClick.emit();
@@ -41,5 +36,13 @@ export class HeaderComponent {
   openProfile() {
     this.profileClick.emit();
   }
-  // Los eventos de notificaciones/perfil quedan expuestos
+
+  logout() {
+    this.auth.logout({
+      logoutParams: {
+        returnTo: window.location.origin,
+      }
+    });
+    this.router.navigate(['/']);
+  }
 }

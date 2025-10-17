@@ -134,10 +134,6 @@ export class ActivityComponent implements OnInit, OnDestroy {
     console.log('Abrir notificaciones');
   }
 
-  openProfile() {
-    console.log('Abrir perfil');
-  }
-
   // Métodos para navegación
   openGoals() {
     console.log('Abrir objetivos');

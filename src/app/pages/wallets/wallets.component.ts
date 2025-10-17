@@ -188,11 +188,6 @@ export class WalletsComponent {
     });
   }
 
-  // Métodos del sidebar
-  openProfile() {
-    console.log('Abrir perfil');
-  }
-
   openHome() {
     this.router.navigate(['/home']);
   }

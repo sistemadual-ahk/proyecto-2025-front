@@ -1,7 +1,6 @@
 <div class="container">
   <!-- Main Content -->
   <div class="main">
-
     <!-- Date Navigation -->
     <div class="date-navigation">
       <button class="nav-btn" (click)="previousMonth()">
@@ -24,7 +23,7 @@
           <p class="card-amount">${{ income }}</p>
         </div>
       </div>
-      
+
       <div class="summary-card expense-card">
         <div class="card-icon">
           <i class="mdi mdi-trending-down"></i>
@@ -38,7 +37,12 @@
 
     <!-- Payment Cards Stack -->
     <div class="cards-stack" (click)="rotateCards()">
-      <div class="payment-card" *ngFor="let card of cards; let i = index" [ngStyle]="getCardStyle(i)" [style.background]="card.background">
+      <div
+        class="payment-card"
+        *ngFor="let card of cards; let i = index"
+        [ngStyle]="getCardStyle(i)"
+        [style.background]="card.background"
+      >
         <div class="card-header">
           <div class="card-logo">
             <i class="mdi" [ngClass]="card.icon"></i>
@@ -61,7 +65,7 @@
           Ver todo <i class="mdi mdi-chevron-right"></i>
         </button>
       </div>
-      
+
       <div class="movements-list">
         <div class="movement-item" *ngFor="let movement of recentMovements">
           <div class="movement-icon" [style.background-color]="movement.color">
@@ -70,14 +74,25 @@
           <div class="movement-details">
             <h4 class="movement-category">
               {{ movement.description }}
-              <span *ngIf="movement.subcategory && movement.subcategory !== movement.description" class="movement-subcategory">
+              <span
+                *ngIf="
+                  movement.subcategory &&
+                  movement.subcategory !== movement.description
+                "
+                class="movement-subcategory"
+              >
                 - {{ movement.subcategory }}
               </span>
             </h4>
             <p class="movement-date">{{ movement.date }}</p>
           </div>
-          <div class="movement-amount" [class.income]="movement.type === 'income'">
-            {{ movement.amount > 0 ? '+' : '' }}${{ Math.abs(movement.amount) }}
+          <div
+            class="movement-amount"
+            [class.income]="movement.type === 'income'"
+          >
+            {{ movement.amount > 0 ? "+" : "" }}${{
+              redondearAmount(movement.amount)
+            }}
           </div>
         </div>
       </div>
@@ -89,12 +104,12 @@
         <i class="mdi mdi-target"></i>
         <span>Objetivos</span>
       </button>
-      
+
       <button class="bottom-nav-item" (click)="openAnalysis()">
         <i class="mdi mdi-chart-bar"></i>
         <span>Análisis</span>
       </button>
-      
+
       <button class="add-btn" (click)="addTransaction()">
         <i class="mdi mdi-plus"></i>
       </button>
@@ -102,9 +117,9 @@
   </div>
 
   <!-- Modal de Transacción -->
-  <app-transaction-modal 
+  <app-transaction-modal
     *ngIf="showTransactionModal"
     (closeModal)="closeTransactionModal()"
-    (saveTransaction)="saveTransaction($event)">
+  >
   </app-transaction-modal>
-</div> 
+</div>

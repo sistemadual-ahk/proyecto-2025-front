@@ -54,7 +54,6 @@ export class SidebarComponent {
   onItemClick(item: SidebarItem) {
     if (item.logout) {
       this.logoutEvent.emit();
-      this.closeMenu();
       return;
     }
     if (item.route) {
@@ -63,5 +62,5 @@ export class SidebarComponent {
     }
   }
 
-  onLogout() { this.logoutEvent.emit(); this.closeMenu(); }
+  onLogout() { this.logoutEvent.emit(); }
 }

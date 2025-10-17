@@ -1,13 +1,10 @@
-import { Component, OnInit, OnDestroy, inject } from '@angular/core';
-import { CommonModule, DOCUMENT } from '@angular/common';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { TransactionModalComponent } from '../../components/transaction-modal/transaction-modal.component';
 import { GastoService } from '../../services/gasto.service';
-import { AuthService } from '@auth0/auth0-angular';
-import { Observable } from 'rxjs';
-import { HttpClient } from '@angular/common/http'; 
 import { Gasto } from '../../../models/gasto.model';
 
 
@@ -19,34 +16,17 @@ import { Gasto } from '../../../models/gasto.model';
   styleUrl: './home.component.scss'
 })
 export class HomeComponent implements OnInit, OnDestroy {
-  private auth = inject(AuthService);
-  private doc = inject(DOCUMENT);
-
-  Math = Math;
-
-  // Estado del menú
   isMenuOpen = false;
-
-  // Estado del modal de gastos
   showTransactionModal = false;
-  // Suscripciones
   private subscription = new Subscription();
-
-  // Datos del dashboard
   currentViewDate: Date = new Date();
   currentMonth = this.formatMonthTitle(this.currentViewDate);
   income = 0;
   expenses = 4500;
   availableBalance = 37300;
   balanceChange = '+$200 vs mes anterior';
-
-  // Movimientos recientes
   recentMovements: any[] = [];
-  
-  // Gastos del usuario
   gastos: Gasto[] = [];
-
-  // Array de tarjetas con datos dinámicos
   cards = [
     {
       typeLabel: 'Mercado Pago',
@@ -110,14 +90,13 @@ export class HomeComponent implements OnInit, OnDestroy {
     // Calcular estadísticas desde los gastos
     const ingresos = this.gastos.filter(g => g.tipo === 'income');
     const gastosData = this.gastos.filter(g => g.tipo === 'expense');
-    
+
     this.income = ingresos.reduce((sum, g) => sum + g.monto, 0);
     this.expenses = gastosData.reduce((sum, g) => sum + g.monto, 0);
     this.availableBalance = this.income - this.expenses;
   }
 
   private loadRecentMovements(): void {
-    // Obtener los últimos 3 gastos como movimientos recientes
     const recentGastos = this.gastos
       .sort((a, b) => new Date(b.datetime).getTime() - new Date(a.datetime).getTime())
       .slice(0, 3);
@@ -128,10 +107,10 @@ export class HomeComponent implements OnInit, OnDestroy {
       category: gasto.categoria?.nombre || 'Sin categoría',
       description: gasto.descripcion,
       subcategory: gasto.categoria?.nombre || '',
-      icon: this.getIconForCategory(gasto.categoria?.nombre || ''),
+      icon: gasto.categoria?.icono || 'mdi-cash',
       amount: gasto.tipo === 'income' ? gasto.monto : -gasto.monto,
       date: this.formatDateForHome(gasto.datetime.toString()),
-      color: gasto.tipo === 'income' ? '#10b981' : this.getColorForCategory(gasto.categoria?.nombre || '')
+      color: gasto.tipo === 'income' ? '#10b981' : gasto.categoria?.color || '#6b7280'
     }));
   }
 
@@ -146,20 +125,6 @@ export class HomeComponent implements OnInit, OnDestroy {
     console.log('closeMenu ejecutado');
     this.isMenuOpen = false;
   }
-
-logout(): void {
-    this.auth.logout({
-        logoutParams: {
-            // Usar window.location.origin es la forma más directa.
-            returnTo: window.location.origin, 
-        }
-    });
-    // Nota: El navegador será redirigido por Auth0, el console.log y el router.navigate 
-    // después de la redirección de Auth0 son inalcanzables.
-    // Los puedes dejar, pero no se ejecutarán.
-    console.log('Logout'); 
-    this.router.navigate(['/']); 
-}
 
   // Métodos para navegación
   previousMonth() {
@@ -185,18 +150,12 @@ logout(): void {
     console.log('Abrir notificaciones');
   }
 
-  openProfile() {
-    console.log('Abrir perfil');
-  }
-
   viewAllMovements() {
-    console.log('Ver todos los movimientos');
     this.router.navigate(['/activity']);
   }
 
   // Métodos para botones inferiores
   openGoals() {
-    console.log('Abrir objetivos');
     this.router.navigate(['/saving-goals']);
   }
 
@@ -206,7 +165,6 @@ logout(): void {
     this.closeMenu();
   }
 
-  // Rotación de tarjetas con animación
   rotateCards() {
     if (this.cards.length <= 1) return;
     if (this.isAnimating) return;
@@ -219,12 +177,10 @@ logout(): void {
     }, 300);
   }
 
-  // Estilos dinámicos por índice
   getCardStyle(index: number) {
     const total = this.cards.length;
     const effectiveIndex = this.isAnimating ? (index - 1 + total) % total : index;
 
-    // Cálculo genérico: cada nivel desciende 10px, reduce escala 0.05 y opacidad 0.1
     const translateY = Math.min(effectiveIndex * 10, 40); // límite suave
     const scale = Math.max(1 - effectiveIndex * 0.05, 0.8);
     const opacity = Math.max(1 - effectiveIndex * 0.1, 0.6);
@@ -246,40 +202,6 @@ logout(): void {
     this.showTransactionModal = false;
   }
 
-  saveTransaction(transaction: any) {
-    console.log('Gasto guardado:', transaction);
-  }
-
-  // Métodos auxiliares para iconos y colores
-  private getIconForCategory(category: string): string {
-    const iconMap: { [key: string]: string } = {
-      'Alimentación': 'mdi-cart',
-      'Transporte': 'mdi-car',
-      'Entretenimiento': 'mdi-movie',
-      'Salud': 'mdi-medical-bag',
-      'Educación': 'mdi-school',
-      'Vivienda': 'mdi-home',
-      'Ingresos': 'mdi-cash-plus',
-      'Otros': 'mdi-dots-horizontal'
-    };
-    return iconMap[category] || 'mdi-cash';
-  }
-
-  private getColorForCategory(category: string): string {
-    const colorMap: { [key: string]: string } = {
-      'Alimentación': '#f59e0b',
-      'Transporte': '#3b82f6',
-      'Entretenimiento': '#8b5cf6',
-      'Salud': '#ef4444',
-      'Educación': '#10b981',
-      'Vivienda': '#6366f1',
-      'Ingresos': '#3DCD99',
-      'Otros': '#6b7280'
-    };
-    return colorMap[category] || '#6b7280';
-  }
-
-  // Formateo del título del mes
   private formatMonthTitle(date: Date): string {
     const monthYear = date.toLocaleDateString('es-ES', {
       month: 'long',
@@ -298,15 +220,19 @@ logout(): void {
     const today = new Date();
     const yesterday = new Date(today);
     yesterday.setDate(yesterday.getDate() - 1);
-    
+
     if (date.toDateString() === today.toDateString()) {
       return 'Hoy, ' + date.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
     } else if (date.toDateString() === yesterday.toDateString()) {
       return 'Ayer, ' + date.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
     } else {
-      return date.toLocaleDateString('es-ES', { day: 'numeric', month: 'short' }) + ', ' + 
-             date.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+      return date.toLocaleDateString('es-ES', { day: 'numeric', month: 'short' }) + ', ' +
+        date.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
     }
+  }
+
+  redondearAmount(amount: number): number {
+    return Math.round(amount);
   }
 
 } 

@@ -33,10 +33,6 @@ export class AnalysisComponent {
   openNotifications() {
     console.log('Abrir notificaciones');
   }
-
-  openProfile() {
-    console.log('Abrir perfil');
-  }
 }
 
 
