@@ -3,7 +3,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators'; // 👈 ¡Importar map es crucial!
+import { map } from 'rxjs/operators';
 
 // 1. Interfaz para el objeto Categoría (ajustada a tu respuesta real)
 export interface Categoria {

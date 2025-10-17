@@ -13,7 +13,7 @@
       </button>
     </div>
 
-    <!-- Toggle Ingreso/Gasto -->
+    <!-- Toggle Ingreso/Gasto --> 
     <div class="transaction-toggle">
       <button class="toggle-btn income-btn" [class.active]="transactionType === 'income'"
         (click)="toggleTransactionType('income')">
@@ -53,9 +53,9 @@
         <div class="form-group">
           <label class="form-label">Billetera</label>
           <div class="input-with-icon">
-            <select class="form-input" [(ngModel)]="wallet">
+            <select class="form-input" [(ngModel)]="wallet" name="wallet">
               <option value="">Seleccionar billetera</option>
-              <option *ngFor="let walletOption of wallets" [value]="walletOption">
+              <option *ngFor="let walletOption of nombresBilleteras" [value]="walletOption">
                 {{ walletOption }}
               </option>
             </select>
@@ -67,29 +67,16 @@
       <div class="form-group">
         <label class="form-label">Categoria</label>
         <div class="input-with-icon">
-          <select class="form-input" [(ngModel)]="category">
+          <select class="form-input" [(ngModel)]="category" name="category">
             <option value="">Seleccionar categoría</option>
-            <option *ngFor="let categoryOption of categorias" [value]="categoryOption">
-              {{ categoryOption.nombre }}
+            <option *ngFor="let categoryOption of nombresCategorias" [value]="categoryOption">
+              {{ categoryOption }}
             </option>
           </select>
           <i class="mdi mdi-chevron-down"></i>
         </div>
       </div>
 
-      <!-- Subcategoría -->
-      <div class="form-group">
-        <label class="form-label">Subcategoria</label>
-        <div class="input-with-icon">
-          <select class="form-input" [(ngModel)]="subcategory">
-            <option value="">Seleccionar subcategoría</option>
-            <option *ngFor="let subcategoryOption of currentSubcategories" [value]="subcategoryOption">
-              {{ subcategoryOption }}
-            </option>
-          </select>
-          <i class="mdi mdi-chevron-down"></i>
-        </div>
-      </div>
     </div>
   </div>
 </div>
