@@ -6,12 +6,9 @@
     content: none !important;
     visibility: hidden !important;
   }
-  
-  // Ocultar cualquier elemento drag
-  > div::before,
-  > div::after {
-    display: none !important;
-    content: none !important;
+
+  &::-webkit-scrollbar {
+    display: none;
   }
 }
 
@@ -34,6 +31,10 @@
     display: none !important;
     content: none !important;
   }
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 :root {
@@ -51,7 +52,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 30px;
+  padding-bottom: 10px;
+  margin-bottom: 10px;
   min-height: 10px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.12);
   position: relative;
@@ -175,6 +177,9 @@
   transition: all 0.3s ease;
   color: #fff;
   width: 100%;
+  appearance: none;
+  -webkit-appearance: none; /* Para Chrome, Safari, Edge */
+  -moz-appearance: none;    /* Para Firefox */
 
   &:focus {
     outline: none;
