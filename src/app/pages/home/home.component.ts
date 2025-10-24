@@ -1,22 +1,27 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { TransactionModalComponent } from '../../components/transaction-modal/transaction-modal.component';
 import { OperacionService } from '../../services/operacion.service';
 import { Operacion } from '../../../models/operacion.model';
+import {
+  MatBottomSheet,
+  MatBottomSheetModule,
+  MatBottomSheetRef,
+} from '@angular/material/bottom-sheet';
+import {MatButtonModule} from '@angular/material/button';
+import { TransactionBottomSheet } from '../../components/transaction-bottom-sheet/transaction-bottom-sheet.component';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, TransactionModalComponent],
+  imports: [CommonModule, FormsModule, RouterModule, MatButtonModule, MatBottomSheetModule],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
 })
 export class HomeComponent implements OnInit, OnDestroy {
   isMenuOpen = false;
-  showTransactionModal = false;
   private subscription = new Subscription();
   currentViewDate: Date = new Date();
   currentMonth = this.formatMonthTitle(this.currentViewDate);
@@ -55,6 +60,8 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   // Flag de animación
   isAnimating = false;
+
+  private _transactionBottomSheet = inject(MatBottomSheet);
 
   constructor(
     private router: Router,
@@ -188,11 +195,21 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   addTransaction() {
     console.log('Agregar operacion');
-    this.showTransactionModal = true;
-  }
-
-  closeTransactionModal() {
-    this.showTransactionModal = false;
+    const bottomSheetRef = this._transactionBottomSheet.open(TransactionBottomSheet, {
+      disableClose: false,
+      hasBackdrop: true,
+      backdropClass: 'bottom-sheet-backdrop',
+      panelClass: 'custom-bottom-sheet-container'
+    });
+    
+    // Manejar el resultado cuando se cierra el bottom sheet
+    bottomSheetRef.afterDismissed().subscribe(result => {
+      if (result) {
+        console.log('Transacción guardada:', result);
+        // Recargar los datos después de guardar
+        this.loadData();
+      }
+    });
   }
 
   private formatMonthTitle(date: Date): string {

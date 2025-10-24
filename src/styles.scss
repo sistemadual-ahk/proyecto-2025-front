@@ -142,3 +142,63 @@ a,
     transform: translateY(0);
   }
 }
+
+// Estilos para Angular Material Bottom Sheet
+// Ocultar las líneas/manijas de arrastre
+.mat-bottom-sheet-container {
+  &::before,
+  &::after {
+    display: none !important;
+    content: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    height: 0 !important;
+    width: 0 !important;
+  }
+  
+  // Ocultar cualquier elemento drag-handle si existe
+  .mat-bottom-sheet-drag-handle,
+  [class*="drag-handle"],
+  [class*="drag-indicator"],
+  [class*="drag-line"] {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    height: 0 !important;
+  }
+  
+  // Ocultar pseudo-elementos en elementos hijos
+  > * {
+    &::before,
+    &::after {
+      display: none !important;
+      content: none !important;
+    }
+  }
+}
+
+// Personalizar el contenedor del bottom sheet
+.mat-bottom-sheet-container,
+.custom-bottom-sheet-container {
+  background: transparent !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  
+  // Asegurarse de que no haya líneas visibles
+  border: none !important;
+  outline: none !important;
+  
+  // Remover cualquier decoración superior
+  &::before,
+  &::after {
+    content: none !important;
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+  }
+}
+
+// Personalizar el backdrop
+.bottom-sheet-backdrop {
+  background: rgba(0, 0, 0, 0.6) !important;
+}

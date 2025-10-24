@@ -102,13 +102,9 @@
         <span>Análisis</span>
       </button>
 
-      <button class="add-btn" (click)="addTransaction()">
+      <button class="add-transaction-btn" (click)="addTransaction()">
         <i class="mdi mdi-plus"></i>
       </button>
     </div>
   </div>
-
-  <!-- Modal de Transacción -->
-  <app-transaction-modal *ngIf="showTransactionModal" (closeModal)="closeTransactionModal()">
-  </app-transaction-modal>
 </div>
