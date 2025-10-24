@@ -1,160 +1,172 @@
 <div class="container">
-  <!-- Main Content -->
-  <div class="main">
-    <!-- Navigation and Title -->
-    <app-page-title title="Mis billeteras" (back)="goBack()"></app-page-title>
+  <!-- Main Content -->
+  <div class="main">
+    <!-- Navigation and Title -->
+    <app-page-title title="Mis billeteras" (back)="goBack()"></app-page-title>
 
-    <!-- Total Balance Card -->
-    <div class="total-balance-card">
-      <div class="balance-label">Total:</div>
-      <div class="balance-amount">{{ formatCurrency(totalBalance) }}</div>
-    </div>
+    <!-- Total Balance Card -->
+    <div class="total-balance-card">
+      <div class="balance-label">Total:</div>
+      <div class="balance-amount">{{ formatCurrency(totalBalance) }}</div>
+    </div>
 
-    <!-- Action Buttons -->
-    <div class="action-buttons">
-      <button class="action-btn" (click)="openTransferHistory()">
-        <div class="action-icon">
-          <i class="mdi mdi-refresh"></i>
-        </div>
-        <span class="action-text">Historial de transferencias</span>
-      </button>
+    <!-- Action Buttons -->
+    <div class="action-buttons">
+      <button class="action-btn" (click)="openTransferHistory()">
+        <div class="action-icon">
+          <i class="mdi mdi-refresh"></i>
+        </div>
+        <span class="action-text">Historial de transferencias</span>
+      </button>
 
-      <button class="action-btn" (click)="openNewTransfer()">
-        <div class="action-icon">
-          <i class="mdi mdi-swap-horizontal"></i>
-        </div>
-        <span class="action-text">Nueva transferencia</span>
-      </button>
-    </div>
+      <button class="action-btn" (click)="openNewTransfer()">
+        <div class="action-icon">
+          <i class="mdi mdi-swap-horizontal"></i>
+        </div>
+        <span class="action-text">Nueva transferencia</span>
+      </button>
+    </div>
 
-    <!-- Wallets List -->
-    <div class="wallets-list">
-      <div
-        class="wallet-item"
-        *ngFor="let wallet of wallets"
-        (click)="openWalletPopup(wallet)"
-        style="cursor: pointer"
-      >
-        <div class="wallet-icon" [style.background-color]="wallet.iconColor">
-          <i [class]="wallet.icon"></i>
-        </div>
-        <div class="wallet-info">
-          <div class="wallet-name">{{ wallet.name }}</div>
-          <div class="wallet-subtitle">
-            <span class="wallet-type">{{ wallet.type | titlecase }}</span>
-            <span class="wallet-dot" *ngIf="wallet.isDefault">•</span>
-            <span class="wallet-default" *ngIf="wallet.isDefault">Predeterminada</span>
-          </div>
-        </div>
-        <div class="wallet-meta">
-          <div class="wallet-balance">{{ formatCurrency(wallet.balance) }}</div>
-          <i class="mdi mdi-chevron-right"></i>
-        </div>
-      </div>
-    </div>
+    <!-- Wallets List -->
+    <div class="wallets-list">
+      <!-- 
+        Iteramos sobre 'billeteras' (datos del backend)
+      -->
+      <div
+        class="wallet-item"
+        *ngFor="let billetera of billeteras"
+        (click)="openWalletPopup(billetera)"
+        style="cursor: pointer"
+      >
+        <!-- 
+          Usamos 'billetera.color' y la función 'getWalletIcon()'
+        -->
+        <div class="wallet-icon" [style.background-color]="billetera.color">
+          <i [class]="getWalletIcon(billetera.tipo)"></i>
+        </div>
+        <div class="wallet-info">
+          <!-- Usamos 'billetera.nombre' -->
+          <div class="wallet-name">{{ billetera.nombre }}</div>
+          <div class="wallet-subtitle">
+            <!-- Usamos 'billetera.type' y 'billetera.isDefault' -->
+            <span class="wallet-type">{{ billetera.tipo | titlecase }}</span>
+            <span class="wallet-dot" *ngIf="billetera.isDefault">•</span>
+            <span class="wallet-default" *ngIf="billetera.isDefault">Predeterminada</span>
+          </div>
+        </div>
+        <div class="wallet-meta">
+          <!-- Usamos 'billetera.balance' -->
+          <div class="wallet-balance">{{ formatCurrency(billetera.balance) }}</div>
+          <i class="mdi mdi-chevron-right"></i>
+        </div>
+      </div>
+    </div>
 
-    <!-- Add Account Button -->
-    <button class="add-account-btn" (click)="addAccount()">
-      <i class="mdi mdi-plus"></i>
-      <span>Agregar Cuenta</span>
-    </button>
-  </div>
+    <!-- Add Account Button -->
+    <button class="add-account-btn" (click)="addAccount()">
+      <i class="mdi mdi-plus"></i>
+      <span>Agregar Cuenta</span>
+    </button>
+  </div>
 
-  <!-- Modal: Agregar cuenta -->
-  <app-add-account-modal
-    *ngIf="showAddAccountModal"
-    (closeModal)="closeAddAccountModal()"
-    (saveAccount)="saveAccount($event)"
-  >
-  </app-add-account-modal>
+  <!-- Modal: Agregar cuenta -->
+  <app-add-account-modal
+    *ngIf="showAddAccountModal"
+    (closeModal)="closeAddAccountModal()"
+    (saveAccount)="saveAccount($event)"
+  >
+  </app-add-account-modal>
 
-  <!-- Popup: Detalles de billetera -->
-  <div class="wallet-popup-overlay" *ngIf="showWalletPopup" (click)="closeWalletPopup()">
-    <div class="wallet-popup" (click)="$event.stopPropagation()">
-      <!-- Header del popup -->
-      <div class="popup-header">
-        <div class="popup-title">
-          <div class="popup-wallet-icon" [style.background-color]="selectedWallet?.iconColor">
-            <i [class]="selectedWallet?.icon"></i>
-          </div>
-          <div class="popup-wallet-info">
-            <h3 class="popup-wallet-name">{{ selectedWallet?.name }}</h3>
-            <p class="popup-wallet-type">{{ selectedWallet?.type | titlecase }}</p>
-          </div>
-        </div>
-        <button class="popup-close-btn" (click)="closeWalletPopup()">
-          <i class="mdi mdi-close"></i>
-        </button>
-      </div>
+  <!-- Popup: Detalles de billetera -->
+  <div class="wallet-popup-overlay" *ngIf="showWalletPopup" (click)="closeWalletPopup()">
+    <div class="wallet-popup" (click)="$event.stopPropagation()">
+      <!-- Header del popup -->
+      <div class="popup-header">
+        <div class="popup-title">
+          <!-- Usamos 'selectedWallet?.color' y 'getWalletIcon()' -->
+          <div class="popup-wallet-icon" [style.background-color]="selectedWallet?.color">
+            <i [class]="getWalletIcon(selectedWallet?.tipo)"></i>
+          </div>
+          <div class="popup-wallet-info">
+            <!-- Usamos 'selectedWallet?.nombre' -->
+            <h3 class="popup-wallet-name">{{ selectedWallet?.nombre }}</h3>
+            <p class="popup-wallet-type">{{ selectedWallet?.tipo | titlecase }}</p>
+          </div>
+        </div>
+        <button class="popup-close-btn" (click)="closeWalletPopup()">
+          <i class="mdi mdi-close"></i>
+        </button>
+      </div>
 
-      <!-- Contenido del popup -->
-      <div class="popup-content">
-        <!-- Balance principal -->
-        <div class="popup-balance-section">
-          <div class="popup-balance-label">Balance actual</div>
-          <div class="popup-balance-amount">{{ formatCurrency(selectedWallet?.balance || 0) }}</div>
-        </div>
+      <!-- Contenido del popup -->
+      <div class="popup-content">
+        <!-- Balance principal -->
+        <div class="popup-balance-section">
+          <div class="popup-balance-label">Balance actual</div>
+          <div class="popup-balance-amount">{{ formatCurrency(selectedWallet?.balance || 0) }}</div>
+        </div>
 
-        <!-- Acciones rápidas -->
-        <div class="popup-actions">
-          <button class="popup-action-btn" (click)="openWalletTransfer()">
-            <div class="popup-action-icon">
-              <i class="mdi mdi-swap-horizontal"></i>
-            </div>
-            <span>Transferir desde</span>
-          </button>
+        <!-- Acciones rápidas -->
+        <div class="popup-actions">
+          <button class="popup-action-btn" (click)="openWalletTransfer()">
+            <div class="popup-action-icon">
+              <i class="mdi mdi-swap-horizontal"></i>
+            </div>
+            <span>Transferir desde</span>
+          </button>
 
-          <button class="popup-action-btn" (click)="openWalletSettings()">
-            <div class="popup-action-icon">
-              <i class="mdi mdi-swap-horizontal"></i>
-            </div>
-            <span>Transferir hacia</span>
-          </button>
+          <button class="popup-action-btn" (click)="openWalletSettings()">
+            <div class="popup-action-icon">
+              <i class="mdi mdi-swap-horizontal"></i>
+            </div>
+            <span>Transferir hacia</span>
+          </button>
 
-          <button class="popup-action-btn" (click)="openWalletHistory()">
-            <div class="popup-action-icon">
-              <i class="mdi mdi-history"></i>
-            </div>
-            <span>Ver transacciones</span>
-          </button>
-        </div>
+          <button class="popup-action-btn" (click)="openWalletHistory()">
+            <div class="popup-action-icon">
+              <i class="mdi mdi-history"></i>
+            </div>
+            <span>Ver transacciones</span>
+a         </button>
+        </div>
 
-        <!-- Información adicional -->
-        <div class="popup-details">
-          <div class="popup-detail-item">
-            <span class="detail-label">Tipo de cuenta:</span>
-            <span class="detail-value">{{ getWalletTypeLabel(selectedWallet?.type) }}</span>
-          </div>
-          <div class="popup-detail-item" *ngIf="selectedWallet?.isDefault">
-            <span class="detail-label">Estado:</span>
-            <span class="detail-value default-badge">Predeterminada</span>
-          </div>
-          <div class="popup-detail-item">
-            <span class="detail-label">Última actualización:</span>
-            <span class="detail-value">{{ getLastUpdate() }}</span>
-          </div>
-        </div>
+        <!-- Información adicional -->
+        <div class="popup-details">
+          <div class="popup-detail-item">
+            <span class="detail-label">Tipo de cuenta:</span>
+            <span class="detail-value">{{ getWalletTypeLabel(selectedWallet?.tipo) }}</span>
+Z         </div>
+          <div class="popup-detail-item" *ngIf="selectedWallet?.isDefault">
+            <span class="detail-label">Estado:</span>
+            <span class="detail-value default-badge">Predeterminada</span>
+          </div>
+          <div class="popup-detail-item">
+s           <span class="detail-label">Última actualización:</span>
+            <span class="detail-value">{{ getLastUpdate() }}</span>
+          </div>
+        </div>
 
-        <!-- Botones de acción principales -->
-        <div class="popup-main-actions">
-          <button
-            class="popup-main-btn primary"
-            (click)="setAsDefault()"
-            *ngIf="!selectedWallet?.isDefault"
-          >
-            <i class="mdi mdi-star"></i>
-            Establecer como predeterminada
-          </button>
-          <button class="popup-main-btn secondary" (click)="editWallet()">
-            <i class="mdi mdi-pencil"></i>
-            Editar billetera
-          </button>
-          <button class="popup-main-btn danger" (click)="deleteWallet()">
-            <i class="mdi mdi-delete"></i>
-            Eliminar billetera
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
+        <!-- Botones de acción principales -->
+        <div class="popup-main-actions">
+          <button
+            class="popup-main-btn primary"
+*           (click)="setAsDefault()"
+            *ngIf="!selectedWallet?.isDefault"
+          >
+            <i class="mdi mdi-star"></i>
+            Establecer como predeterminada
+  S       </button>
+          <button class="popup-main-btn secondary" (click)="editWallet()">
+            <i class="mdi mdi-pencil"></i>
+            Editar billetera
+          </button>
+          <button class="popup-main-btn danger" (click)="deleteWallet()">
+            <i class="mdi mdi-delete"></i>
+            Eliminar billetera
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
+

@@ -11,6 +11,8 @@ export interface Billetera {
   nombre: string;
   proveedor: string;
   tipo: 'bank' | 'digital' | 'cash';
+  isDefault?: boolean;
+  color?: string;
 }
 
 // Tipo para CREAR una billetera (sin `id`)
