@@ -5,18 +5,17 @@
     <app-page-title title="Perfil" (back)="goBack()"></app-page-title>
 
     <!-- Profile Information -->
-    <div class="profile-info">
+    <div class="profile-info" *ngIf="auth.user$ | async as user">
       <!-- Foto de perfil -->
       <div class="profile-picture-container">
-        <div class="profile-picture" [style.background-image]="user.profilePicture ? 'url(' + user.profilePicture + ')' : 'none'">
-          <div class="profile-picture-placeholder" *ngIf="!user.profilePicture">
+        <div
+          class="profile-picture"
+          [style.background-image]="user.picture ? 'url(' + user.picture + ')' : 'none'"
+        >
+          <div class="profile-picture-placeholder" *ngIf="!user.picture">
             <i class="mdi mdi-account"></i>
           </div>
         </div>
-        <button class="edit-picture-btn" (click)="fileInput.click()" *ngIf="isEditing">
-          <i class="mdi mdi-pencil"></i>
-        </button>
-        <input #fileInput type="file" accept="image/*" (change)="onProfilePictureChange($event)" style="display: none;">
       </div>
 
       <!-- Nombre y email -->
@@ -33,23 +32,19 @@
     <div class="user-details">
       <div class="detail-card">
         <span class="detail-label">Ingreso mensual</span>
-        <span class="detail-value" *ngIf="!isEditing">${{ user.monthlyIncome | number }}</span>
-        <input 
-          type="number" 
-          class="detail-input" 
-          [(ngModel)]="user.monthlyIncome" 
+        <span class="detail-value" *ngIf="!isEditing">${{ usuario.ingresoMensual | number }}</span>
+        <input
+          type="number"
+          class="detail-input"
+          [(ngModel)]="usuario.ingresoMensual"
           *ngIf="isEditing"
-        >
+        />
       </div>
 
       <div class="detail-card">
         <span class="detail-label">Situación laboral</span>
-        <span class="detail-value" *ngIf="!isEditing">{{ user.employmentStatus }}</span>
-        <select 
-          class="detail-select" 
-          [(ngModel)]="user.employmentStatus" 
-          *ngIf="isEditing"
-        >
+        <span class="detail-value" *ngIf="!isEditing">{{ usuario.situacionLaboral }}</span>
+        <select class="detail-select" [(ngModel)]="usuario.situacionLaboral" *ngIf="isEditing">
           <option value="Freelance">Freelance</option>
           <option value="Empleado">Empleado</option>
           <option value="Empresario">Empresario</option>
@@ -60,24 +55,15 @@
 
       <div class="detail-card">
         <span class="detail-label">Localidad</span>
-        <span class="detail-value" *ngIf="!isEditing">{{ user.location }}</span>
-        <input 
-          type="text" 
-          class="detail-input" 
-          [(ngModel)]="user.location" 
-          *ngIf="isEditing"
-        >
+        <span class="detail-value" *ngIf="!isEditing">{{ usuario.localidad }}</span>
+        <input type="text" class="detail-input" [(ngModel)]="usuario.localidad" *ngIf="isEditing" />
       </div>
     </div>
 
     <!-- Action Buttons -->
     <div class="action-buttons" *ngIf="isEditing">
-      <button class="save-btn" (click)="saveChanges()">
-        Guardar cambios
-      </button>
-      <button class="discard-btn" (click)="discardChanges()">
-        Descartar cambios
-      </button>
+      <button class="discard-btn" (click)="discardChanges()">Descartar cambios</button>
+      <button class="save-btn" (click)="saveChanges()">Guardar cambios</button>
     </div>
   </div>
 </div>

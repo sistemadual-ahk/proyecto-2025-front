@@ -23,7 +23,6 @@ export class SidebarComponent {
   isOpen = false;
   perfilHabilitado = false;
   ajustesHabilitado = false;
-  @Input() userName = '';
   @Input() items: SidebarItem[] = [];
   @Output() closeEvent = new EventEmitter<void>();
   @Output() logoutEvent = new EventEmitter<void>();
