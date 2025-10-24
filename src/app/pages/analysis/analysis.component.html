@@ -25,26 +25,60 @@
     <!-- Donut Chart Card -->
     <div class="card">
       <div class="card-title">Gastos por categoría</div>
-      <div class="donut">
-        <div class="donut-center">$4,500</div>
-      </div>
-      <div class="legend">
-        <div class="legend-row">
-          <span class="dot dot-food"></span>Alimentos <span class="dot dot-health"></span>Salud
-          <span class="dot dot-transport"></span>Transporte
-        </div>
-        <div class="legend-row">
-          <span class="dot dot-entertainment"></span>Entretenimientos
-          <span class="dot dot-others"></span>Otros
-        </div>
-      </div>
+      <apx-chart
+        [series]="donutChartOptions.series"
+        [chart]="donutChartOptions.chart"
+        [labels]="donutChartOptions.labels"
+        [title]="donutChartOptions.title"
+        [colors]="donutChartOptions.colors"
+        [plotOptions]="donutChartOptions.plotOptions"
+        [dataLabels]="donutChartOptions.dataLabels"
+        [legend]="donutChartOptions.legend"
+      ></apx-chart>
     </div>
 
     <!-- Line Chart Card -->
     <div class="card">
-      <div class="card-title">Evolución de gastos</div>
-      <div class="line-placeholder"></div>
-      <div class="axis-label">Semanas del mes</div>
+      <div class="card-title">Evolución de gastos mensuales</div>
+      <apx-chart
+        [series]="monthlyChartOptions.series"
+        [chart]="monthlyChartOptions.chart"
+        [xaxis]="monthlyChartOptions.xaxis"
+        [title]="monthlyChartOptions.title"
+        [colors]="monthlyChartOptions.colors"
+        [stroke]="monthlyChartOptions.stroke"
+        [markers]="monthlyChartOptions.markers"
+        [grid]="monthlyChartOptions.grid"
+      ></apx-chart>
+    </div>
+
+    <!-- Bar Chart Card -->
+    <div class="card">
+      <div class="card-title">Gastos por categoría (Barras)</div>
+      <apx-chart
+        [series]="categoryChartOptions.series"
+        [chart]="categoryChartOptions.chart"
+        [xaxis]="categoryChartOptions.xaxis"
+        [title]="categoryChartOptions.title"
+        [colors]="categoryChartOptions.colors"
+        [plotOptions]="categoryChartOptions.plotOptions"
+        [grid]="categoryChartOptions.grid"
+      ></apx-chart>
+    </div>
+
+    <!-- Income vs Expenses Chart -->
+    <div class="card">
+      <div class="card-title">Ingresos vs Gastos</div>
+      <apx-chart
+        [series]="incomeVsExpensesOptions.series"
+        [chart]="incomeVsExpensesOptions.chart"
+        [xaxis]="incomeVsExpensesOptions.xaxis"
+        [title]="incomeVsExpensesOptions.title"
+        [colors]="incomeVsExpensesOptions.colors"
+        [fill]="incomeVsExpensesOptions.fill"
+        [stroke]="incomeVsExpensesOptions.stroke"
+        [grid]="incomeVsExpensesOptions.grid"
+      ></apx-chart>
     </div>
 
     <!-- Insight Cards -->
