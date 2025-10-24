@@ -6,6 +6,7 @@ import { SavingGoalsComponent } from './pages/saving-goals/saving-goals.componen
 import { WalletsComponent } from './pages/wallets/wallets.component';
 import { ActivityComponent } from './pages/activity/activity.component';
 import { AnalysisComponent } from './pages/analysis/analysis.component';
+import { ProfileComponent } from './pages/profile/profile.component';
 import { AuthGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
@@ -19,6 +20,7 @@ export const routes: Routes = [
   { path: 'wallets', component: WalletsComponent, canActivate: [AuthGuard] },
   { path: 'activity', component: ActivityComponent, canActivate: [AuthGuard] },
   { path: 'analysis', component: AnalysisComponent, canActivate: [AuthGuard] },
+  { path: 'profile', component: ProfileComponent, canActivate: [AuthGuard] },
 
   // Ruta wildcard - redirige al login si la ruta no existe
   { path: '**', redirectTo: '' },

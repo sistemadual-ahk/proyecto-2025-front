@@ -44,7 +44,7 @@ export class HeaderComponent {
   }
 
   openProfile() {
-    this.profileClick.emit();
+    this.router.navigate(['/profile']);
   }
 
   logout() {

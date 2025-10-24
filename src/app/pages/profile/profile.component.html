@@ -1,0 +1,83 @@
+<div class="container">
+  <!-- Main Content -->
+  <div class="main">
+    <!-- Navigation and Title -->
+    <app-page-title title="Perfil" (back)="goBack()"></app-page-title>
+
+    <!-- Profile Information -->
+    <div class="profile-info">
+      <!-- Foto de perfil -->
+      <div class="profile-picture-container">
+        <div class="profile-picture" [style.background-image]="user.profilePicture ? 'url(' + user.profilePicture + ')' : 'none'">
+          <div class="profile-picture-placeholder" *ngIf="!user.profilePicture">
+            <i class="mdi mdi-account"></i>
+          </div>
+        </div>
+        <button class="edit-picture-btn" (click)="fileInput.click()" *ngIf="isEditing">
+          <i class="mdi mdi-pencil"></i>
+        </button>
+        <input #fileInput type="file" accept="image/*" (change)="onProfilePictureChange($event)" style="display: none;">
+      </div>
+
+      <!-- Nombre y email -->
+      <h1 class="user-name">{{ user.name }}</h1>
+      <p class="user-email">{{ user.email }}</p>
+
+      <!-- Botón editar perfil -->
+      <button class="edit-profile-btn" (click)="editProfile()" *ngIf="!isEditing">
+        Editar perfil
+      </button>
+    </div>
+
+    <!-- User Details -->
+    <div class="user-details">
+      <div class="detail-card">
+        <span class="detail-label">Ingreso mensual</span>
+        <span class="detail-value" *ngIf="!isEditing">${{ user.monthlyIncome | number }}</span>
+        <input 
+          type="number" 
+          class="detail-input" 
+          [(ngModel)]="user.monthlyIncome" 
+          *ngIf="isEditing"
+        >
+      </div>
+
+      <div class="detail-card">
+        <span class="detail-label">Situación laboral</span>
+        <span class="detail-value" *ngIf="!isEditing">{{ user.employmentStatus }}</span>
+        <select 
+          class="detail-select" 
+          [(ngModel)]="user.employmentStatus" 
+          *ngIf="isEditing"
+        >
+          <option value="Freelance">Freelance</option>
+          <option value="Empleado">Empleado</option>
+          <option value="Empresario">Empresario</option>
+          <option value="Desempleado">Desempleado</option>
+          <option value="Estudiante">Estudiante</option>
+        </select>
+      </div>
+
+      <div class="detail-card">
+        <span class="detail-label">Localidad</span>
+        <span class="detail-value" *ngIf="!isEditing">{{ user.location }}</span>
+        <input 
+          type="text" 
+          class="detail-input" 
+          [(ngModel)]="user.location" 
+          *ngIf="isEditing"
+        >
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="action-buttons" *ngIf="isEditing">
+      <button class="save-btn" (click)="saveChanges()">
+        Guardar cambios
+      </button>
+      <button class="discard-btn" (click)="discardChanges()">
+        Descartar cambios
+      </button>
+    </div>
+  </div>
+</div>
