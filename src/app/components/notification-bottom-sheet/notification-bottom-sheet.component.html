@@ -1,0 +1,43 @@
+<!-- Header del bottom sheet -->
+<div class="bottom-sheet-header">
+  <h2 class="bottom-sheet-title">Notificaciones</h2>
+  
+  <button class="close-btn" (click)="onClose()">
+    <i class="mdi mdi-close"></i>
+  </button>
+</div>
+
+<!-- Botón marcar todas como leídas -->
+<div class="actions-section">
+  <button class="mark-all-btn" (click)="marcarTodasComoVisualizadas()">
+    <i class="mdi mdi-check-all"></i>
+    Marcar todas como leídas
+  </button>
+</div>
+
+<!-- Lista de notificaciones -->
+<div class="notifications-list">
+  <div 
+    *ngFor="let notificacion of notificaciones" 
+    class="notification-item"
+    [class.unread]="!notificacion.visualizada"
+    (click)="marcarComoVisualizada(notificacion)"
+  >
+    <div class="notification-icon">
+      <i class="mdi" [ngClass]="notificacion.icono"></i>
+    </div>
+    
+    <div class="notification-content">
+      <h3 class="notification-title">{{ notificacion.titulo }}</h3>
+      <p class="notification-message">{{ notificacion.mensaje }}</p>
+    </div>
+    
+    <div class="notification-indicator" *ngIf="!notificacion.visualizada"></div>
+  </div>
+  
+  <div class="empty-state" *ngIf="notificaciones.length === 0">
+    <i class="mdi mdi-bell-outline"></i>
+    <p>No hay notificaciones</p>
+  </div>
+</div>
+

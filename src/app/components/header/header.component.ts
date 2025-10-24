@@ -4,6 +4,8 @@ import { SidebarComponent } from '../sidebar/sidebar.component';
 import { AuthService } from '@auth0/auth0-angular';
 import { Router } from '@angular/router';
 import { UserService } from '../../services/user.service';
+import { MatBottomSheet } from '@angular/material/bottom-sheet';
+import { NotificationBottomSheet } from '../notification-bottom-sheet/notification-bottom-sheet.component';
 
 @Component({
   selector: 'app-header',
@@ -19,6 +21,8 @@ export class HeaderComponent {
   @Output() nextMonth = new EventEmitter<void>();
   @Output() notificationsClick = new EventEmitter<void>();
   @Output() profileClick = new EventEmitter<void>();
+
+  private bottomSheet = inject(MatBottomSheet);
 
   constructor(
     private router: Router,
@@ -40,6 +44,12 @@ export class HeaderComponent {
   }
 
   openNotifications() {
+    this.bottomSheet.open(NotificationBottomSheet, {
+      panelClass: 'notification-bottom-sheet-panel',
+      backdropClass: 'notification-bottom-sheet-backdrop',
+      hasBackdrop: true,
+      closeOnNavigation: true,
+    });
     this.notificationsClick.emit();
   }
 
