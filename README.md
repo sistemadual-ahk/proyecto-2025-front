@@ -83,6 +83,9 @@ ng build
 npm test
 ng test
 
+# Ejecutar tests en modo CI (headless browser con cobertura)
+npm run test:ci
+
 # Ejecutar linting
 npm run lint
 ng lint

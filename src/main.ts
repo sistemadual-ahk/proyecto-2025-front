@@ -7,7 +7,7 @@ datadogRum.init({
   applicationId: 'ebc602f7-4a32-42b1-9cb0-a1c48a0894d9',
   clientToken: 'pubd0a38645cda8d8a49d67bd1cd62786a5',
   site: 'us5.datadoghq.com',
-  service: 'gastify-frontend',
+  service: 'gastify',
   env: 'development',
   sessionSampleRate: 100,
   sessionReplaySampleRate: 20,
