@@ -20,7 +20,7 @@ describe('LoginComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [
-        LoginComponent, // ✅ porque es standalone
+        LoginComponent,
         FormsModule,
         ReactiveFormsModule,
         HttpClientTestingModule,
