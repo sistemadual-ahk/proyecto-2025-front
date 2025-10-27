@@ -16,7 +16,7 @@ describe('LoginComponent', () => {
 
   const mockAuthService = {
     isAuthenticated$: of(false),
-    user$: of(null),
+    user$: of(null) as any,
     loginWithRedirect: jasmine.createSpy('loginWithRedirect'),
     logout: jasmine.createSpy('logout'),
   };

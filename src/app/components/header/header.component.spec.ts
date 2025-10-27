@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { HeaderComponent } from './header.component';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from '@auth0/auth0-angular';
 import { UserService } from '../../services/user.service';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
@@ -29,6 +29,7 @@ describe('HeaderComponent', () => {
       imports: [HeaderComponent, NoopAnimationsModule],
       providers: [
         { provide: Router, useValue: mockRouter },
+        { provide: ActivatedRoute, useValue: {} },
         { provide: AuthService, useValue: mockAuthService },
         { provide: UserService, useValue: mockUserService },
         { provide: MatBottomSheet, useValue: mockBottomSheet },
