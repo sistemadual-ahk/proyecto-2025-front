@@ -32,6 +32,8 @@
   gap: 10px; /* separación entre tabs */
 }
 
+/* removed header add button; now grid tile */
+
 .tab {
   flex: 1;
   border: none;
@@ -85,7 +87,7 @@
 }
 
 .icon .mdi {
-  font-size: 28px;
+  font-size: 32px;
   color: currentColor;
 }
 
@@ -98,6 +100,12 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+.item.add .icon.add-icon {
+  background: #ffffff;
+  color: var(--gastify-green);
+}
+.item.add .label { white-space: normal; max-width: 90px; }
 
 /* Right chevron */
 .chevron {
