@@ -1,0 +1,45 @@
+<div class="container">
+    <!-- Main Content -->
+    <div class="main">
+      <!-- Navigation and Title -->
+      <app-page-title title="Ajustes" (back)="goBack()"></app-page-title>
+
+      <!-- Settings List -->
+      <div class="list">
+        <button class="item" (click)="openProfile()">
+          <div class="left">
+            <span class="icon">👤</span>
+            <span class="label">Perfil</span>
+          </div>
+          <span class="more">⋯</span>
+        </button>
+
+        <button class="item" (click)="openSecurity()">
+          <div class="left">
+            <span class="icon">🔒</span>
+            <span class="label">Seguridad</span>
+          </div>
+        </button>
+
+        <button class="item" (click)="openNotifications()">
+          <div class="left">
+            <span class="icon">🔔</span>
+            <span class="label">Notificaciones</span>
+          </div>
+        </button>
+
+        <button class="item" (click)="openLanguage()">
+          <div class="left">
+            <span class="icon">🌐</span>
+            <span class="label">Idioma</span>
+          </div>
+        </button>
+      </div>
+
+      <!-- Spacer -->
+      <div class="spacer"></div>
+
+      <!-- Logout Button -->
+      <div class="footer">
+        <button class="logout" (click)="logout()">Cerrar sesión</button>
+      </div>
