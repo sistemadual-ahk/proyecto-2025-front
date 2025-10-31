@@ -16,6 +16,14 @@ export class SecuritySettingsComponent {
   goBack(): void {
     this.router.navigate(['/settings']);
   }
+
+  openPin(): void {
+    this.router.navigate(['/settings/security/pin']);
+  }
+
+  openPolicies(): void {
+    this.router.navigate(['/settings/security/data']);
+  }
 }
 
 
