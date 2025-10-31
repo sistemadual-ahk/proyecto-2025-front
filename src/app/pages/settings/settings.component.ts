@@ -23,7 +23,7 @@ export class SettingsComponent {
   constructor(private router: Router) {}
 
   goBack(): void {
-    this.router.navigate(['../']);
+    this.router.navigate(['/home']);
   }
 
   openProfile(): void {
@@ -32,22 +32,15 @@ export class SettingsComponent {
   }
 
   openSecurity(): void {
-    // Placeholder for a future security route
-    // this.router.navigate(['/security']);
+    this.router.navigate(['/settings/security']);
   }
 
   openNotifications(): void {
-    // Placeholder for a future notifications route
-    // this.router.navigate(['/notifications']);
+    this.router.navigate(['/settings/notifications']);
   }
-
-  openLanguage(): void {
-    // Placeholder for a future language route
-    // this.router.navigate(['/language']);
-  }
-
   logout(): void {
     // TODO: Hook into auth service when available
     this.router.navigate(['/login']);
   }
+  
 }

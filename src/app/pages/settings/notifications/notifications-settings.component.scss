@@ -1,0 +1,65 @@
+/* Estilos base */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Variables CSS personalizadas */
+:root {
+  --popup-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  --popup-border-radius: 16px;
+  --popup-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.container {
+  min-height: 100vh;
+  background: var(--gastify-dark);
+  font-family: 'Poppins', sans-serif;
+  color: var(--gastify-light);
+  position: relative;
+  overflow-x: hidden;
+}
+
+.main {
+  padding: 16px;
+}
+
+.card {
+  margin-top: 12px;
+  background: #34384d;
+  border-radius: 14px;
+  padding: 16px;
+  box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.texts {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.title {
+  font-weight: 700;
+}
+
+.subtitle {
+  font-size: 12px;
+  opacity: 0.8;
+}
+@media (max-width: 480px) {
+  .main {
+      padding: 12px;
+      padding-top: calc(var(--header-h, 70px) + 10px);
+    } 
+  }
+
+
+

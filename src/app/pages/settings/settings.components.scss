@@ -78,15 +78,15 @@
 }
 
 .spacer {
-  height: 24px;
+  height: 15px;
 }
 
 .footer {
   position: fixed;
   left: 0;
   right: 0;
-  bottom: 24px;
-  padding: 0 24px;
+  bottom: 35px;
+  padding: 24px 24px;
 }
 
 .logout {
@@ -100,3 +100,16 @@
   letter-spacing: .2px;
   box-shadow: 0 10px 18px rgba(209, 74, 74, 0.35);
 }
+.page-title{
+  color: var(--gastify-light);
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+@media (max-width: 480px) {
+  .main {
+      padding: 12px;
+      padding-top: calc(var(--header-h, 70px) + 10px);
+    } 
+  }

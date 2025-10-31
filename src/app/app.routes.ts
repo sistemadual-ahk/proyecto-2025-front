@@ -10,6 +10,8 @@ import { ProfileComponent } from './pages/profile/profile.component';
 import { CategoriesComponent } from './pages/categories/categories.component';
 import { AuthGuard } from './guards/auth.guard';
 import { SettingsComponent } from './pages/settings/settings.component';
+import { NotificationsSettingsComponent } from './pages/settings/notifications/notifications-settings.component';
+import { SecuritySettingsComponent } from './pages/settings/security/security-settings.component';
 
 export const routes: Routes = [
   // Rutas públicas (sin autenticación)
@@ -24,6 +26,8 @@ export const routes: Routes = [
   { path: 'analysis', component: AnalysisComponent, canActivate: [AuthGuard] },
   { path: 'profile', component: ProfileComponent, canActivate: [AuthGuard] },
   { path: 'settings', component: SettingsComponent, canActivate: [AuthGuard] },
+  { path: 'settings/notifications', component: NotificationsSettingsComponent, canActivate: [AuthGuard] },
+  { path: 'settings/security', component: SecuritySettingsComponent, canActivate: [AuthGuard] },
   { path: 'categories', component: CategoriesComponent, canActivate: [AuthGuard] },
 
   // Ruta wildcard - redirige al login si la ruta no existe

@@ -1,0 +1,87 @@
+/* Estilos base */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Variables CSS personalizadas */
+:root {
+  --popup-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  --popup-border-radius: 16px;
+  --popup-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.container {
+  min-height: 100vh;
+  background: var(--gastify-dark);
+  font-family: 'Poppins', sans-serif;
+  color: var(--gastify-light);
+  position: relative;
+  overflow-x: hidden;
+}
+
+.main {
+  padding: 16px;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #34384d;
+  color: var(--gastify-light);
+  border: none;
+  border-radius: 14px;
+  padding: 14px 16px;
+  box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+  transition: transform .15s ease, background .2s ease;
+}
+
+.item:active {
+  transform: scale(0.99);
+}
+
+.left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.icon {
+  width: 28px;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255,255,255,0.08);
+  border-radius: 999px;
+  font-size: 16px;
+}
+
+.label {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.more {
+  opacity: 0.7;
+  font-size: 20px;
+}
+
+@media (max-width: 480px) {
+  .main {
+    padding: 12px;
+    padding-top: calc(var(--header-h, 70px) + 10px);
+  }
+}
+
+
