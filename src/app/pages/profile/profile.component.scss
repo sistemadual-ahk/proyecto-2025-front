@@ -12,12 +12,21 @@
     --popup-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 .container {
-    min-height: 100vh;
+    height: 100vh;
     background: var(--gastify-dark);
     font-family: 'Poppins', sans-serif;
     color: var(--gastify-light);
     position: relative;
     overflow-x: hidden;
+    overflow-y: hidden; /* solo scrollea en modo edición */
+}
+
+.container.editing {
+  overflow-y: auto;
+}
+
+.main {
+  padding: 16px;
 }
 
 
@@ -110,14 +119,14 @@
 
 .user-details {
   padding: 0;
-  margin-bottom: 30px;
+  margin-bottom: 15px;
 }
 
 .detail-card {
   background: rgba(255, 255, 255, 0.08);
-  border-radius: 16px;
-  padding: 20px;
-  margin-bottom: 16px;
+  border-radius: 12px;
+  padding: 14px;
+  margin-bottom: 12px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -149,16 +158,23 @@
   background: #4a5568;
   border: 1px solid #718096;
   border-radius: 8px;
-  padding: 8px 12px;
+  padding: 6px 10px;
   color: white;
-  font-size: 16px;
-  min-width: 120px;
+  font-size: 14px;
+  width: 180px;
 
   &:focus {
     outline: none;
     border-color: #6b46c1;
     box-shadow: 0 0 0 2px rgba(107, 70, 193, 0.2);
   }
+}
+
+/* Scroll solo cuando se edita: limita el bloque de detalles */
+.container.editing .user-details {
+  max-height: calc(100vh - 260px);
+  overflow-y: auto;
+  padding-right: 6px;
 }
 
 .action-buttons {
