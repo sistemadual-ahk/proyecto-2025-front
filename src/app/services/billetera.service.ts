@@ -10,13 +10,10 @@ export interface Billetera {
   balance: number;
   nombre: string;
   proveedor: string;
-  tipo: 'bank' | 'digital' | 'cash';
+  type: 'bank' | 'digital' | 'cash';
   isDefault?: boolean;
   color?: string;
 }
-
-// Tipo para CREAR una billetera (sin `id`)
-export type NewBilletera = Omit<Billetera, 'id'>;
 
 // Interfaz para la RESPUESTA COMPLETA del API
 interface ApiResponse {

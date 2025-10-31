@@ -1,6 +1,7 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { AddAccountModalComponent } from '../../components/add-account-modal/add-account-modal.component';
 import { HeaderComponent } from '../../components/header/header.component';
 import { SidebarComponent } from '../../components/sidebar/sidebar.component';
@@ -21,110 +22,149 @@ import { BilleteraService, Billetera } from '../../services/billetera.service';
   styleUrl: './wallets.component.scss',
 })
 export class WalletsComponent implements OnInit {
+  private subscription = new Subscription();
   // Estado del menú
   isMenuOpen = false;
   showAddAccountModal = false;
   showWalletPopup = false;
+  selectedWallet: any = null;
 
-  // --- SELECCIÓN ---
-  // selectedWallet ahora usa la interfaz Billetera
-  selectedWallet: Billetera | null = null;
-
-  // --- DATOS DINÁMICOS ---
-  // Inyectamos el servicio
-  private billeteraService: BilleteraService = inject(BilleteraService);
-  // billeteras (del backend) es AHORA la fuente de datos principal
   billeteras: Billetera[] = [];
 
-  // --- LÓGICA DE ÍCONOS Y COLORES (Movida aquí para ser reutilizable) ---
-  private iconByType: Record<'bank' | 'digital' | 'cash', string> = {
-    bank: 'mdi-bank',
-    digital: 'mdi-credit-card',
-    cash: 'mdi-cash-multiple',
-  };
+  billeterasCargadas: any[] = [];
+  
+  // Datos de las billeteras
+  wallets = [
+    {
+      id: 1,
+      nombre: 'Principal',
+      type: 'bank',
+      icon: 'mdi-wallet',
+      color: 'var(--gastify-green)',
+      balance: 1250000,
+      isDefault: true,
+    },
+    {
+      id: 2,
+      nombre: 'Mercado Pago',
+      type: 'digital',
+      icon: 'mdi-credit-card',
+      color: '#3b82f6',
+      balance: 150000,
+    },
+    {
+      id: 3,
+      nombre: 'Banco Santander',
+      type: 'bank',
+      icon: 'mdi-bank',
+      color: '#ef4444',
+      balance: 180000,
+    },
+    {
+      id: 4,
+      nombre: 'Efectivo',
+      type: 'cash',
+      icon: 'mdi-cash-multiple',
+      color: '#f59e0b',
+      balance: 43000,
+    },
+  ];
 
-  private colorByType: Record<'bank' | 'digital' | 'cash', string> = {
-    bank: '#ef4444',
-    digital: '#3b82f6',
-    cash: '#f59e0b',
-  };
+  // Calcular total
+  get totalBalance(): number {
+    return this.wallets.reduce((total, wallet) => total + wallet.balance, 0);
+  }
 
-  constructor(private router: Router) { }
+  constructor(
+  private router: Router,
+  private billeteraService: BilleteraService
+  ) { }
 
-  ngOnInit() {
+  // Método de inicialización
+  ngOnInit(): void {
     this.loadData();
   }
 
-  /**
-   * Carga o recarga las billeteras desde el servicio.
-   */
-  loadData(): void {
-    this.billeteraService.getBilleteras().subscribe(data => {
-      this.billeteras = data;
-      console.log('Billeteras cargadas:', this.billeteras);
-    });
+  private loadBilleteras(): void {
+    const billeteras = this.billeteras;
+
+    this.billeterasCargadas = billeteras.map((bill) => ({
+      id: bill.id,
+      type: bill.type,
+      category: bill.balance,
+      icon: "hola"
+    }));
   }
 
-  // --- CÁLCULOS ---
-  /**
-   * Calcula el balance total sumando las billeteras del backend.
-   */
-  get totalBalance(): number {
-    return this.billeteras.reduce((total, wallet) => total + wallet.balance, 0);
+  // Cargar datos
+  private loadData(): void {
+    this.subscription.add(
+      this.billeteraService.getBilleteras().subscribe({
+        next: (bill) => {
+          this.billeteras = bill;
+          this.loadBilleteras();
+          console.log(this.billeteras);
+        },
+        error: (error) => {
+          console.error('Error al cargar egresos:', error);
+        },
+      })
+    )
+  }
+  
+  // Métodos para el menú
+  toggleMenu() {
+    this.isMenuOpen = !this.isMenuOpen;
   }
 
-  // --- MÉTODOS DE UI ---
-  toggleMenu() { this.isMenuOpen = !this.isMenuOpen; }
-  closeMenu() { this.isMenuOpen = false; }
-  goBack() { this.router.navigate(['/home']); }
-  openTransferHistory() { console.log('Abrir historial de transferencias'); }
-  openNewTransfer() { console.log('Abrir nueva transferencia'); }
-  addAccount() { this.showAddAccountModal = true; }
-  closeAddAccountModal() { this.showAddAccountModal = false; }
+  closeMenu() {
+    this.isMenuOpen = false;
+  }
 
-  // --- ACCIONES CRUD (Modificadas para usar el Servicio) ---
+  // Navegación
+  goBack() {
+    this.router.navigate(['/home']);
+  }
 
-  /**
-   * Guarda la nueva cuenta llamando al servicio y recarga los datos.
-   */
+  // Acciones de billeteras
+  openTransferHistory() {
+    console.log('Abrir historial de transferencias');
+  }
+
+  openNewTransfer() {
+    console.log('Abrir nueva transferencia');
+  }
+
+  addAccount() {
+    this.showAddAccountModal = true;
+  }
+
+  closeAddAccountModal() {
+    this.showAddAccountModal = false;
+  }
+
   saveAccount(newAccount: {
     name: string;
-    tipo: 'bank' | 'digital' | 'cash';
-    provider?: string; // Asumimos que el backend maneja 'provider'
+    type: 'bank' | 'digital' | 'cash';
+    provider?: string;
     initialBalance: number;
   }) {
-
-    // 1. Mapea los datos del modal al formato del backend
-    // Asumimos que el backend espera 'nombre', 'balance', 'type', y 'color'
-    const billeteraParaCrear: Partial<Billetera> = {
-      nombre: newAccount.name,
-      balance: newAccount.initialBalance,
-      tipo: newAccount.tipo,
+    const iconByType: Record<'bank' | 'digital' | 'cash', string> = {
+      bank: 'mdi-bank',
+      digital: 'mdi-credit-card',
+      cash: 'mdi-cash-multiple',
+    };
+    const colorByType: Record<'bank' | 'digital' | 'cash', string> = {
+      bank: '#ef4444',
+      digital: '#3b82f6',
+      cash: '#f59e0b',
     };
 
-    // 2. Llama al servicio (asumiendo que tienes 'createBilletera')
-    this.billeteraService.createBilletera(billeteraParaCrear).subscribe({
-      next: () => {
-        console.log('Billetera creada');
-        this.loadData(); // Recarga la lista
-        this.closeAddAccountModal();
-      },
-      error: (err) => console.error('Error al crear billetera:', err)
-    });
+    this.showAddAccountModal = false;
   }
 
-  /**
-   * Elimina la billetera seleccionada llamando al servicio y recarga los datos.
-   */
-  deleteWallet() {
-    console.log('Eliminar billetera:', this.selectedWallet?.nombre);
-  }
-
-  setAsDefault() {
-    console.log('Establecer como predeterminada:', this.selectedWallet?.nombre);
-  }
-
-  openWalletPopup(wallet: Billetera) {
+  // Métodos del popup de billetera
+  openWalletPopup(wallet: any) {
     this.selectedWallet = wallet;
     this.showWalletPopup = true;
   }
@@ -134,20 +174,44 @@ export class WalletsComponent implements OnInit {
     this.selectedWallet = null;
   }
 
-  openWalletTransfer() { console.log('Abrir transferencia para:', this.selectedWallet?.nombre); }
-  openWalletHistory() { console.log('Abrir historial para:', this.selectedWallet?.nombre); }
-  openWalletSettings() { console.log('Abrir ajustes para:', this.selectedWallet?.nombre); }
-  editWallet() { console.log('Editar billetera:', this.selectedWallet?.nombre); }
+  openWalletTransfer() {
+    console.log('Abrir transferencia para:', this.selectedWallet?.name);
+    // Aquí puedes implementar la lógica para abrir la transferencia
+  }
 
+  openWalletHistory() {
+    console.log('Abrir historial para:', this.selectedWallet?.name);
+    // Aquí puedes implementar la lógica para abrir el historial
+  }
 
-  // --- HELPERS (Funciones de ayuda) ---
+  openWalletSettings() {
+    console.log('Abrir ajustes para:', this.selectedWallet?.name);
+    // Aquí puedes implementar la lógica para abrir los ajustes
+  }
 
-  /**
-   * Obtiene el ícono MDI basado en el tipo de billetera.
-   * Tu HTML deberá llamar a esta función: <i [class]="getWalletIcon(billetera.type)"></i>
-   */
-  getWalletIcon(tipo: 'bank' | 'digital' | 'cash'): string {
-    return this.iconByType[tipo] || 'mdi-wallet'; // Devuelve un ícono por defecto
+  setAsDefault() {
+    if (this.selectedWallet) {
+      // Remover la billetera predeterminada anterior
+      this.wallets.forEach((wallet) => (wallet.isDefault = false));
+      // Establecer la nueva billetera predeterminada
+      this.selectedWallet.isDefault = true;
+      this.closeWalletPopup();
+    }
+  }
+
+  editWallet() {
+    console.log('Editar billetera:', this.selectedWallet?.name);
+    // Aquí puedes implementar la lógica para editar la billetera
+  }
+
+  deleteWallet() {
+    if (this.selectedWallet && confirm('¿Estás seguro de que quieres eliminar esta billetera?')) {
+      const index = this.wallets.findIndex((w) => w.id === this.selectedWallet.id);
+      if (index > -1) {
+        this.wallets.splice(index, 1);
+        this.closeWalletPopup();
+      }
+    }
   }
 
   getWalletTypeLabel(type: string): string {
@@ -167,6 +231,7 @@ export class WalletsComponent implements OnInit {
     });
   }
 
+  // Formatear números
   formatCurrency(amount: number): string {
     return new Intl.NumberFormat('es-AR', {
       style: 'currency',

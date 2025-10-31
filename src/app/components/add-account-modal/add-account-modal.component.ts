@@ -12,7 +12,7 @@ type WalletType = 'bank' | 'digital' | 'cash';
   templateUrl: './add-account-modal.component.html',
   styleUrl: './add-account-modal.component.scss',
 })
-export class AddAccountModalComponent implements OnInit{
+export class AddAccountModalComponent implements OnInit {
   @Output() closeModal = new EventEmitter<void>();
   @Output() saveAccount = new EventEmitter<{
     name: string;
@@ -21,8 +21,6 @@ export class AddAccountModalComponent implements OnInit{
     initialBalance: number;
   }>();
 
-  billeteras: Billetera[] = [];
-
   private billeteraService: BilleteraService = inject(BilleteraService);
 
   ngOnInit() {
@@ -30,12 +28,8 @@ export class AddAccountModalComponent implements OnInit{
     this.loadData();
   }
 
-  loadData(): void {
-    // Carga de Billeteras
-    this.billeteraService.getBilleteras().subscribe(data => {
-      this.billeteras = data;
-      console.log('Billeteras cargadas en AddAccountModal:', this.billeteras);
-        });
+  loadData() {
+  
   }
 
   // Estado del formulario
@@ -78,20 +72,22 @@ export class AddAccountModalComponent implements OnInit{
       initialBalance: Math.max(0, Math.floor(this.initialBalance)),
     });
 
-     const billeteraData: Omit<Billetera, '_id' | 'user'> = {
-          nombre: this.name,
-          tipo: this.type,
-          proveedor: this.provider || 'N/A',
-          balance: Math.max(0, Math.floor(this.initialBalance))
-        };
-    
-    
-    console.log('Cuenta guardada desde AddAccountModal:', {
-      name: this.name,
+    const billeteraData: Billetera = {
+      nombre: this.name,
       type: this.type,
-      provider: this.provider,
-      initialBalance: this.initialBalance
+      proveedor: this.provider || 'N/A',
+      balance: Math.max(0, Math.floor(this.initialBalance))
+    }
+
+    this.billeteraService.createBilletera(billeteraData).subscribe({
+      next: (bill) => {
+        console.log('Billetera creada:', bill);
+      },
+      error: (error) => {
+        console.error('Error al crear la billetera:', error);
+      },
     });
+
     this.resetForm();
   }
 
