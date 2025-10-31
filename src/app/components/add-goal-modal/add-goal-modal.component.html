@@ -1,0 +1,45 @@
+<div class="modal-overlay" (click)="onClose()">
+  <div class="modal" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <button class="icon-btn" (click)="onClose()"><i class="mdi mdi-close"></i></button>
+      <div class="modal-title"><i class="mdi mdi-target"></i><span>{{ edit ? 'Editar objetivo' : 'Nuevo Objetivo' }}</span></div>
+      <div class="header-actions">
+        <button class="icon-btn danger" *ngIf="edit" (click)="onDelete()"><i class="mdi mdi-delete"></i></button>
+        <button class="icon-btn" (click)="onSave()"><i class="mdi mdi-check"></i></button>
+      </div>
+    </div>
+
+    <div class="form">
+      <div class="field pill">
+        <span class="prefix">$</span>
+        <input type="number" placeholder="0.0" [(ngModel)]="amount" />
+        <button class="suffix"><i class="mdi mdi-close"></i></button>
+      </div>
+
+      <div class="field select">
+        <span class="label">Categoría</span>
+        <div class="right">
+          <span class="color" [style.background]="color"></span>
+          <i class="mdi mdi-chevron-down"></i>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="field date">
+          <span>Fecha Inicio</span>
+          <i class="mdi mdi-calendar"></i>
+        </div>
+        <div class="field date" [class.disabled]="edit">
+          <span>Fecha fin</span>
+          <i class="mdi mdi-calendar"></i>
+        </div>
+      </div>
+
+      <div class="field input">
+        <span>Titulo</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+

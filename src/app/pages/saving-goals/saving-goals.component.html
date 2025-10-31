@@ -1,11 +1,14 @@
 <div class="saving-goals-container">
   <!-- Navegación y título -->
-  <app-page-title title="Objetivos" (back)="goBack()"></app-page-title>
+  <app-page-title title="Objetivos de ahorro" (back)="goBack()"></app-page-title>
 
   <!-- Sección de objetivos de ahorro -->
   <div class="goals-section">
     <div class="goal-card" *ngFor="let goal of savingGoals">
-      <h3 class="goal-title">{{ goal.title }}</h3>
+      <div class="goal-card-header">
+        <h3 class="goal-title">{{ goal.title }}</h3>
+      </div>
+      <button class="goal-chevron" (click)="editGoal(goal.id)"><i class="mdi mdi-chevron-right"></i></button>
       <div class="progress-container">
         <div class="progress-bar">
           <div
@@ -21,28 +24,15 @@
         </div>
       </div>
     </div>
-  </div>
-
-  <!-- Sección de tips de ahorro -->
-  <div class="tips-section">
-    <h3 class="tips-title">Tips de ahorro</h3>
-
-    <div class="tip-card" *ngFor="let tip of savingTips">
-      <div class="tip-icon">
-        <i [class]="tip.icon"></i>
-      </div>
-      <div class="tip-content">
-        <h4 class="tip-title">{{ tip.title }}</h4>
-        <p class="tip-description">{{ tip.description }}</p>
-      </div>
+    <!-- Botón de nuevo objetivo debajo de los objetivos -->
+    <div class="new-goal-inline">
+      <button class="new-goal-btn" (click)="addNewGoal()">
+        <i class="mdi mdi-plus"></i>
+        <span>Nuevo Objetivo</span>
+      </button>
     </div>
   </div>
 
-  <!-- Botón de nuevo objetivo -->
-  <div class="bottom-action">
-    <button class="new-goal-btn" (click)="addNewGoal()">
-      <i class="mdi mdi-plus"></i>
-      <span>Nuevo Objetivo</span>
-    </button>
-  </div>
+
+  <app-add-goal-modal *ngIf="showAddGoal" [edit]="isEditMode" (close)="onCloseAddGoal()" (save)="onCloseAddGoal()" (delete)="onDeleteGoal()"></app-add-goal-modal>
 </div>

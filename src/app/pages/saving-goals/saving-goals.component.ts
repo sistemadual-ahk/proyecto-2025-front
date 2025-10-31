@@ -4,17 +4,21 @@ import { Router } from '@angular/router';
 import { HeaderComponent } from '../../components/header/header.component';
 import { SidebarComponent } from '../../components/sidebar/sidebar.component';
 import { PageTitleComponent } from '../../components/page-title/page-title.component';
+import { AddGoalModalComponent } from '../../components/add-goal-modal/add-goal-modal.component';
 
 @Component({
   selector: 'app-saving-goals',
   standalone: true,
-  imports: [CommonModule, HeaderComponent, SidebarComponent, PageTitleComponent],
+  imports: [CommonModule, HeaderComponent, SidebarComponent, PageTitleComponent, AddGoalModalComponent],
   templateUrl: './saving-goals.component.html',
   styleUrl: './saving-goals.component.scss',
 })
 export class SavingGoalsComponent {
   // Estado del menú
   isMenuOpen = false;
+  showAddGoal = false;
+  isEditMode = false;
+  selectedGoalId?: number;
 
   // Datos de los objetivos de ahorro
   savingGoals = [
@@ -76,7 +80,35 @@ export class SavingGoalsComponent {
 
   // Métodos para objetivos
   addNewGoal() {
-    console.log('Agregar nuevo objetivo');
+    this.isEditMode = false;
+    this.showAddGoal = true;
+  }
+
+  onCloseAddGoal() {
+    this.showAddGoal = false;
+  }
+
+  // Desplegable por objetivo
+  toggleGoalMenu(goalId: number) {
+    this.selectedGoalId = this.selectedGoalId === goalId ? undefined : goalId;
+  }
+
+  editGoal(goalId: number) {
+    this.isEditMode = true;
+    this.showAddGoal = true;
+    this.selectedGoalId = undefined;
+  }
+
+  deleteGoal(goalId: number) {
+    this.savingGoals = this.savingGoals.filter(g => g.id !== goalId);
+    this.selectedGoalId = undefined;
+  }
+
+  onDeleteGoal() {
+    if (this.isEditMode && this.selectedGoalId) {
+      this.deleteGoal(this.selectedGoalId);
+    }
+    this.onCloseAddGoal();
   }
 
   // Métodos para tips
