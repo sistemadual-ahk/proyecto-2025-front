@@ -1,0 +1,53 @@
+<div class="modal-overlay" (click)="onClose()">
+  
+  <div class="modal" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <div class="modal-title">{{ title }}</div>
+      <div class="header-actions">
+        <button *ngIf="edit" class="icon-btn danger" (click)="onDelete()">
+          <i class="mdi mdi-trash-can-outline"></i>
+        </button>
+        <button class="icon-btn" (click)="onClose()">
+          <i class="mdi mdi-close"></i>
+        </button>
+      </div>
+    </div>
+
+    <form class="form" (ngSubmit)="onSave()">
+      
+      <div class="field">
+        <label class="label">Nombre</label>
+        <input type="text" [(ngModel)]="temp.name" name="name" placeholder="Ej: Supermercado" required>
+      </div>
+
+      <div class="field">
+        <label class="label">Descripción</label>
+        <input type="text" [(ngModel)]="temp.description" name="description" placeholder="Ej: Gastos de comida y hogar">
+      </div>
+      <div class="field">
+        <label class="label">Icono (Clase MDI)</label>
+        <input type="text" [(ngModel)]="temp.icon" name="icon" placeholder="Ej: mdi-cart" required>
+      </div>
+
+      <div class="row">
+        <div class="field color">
+          <label class="label">Color de Fondo</label>
+          <input type="color" [(ngModel)]="temp.color" name="color">
+        </div>
+        <div class="field color">
+          <label class="label">Color de Icono</label>
+          <input type="color" [(ngModel)]="temp.iconColor" name="iconColor">
+        </div>
+      </div>
+
+      <div class="preview">
+        <div class="icon" [ngStyle]="{ 'background-color': temp.color, 'color': temp.iconColor }">
+          <i class="mdi" [ngClass]="temp.icon || 'mdi-help-circle'"></i>
+        </div>
+        <span>{{ temp.name || 'Vista Previa' }}</span>
+      </div>
+      
+      <button type="submit" class="save-button">Guardar</button>
+      </form>
+  </div>
+</div>

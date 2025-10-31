@@ -1,0 +1,146 @@
+/* Archivo: category-modal.component.scss */
+/* (Añade esto al final de tus estilos existentes o modifícalos) */
+
+.modal-overlay { 
+    position: fixed; 
+    inset: 0; 
+    background: rgba(0,0,0,0.6); 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    z-index: 3000; 
+    padding: 16px; 
+  }
+  .modal { 
+    width: 100%; 
+    max-width: 420px; 
+    background: #172036; 
+    border-radius: 18px; 
+    border: 1px solid rgba(255,255,255,0.1); 
+    box-shadow: 0 20px 40px rgba(0,0,0,0.35); 
+  }
+  .modal-header { 
+    display: flex; 
+    align-items: center; 
+    justify-content: space-between; 
+    padding: 14px 16px 8px; 
+  }
+  .icon-btn { 
+    background: none; 
+    border: none; 
+    color: #e5e7eb; 
+    width: 40px; 
+    height: 40px; 
+    border-radius: 50%; 
+    cursor: pointer; /* Añadido para mejor UX */
+    transition: background-color 0.2s ease; /* Transición */
+  
+    &:hover { /* Efecto hover */
+      background-color: rgba(255,255,255,0.08);
+    }
+  }
+  .icon-btn.danger { 
+    color: #ff6b6b; 
+  }
+  .modal-title { 
+    display: inline-flex; 
+    align-items: center; 
+    gap: 10px; 
+    background: #232b45; 
+    padding: 8px 14px; 
+    border-radius: 14px; 
+    color: #e5e7eb; 
+    font-weight: 600; /* Negrita para el título */
+  }
+  .header-actions { 
+    display: inline-flex; 
+    gap: 8px; 
+  }
+  .form { 
+    padding: 12px 16px 18px; 
+    display: flex; 
+    flex-direction: column; 
+    gap: 12px; 
+  }
+  .field { 
+    background: #232b45; 
+    border: 1px solid rgba(255,255,255,0.08); 
+    color: #e5e7eb; 
+    border-radius: 14px; 
+    padding: 10px 12px; 
+    display: flex; 
+    flex-direction: column; 
+    gap: 6px; 
+  }
+  .field input { 
+    background: transparent; 
+    border: none; 
+    outline: none; 
+    color: #e5e7eb; 
+    font-size: 1rem; /* Tamaño de fuente consistente */
+  }
+  .label { 
+    font-size: 12px; 
+    color: #c7cbda; 
+  }
+  .row { 
+    display: grid; 
+    grid-template-columns: 1fr 1fr; /* Cambiado a 1fr 1fr para dos columnas */
+    gap: 12px; 
+  }
+  .field.color { 
+    align-items: center; 
+    flex-direction: row; /* Colores en fila */
+    justify-content: space-between; /* Espacio entre label y input */
+    padding: 8px 12px;
+  
+    input[type="color"] {
+      width: 40px;
+      height: 30px;
+      padding: 0;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+    }
+  }
+  .preview { 
+    margin-top: 6px; 
+    display: flex; 
+    align-items: center; 
+    gap: 10px; 
+    color: #c7cbda; 
+    font-size: 1rem;
+  }
+  .preview .icon { 
+    width: 48px; 
+    height: 48px; 
+    border-radius: 50%; 
+    display: grid; 
+    place-items: center; 
+    box-shadow: 0 3px 8px rgba(0,0,0,0.28); /* Sombra para el icono de vista previa */
+    font-size: 24px; /* Tamaño del icono */
+  }
+  
+  /* NUEVOS ESTILOS PARA EL BOTÓN GUARDAR */
+  .save-button {
+    background-color: #4CAF50; /* Un verde vibrante */
+    color: white;
+    border: none;
+    border-radius: 14px; /* Borde redondeado, consistente con otros elementos */
+    padding: 12px 20px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.1s ease; /* Transiciones suaves */
+    margin-top: 15px; /* Espacio superior */
+  
+    &:hover {
+      background-color: #45a049; /* Tono más oscuro al pasar el ratón */
+      transform: translateY(-1px); /* Efecto ligero de elevación */
+    }
+  
+    &:active {
+      background-color: #3e8e41; /* Tono aún más oscuro al hacer clic */
+      transform: translateY(0); /* Vuelve a la posición original */
+    }
+  }
