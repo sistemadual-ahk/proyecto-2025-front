@@ -10,11 +10,10 @@ export interface Billetera {
   balance: number;
   nombre: string;
   proveedor: string;
-  tipo: 'bank' | 'digital' | 'cash';
+  type: 'bank' | 'digital' | 'cash';
+  isDefault: boolean;
+  color?: string;
 }
-
-// Tipo para CREAR una billetera (sin `id`)
-export type NewBilletera = Omit<Billetera, 'id'>;
 
 // Interfaz para la RESPUESTA COMPLETA del API
 interface ApiResponse {
@@ -33,5 +32,17 @@ export class BilleteraService extends ApiService {
 
   createBilletera(billetera: Partial<Billetera>): Observable<Billetera> {
     return super.create<Billetera>('/billeteras', billetera);
+  }
+
+  deleteBilletera(billeteraId: string){
+    return super.delete('/billeteras', billeteraId);
+  }
+
+  updateBilletera(billeteraId: string, billetera: Partial<Billetera>): Observable<Billetera> {
+    return super.update<Billetera>('/billeteras', billeteraId, billetera);
+  }
+
+  patchBilletera(billeteraId: string, billetera: Partial<Billetera>): Observable<Billetera> {
+    return super.patch<Billetera>('/billeteras', billeteraId, billetera);
   }
 }

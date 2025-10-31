@@ -3,12 +3,7 @@
     CRÍTICO: Cambiamos de [formGroup] a ngForm.
     CRÍTICO: Cambiamos (ngSubmit)="saveTransaction()" a (ngSubmit)="onSave()".
   -->
-  <form
-    class="modal-content"
-    #accountForm="ngForm"
-    (ngSubmit)="onSave()"
-    (click)="$event.stopPropagation()"
-  >
+  <form class="modal-content" #accountForm="ngForm" (ngSubmit)="onSave()" (click)="$event.stopPropagation()">
     <!-- Header del modal -->
     <div class="modal-header">
       <!-- CRÍTICO: Cambiamos (click)="closeModal()" a (click)="onClose()" -->
@@ -26,28 +21,14 @@
 
     <!-- Selección de Tipo de Billetera (Bank, Digital, Cash) -->
     <div class="transaction-toggle">
-      <button
-        class="toggle-btn bank-btn"
-        type="button"
-        [class.active]="type === 'bank'"
-        (click)="setType('bank')"
-      >
+      <button class="toggle-btn bank-btn" type="button" [class.active]="type === 'bank'" (click)="setType('bank')">
         <i class="mdi mdi-bank"></i> Banco
       </button>
-      <button
-        class="toggle-btn digital-btn"
-        type="button"
-        [class.active]="type === 'digital'"
-        (click)="setType('digital')"
-      >
+      <button class="toggle-btn digital-btn" type="button" [class.active]="type === 'digital'"
+        (click)="setType('digital')">
         <i class="mdi mdi-credit-card"></i> Digital
       </button>
-      <button
-        class="toggle-btn cash-btn"
-        type="button"
-        [class.active]="type === 'cash'"
-        (click)="setType('cash')"
-      >
+      <button class="toggle-btn cash-btn" type="button" [class.active]="type === 'cash'" (click)="setType('cash')">
         <i class="mdi mdi-cash-multiple"></i> Efectivo
       </button>
     </div>
@@ -57,14 +38,8 @@
       <!-- Campo de Nombre de la Billetera (Usando [(ngModel)]) -->
       <div class="form-group">
         <label class="form-label">Nombre de la Billetera</label>
-        <input
-          type="text"
-          class="form-input"
-          name="name"
-          [(ngModel)]="name"
-          required
-          placeholder="Ej: Cuenta de Ahorro"
-        />
+        <input type="text" class="form-input" name="name" [(ngModel)]="name" required
+          placeholder="Ej: Cuenta de Ahorro" />
       </div>
 
       <!-- Campo de Proveedor (Usando currentProviders y [(ngModel)]) -->
@@ -83,16 +58,8 @@
       <div class="form-group amount-group">
         <label class="form-label">Saldo Inicial</label>
         <div class="input-with-icon">
-          <input
-            type="number"
-            class="form-input"
-            name="initialBalance"
-            [(ngModel)]="initialBalance"
-            required
-            placeholder="0.00"
-            step="1"
-            min="0"
-          />
+          <input type="number" class="form-input" name="initialBalance" [(ngModel)]="initialBalance" required
+            placeholder="0.00" step="1" min="0" />
           <i class="mdi mdi-currency-usd"></i>
         </div>
       </div>

@@ -2,7 +2,7 @@ import { OnInit, Component, EventEmitter, Output, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
-import { BilleteraService, NewBilletera } from '../../services/billetera.service';
+import { BilleteraService, Billetera } from '../../services/billetera.service';
 import { CategoriaService, Categoria } from '../../services/categoria.service';
 import { OperacionService } from '../../services/operacion.service';
 import { Operacion } from '../../../models/operacion.model';
@@ -43,7 +43,7 @@ export class TransactionModalComponent implements OnInit {
   // --- DATOS CARGADOS DEL BACKEND ---
   // Estos arrays guardan el objeto completo (con ID)
   categorias: Categoria[] = [];
-  billetera: NewBilletera[] = [];
+  billetera: Billetera[] = [];
 
   // Estos arrays guardan SÓLO los nombres para iterar en el HTML
   nombresCategorias: string[] = [];

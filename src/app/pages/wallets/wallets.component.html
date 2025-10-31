@@ -7,7 +7,7 @@
     <!-- Total Balance Card -->
     <div class="total-balance-card">
       <div class="balance-label">Total:</div>
-      <div class="balance-amount">{{ formatCurrency(totalBalance) }}</div>
+      <div class="balance-amount">{{ formatCurrency(totalBalanceLoaded) }}</div>
     </div>
 
     <!-- Action Buttons -->
@@ -29,19 +29,14 @@
 
     <!-- Wallets List -->
     <div class="wallets-list">
-      <div
-        class="wallet-item"
-        *ngFor="let wallet of wallets"
-        (click)="openWalletPopup(wallet)"
-        style="cursor: pointer"
-      >
-        <div class="wallet-icon" [style.background-color]="wallet.iconColor">
-          <i [class]="wallet.icon"></i>
+      <div class="wallet-item" *ngFor="let wallet of billeteras" (click)="openWalletPopup(wallet)" style="cursor: pointer">
+        <div class="wallet-icon" [style.background-color]="wallet.color">
+          <i [class]="wallet"></i>
         </div>
         <div class="wallet-info">
-          <div class="wallet-name">{{ wallet.name }}</div>
+          <div class="wallet-name">{{ wallet.nombre }}</div>
           <div class="wallet-subtitle">
-            <span class="wallet-type">{{ wallet.type | titlecase }}</span>
+            <span class="wallet-type">{{ wallet.type }}</span>
             <span class="wallet-dot" *ngIf="wallet.isDefault">•</span>
             <span class="wallet-default" *ngIf="wallet.isDefault">Predeterminada</span>
           </div>
@@ -61,11 +56,8 @@
   </div>
 
   <!-- Modal: Agregar cuenta -->
-  <app-add-account-modal
-    *ngIf="showAddAccountModal"
-    (closeModal)="closeAddAccountModal()"
-    (saveAccount)="saveAccount($event)"
-  >
+  <app-add-account-modal *ngIf="showAddAccountModal" (closeModal)="closeAddAccountModal()"
+    (saveAccount)="saveAccount($event)">
   </app-add-account-modal>
 
   <!-- Popup: Detalles de billetera -->
@@ -74,12 +66,12 @@
       <!-- Header del popup -->
       <div class="popup-header">
         <div class="popup-title">
-          <div class="popup-wallet-icon" [style.background-color]="selectedWallet?.iconColor">
+          <div class="popup-wallet-icon" [style.background-color]="selectedWallet?.color">
             <i [class]="selectedWallet?.icon"></i>
           </div>
           <div class="popup-wallet-info">
-            <h3 class="popup-wallet-name">{{ selectedWallet?.name }}</h3>
-            <p class="popup-wallet-type">{{ selectedWallet?.type | titlecase }}</p>
+            <h3 class="popup-wallet-name">{{ selectedWallet?.nombre }}</h3>
+            <p class="popup-wallet-type">{{ selectedWallet?.type }}</p>
           </div>
         </div>
         <button class="popup-close-btn" (click)="closeWalletPopup()">
@@ -137,11 +129,7 @@
 
         <!-- Botones de acción principales -->
         <div class="popup-main-actions">
-          <button
-            class="popup-main-btn primary"
-            (click)="setAsDefault()"
-            *ngIf="!selectedWallet?.isDefault"
-          >
+          <button class="popup-main-btn primary" (click)="setAsDefault()" *ngIf="!selectedWallet?.isDefault">
             <i class="mdi mdi-star"></i>
             Establecer como predeterminada
           </button>

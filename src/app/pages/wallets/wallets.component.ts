@@ -1,10 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { AddAccountModalComponent } from '../../components/add-account-modal/add-account-modal.component';
 import { HeaderComponent } from '../../components/header/header.component';
 import { SidebarComponent } from '../../components/sidebar/sidebar.component';
 import { PageTitleComponent } from '../../components/page-title/page-title.component';
+import { BilleteraService, Billetera } from '../../services/billetera.service';
 
 @Component({
   selector: 'app-wallets',
@@ -19,56 +21,100 @@ import { PageTitleComponent } from '../../components/page-title/page-title.compo
   templateUrl: './wallets.component.html',
   styleUrl: './wallets.component.scss',
 })
-export class WalletsComponent {
+export class WalletsComponent implements OnInit {
+  private subscription = new Subscription();
   // Estado del menú
   isMenuOpen = false;
   showAddAccountModal = false;
   showWalletPopup = false;
   selectedWallet: any = null;
 
+  billeteras: Billetera[] = [];
+  billeterasCargadas: any[] = [];
+  totalBalanceLoaded: number = 0;
+  
   // Datos de las billeteras
   wallets = [
     {
       id: 1,
-      name: 'Principal',
+      nombre: 'Principal',
       type: 'bank',
       icon: 'mdi-wallet',
-      iconColor: 'var(--gastify-green)',
+      color: 'var(--gastify-green)',
       balance: 1250000,
       isDefault: true,
     },
     {
       id: 2,
-      name: 'Mercado Pago',
+      nombre: 'Mercado Pago',
       type: 'digital',
       icon: 'mdi-credit-card',
-      iconColor: '#3b82f6',
+      color: '#3b82f6',
       balance: 150000,
     },
     {
       id: 3,
-      name: 'Banco Santander',
+      nombre: 'Banco Santander',
       type: 'bank',
       icon: 'mdi-bank',
-      iconColor: '#ef4444',
+      color: '#ef4444',
       balance: 180000,
     },
     {
       id: 4,
-      name: 'Efectivo',
+      nombre: 'Efectivo',
       type: 'cash',
       icon: 'mdi-cash-multiple',
-      iconColor: '#f59e0b',
+      color: '#f59e0b',
       balance: 43000,
     },
   ];
 
+  constructor(
+  private router: Router,
+  private billeteraService: BilleteraService
+  ) { }
+
+  // Método de inicialización
+  ngOnInit(): void {
+    this.loadData();
+  }
+
+  private loadBilleteras(): void {
+    const billeteras = this.billeteras;
+
+    this.billeterasCargadas = billeteras.map((bill) => ({
+      id: bill.id,
+      type: bill.type,
+      category: bill.balance,
+      icon: "hola",
+      nombre: bill.nombre,
+      balance: bill.balance,
+      color: bill.color || '#000000',
+      isDefault: bill.isDefault || false
+    }));
+  }
+
+  // Cargar datos
+  private loadData(): void {
+    this.subscription.add(
+      this.billeteraService.getBilleteras().subscribe({
+        next: (bill) => {
+          this.billeteras = bill;
+          this.loadBilleteras();
+          this.totalBalanceLoaded = this.billeteras.reduce((total, wallet) => total + wallet.balance, 0);
+        },
+        error: (error) => {
+          console.error('Error al cargar egresos:', error);
+        },
+      })
+    )
+  }
+  
   // Calcular total
   get totalBalance(): number {
     return this.wallets.reduce((total, wallet) => total + wallet.balance, 0);
   }
-
-  constructor(private router: Router) {}
 
   // Métodos para el menú
   toggleMenu() {
@@ -118,17 +164,9 @@ export class WalletsComponent {
       cash: '#f59e0b',
     };
 
-    this.wallets.unshift({
-      id: this.wallets.length + 1,
-      name: newAccount.name,
-      type: newAccount.type,
-      icon: iconByType[newAccount.type],
-      iconColor: colorByType[newAccount.type],
-      balance: newAccount.initialBalance,
-      isDefault: false,
-    });
-
     this.showAddAccountModal = false;
+    console.log("Nueva billetera creada");
+    this.loadData();
   }
 
   // Métodos del popup de billetera
@@ -159,11 +197,18 @@ export class WalletsComponent {
 
   setAsDefault() {
     if (this.selectedWallet) {
-      // Remover la billetera predeterminada anterior
-      this.wallets.forEach((wallet) => (wallet.isDefault = false));
-      // Establecer la nueva billetera predeterminada
-      this.selectedWallet.isDefault = true;
-      this.closeWalletPopup();
+      const updateData = { isDefault: true };
+
+      this.billeteraService.patchBilletera(this.selectedWallet.id, updateData).subscribe({
+        next: (response) => {
+          console.log('Billetera actualizada a predeterminada:', response);
+          this.loadData();
+          this.closeWalletPopup();
+        },
+        error: (err) => {
+          console.error('Error al actualizar la billetera:', err);
+        }
+      });
     }
   }
 
@@ -174,11 +219,21 @@ export class WalletsComponent {
 
   deleteWallet() {
     if (this.selectedWallet && confirm('¿Estás seguro de que quieres eliminar esta billetera?')) {
-      const index = this.wallets.findIndex((w) => w.id === this.selectedWallet.id);
-      if (index > -1) {
-        this.wallets.splice(index, 1);
-        this.closeWalletPopup();
-      }
+      const index = this.billeterasCargadas.findIndex((w) => w.id === this.selectedWallet.id);
+      console.log("Billetera eliminada: ", this.selectedWallet);
+      console.log(this.selectedWallet.id);
+      this.billeteraService.deleteBilletera(this.selectedWallet.id).subscribe({
+          next: (response) => {
+            console.log('Billetera eliminada exitosamente:', response);
+            this.loadData();
+            this.billeterasCargadas.splice(index, 1);
+            this.closeWalletPopup();  
+          },
+          error: (err) => {
+            // 3. Error: Mostrar un error en la consola
+            console.error('Error al eliminar billetera:', err);
+          }
+        });
     }
   }
 
