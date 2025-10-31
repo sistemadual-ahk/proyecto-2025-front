@@ -13,7 +13,7 @@ export class ChartService {
       chart: {
         background: 'transparent',
         toolbar: {
-          show: true,
+          show: false,
           tools: {
             download: true,
             selection: true,
