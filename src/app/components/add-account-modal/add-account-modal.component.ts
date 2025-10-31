@@ -76,7 +76,8 @@ export class AddAccountModalComponent implements OnInit {
       nombre: this.name,
       type: this.type,
       proveedor: this.provider || 'N/A',
-      balance: Math.max(0, Math.floor(this.initialBalance))
+      balance: Math.max(0, Math.floor(this.initialBalance)),
+      isDefault: false
     }
 
     this.billeteraService.createBilletera(billeteraData).subscribe({

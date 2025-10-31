@@ -11,7 +11,7 @@ export interface Billetera {
   nombre: string;
   proveedor: string;
   type: 'bank' | 'digital' | 'cash';
-  isDefault?: boolean;
+  isDefault: boolean;
   color?: string;
 }
 
@@ -32,5 +32,17 @@ export class BilleteraService extends ApiService {
 
   createBilletera(billetera: Partial<Billetera>): Observable<Billetera> {
     return super.create<Billetera>('/billeteras', billetera);
+  }
+
+  deleteBilletera(billeteraId: string){
+    return super.delete('/billeteras', billeteraId);
+  }
+
+  updateBilletera(billeteraId: string, billetera: Partial<Billetera>): Observable<Billetera> {
+    return super.update<Billetera>('/billeteras', billeteraId, billetera);
+  }
+
+  patchBilletera(billeteraId: string, billetera: Partial<Billetera>): Observable<Billetera> {
+    return super.patch<Billetera>('/billeteras', billeteraId, billetera);
   }
 }

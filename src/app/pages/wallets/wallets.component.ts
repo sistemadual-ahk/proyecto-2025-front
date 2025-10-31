@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -30,8 +30,8 @@ export class WalletsComponent implements OnInit {
   selectedWallet: any = null;
 
   billeteras: Billetera[] = [];
-
   billeterasCargadas: any[] = [];
+  totalBalanceLoaded: number = 0;
   
   // Datos de las billeteras
   wallets = [
@@ -70,11 +70,6 @@ export class WalletsComponent implements OnInit {
     },
   ];
 
-  // Calcular total
-  get totalBalance(): number {
-    return this.wallets.reduce((total, wallet) => total + wallet.balance, 0);
-  }
-
   constructor(
   private router: Router,
   private billeteraService: BilleteraService
@@ -92,7 +87,11 @@ export class WalletsComponent implements OnInit {
       id: bill.id,
       type: bill.type,
       category: bill.balance,
-      icon: "hola"
+      icon: "hola",
+      nombre: bill.nombre,
+      balance: bill.balance,
+      color: bill.color || '#000000',
+      isDefault: bill.isDefault || false
     }));
   }
 
@@ -103,7 +102,7 @@ export class WalletsComponent implements OnInit {
         next: (bill) => {
           this.billeteras = bill;
           this.loadBilleteras();
-          console.log(this.billeteras);
+          this.totalBalanceLoaded = this.billeteras.reduce((total, wallet) => total + wallet.balance, 0);
         },
         error: (error) => {
           console.error('Error al cargar egresos:', error);
@@ -112,6 +111,11 @@ export class WalletsComponent implements OnInit {
     )
   }
   
+  // Calcular total
+  get totalBalance(): number {
+    return this.wallets.reduce((total, wallet) => total + wallet.balance, 0);
+  }
+
   // Métodos para el menú
   toggleMenu() {
     this.isMenuOpen = !this.isMenuOpen;
@@ -161,6 +165,8 @@ export class WalletsComponent implements OnInit {
     };
 
     this.showAddAccountModal = false;
+    console.log("Nueva billetera creada");
+    this.loadData();
   }
 
   // Métodos del popup de billetera
@@ -191,11 +197,18 @@ export class WalletsComponent implements OnInit {
 
   setAsDefault() {
     if (this.selectedWallet) {
-      // Remover la billetera predeterminada anterior
-      this.wallets.forEach((wallet) => (wallet.isDefault = false));
-      // Establecer la nueva billetera predeterminada
-      this.selectedWallet.isDefault = true;
-      this.closeWalletPopup();
+      const updateData = { isDefault: true };
+
+      this.billeteraService.patchBilletera(this.selectedWallet.id, updateData).subscribe({
+        next: (response) => {
+          console.log('Billetera actualizada a predeterminada:', response);
+          this.loadData();
+          this.closeWalletPopup();
+        },
+        error: (err) => {
+          console.error('Error al actualizar la billetera:', err);
+        }
+      });
     }
   }
 
@@ -206,11 +219,21 @@ export class WalletsComponent implements OnInit {
 
   deleteWallet() {
     if (this.selectedWallet && confirm('¿Estás seguro de que quieres eliminar esta billetera?')) {
-      const index = this.wallets.findIndex((w) => w.id === this.selectedWallet.id);
-      if (index > -1) {
-        this.wallets.splice(index, 1);
-        this.closeWalletPopup();
-      }
+      const index = this.billeterasCargadas.findIndex((w) => w.id === this.selectedWallet.id);
+      console.log("Billetera eliminada: ", this.selectedWallet);
+      console.log(this.selectedWallet.id);
+      this.billeteraService.deleteBilletera(this.selectedWallet.id).subscribe({
+          next: (response) => {
+            console.log('Billetera eliminada exitosamente:', response);
+            this.loadData();
+            this.billeterasCargadas.splice(index, 1);
+            this.closeWalletPopup();  
+          },
+          error: (err) => {
+            // 3. Error: Mostrar un error en la consola
+            console.error('Error al eliminar billetera:', err);
+          }
+        });
     }
   }
 
