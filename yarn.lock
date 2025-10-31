@@ -1349,6 +1349,26 @@
   resolved "https://registry.yarnpkg.com/@ctrl/tinycolor/-/tinycolor-4.2.0.tgz#ba5d0b917303c0b3d3c14c4865cdc6ded25ac05f"
   integrity sha512-kzyuwOAQnXJNLS9PSyrk0CWk35nWJW/zl/6KvnTBMFK65gm7U1/Z5BqjxeapjZCIhQcM/DsrEmcbRwDyXyXK4A==
 
+"@datadog/browser-core@6.23.0":
+  version "6.23.0"
+  resolved "https://registry.yarnpkg.com/@datadog/browser-core/-/browser-core-6.23.0.tgz#4bddb7e1de2ed91fb367fc23c356258c0b4eed7a"
+  integrity sha512-VSBynPVukGiw4LclLIk+CnyF6ANNKOIaxOcN2NgVFp+RXvr98UwtpeIu4QSo/DykJg5dhfw6CFlc3B32lo/gkQ==
+
+"@datadog/browser-rum-core@6.23.0":
+  version "6.23.0"
+  resolved "https://registry.yarnpkg.com/@datadog/browser-rum-core/-/browser-rum-core-6.23.0.tgz#dd216f6e6bd91545d9846a79673b6013589a574f"
+  integrity sha512-ZdLiOb9wATGujDN/5nSyhsYxY6BXAoAlyjVqwMqPg6V4LCHy0S/fLFrQBSt2U9JT5HXwNKR4pANT5w9kq6dFOw==
+  dependencies:
+    "@datadog/browser-core" "6.23.0"
+
+"@datadog/browser-rum@^6.22.0":
+  version "6.23.0"
+  resolved "https://registry.yarnpkg.com/@datadog/browser-rum/-/browser-rum-6.23.0.tgz#0a17ea5352c24db8a7f6a9842a43752fc37e085c"
+  integrity sha512-0hOqB0VeZCyt6pQjXLoOqGE6bLRJq/vc3WsQzG2QZ3iMQMSXtfKHRYxRNa3WWhrAoxulfvn8PoWNPt2+sXU//w==
+  dependencies:
+    "@datadog/browser-core" "6.23.0"
+    "@datadog/browser-rum-core" "6.23.0"
+
 "@discoveryjs/json-ext@0.6.1":
   version "0.6.1"
   resolved "https://registry.yarnpkg.com/@discoveryjs/json-ext/-/json-ext-0.6.1.tgz#593da7a17a31a72a874e313677183334a49b01c9"
