@@ -23,6 +23,20 @@ export class UserService extends ApiService {
       })
     );
   }
+
+  updateUser(id: string | number, payload: any): Observable<any> {
+    return super.update<any>('/usuarios', id, payload).pipe(
+      tap((response) => {
+        // Actualizar los datos del usuario si la respuesta incluye datos actualizados
+        const currentUserData = this.getUserData();
+        if (currentUserData && response) {
+          const updatedData = { ...currentUserData, ...response };
+          this.setUserData(updatedData);
+        }
+      })
+    );
+  }
+
   private setUserData(userData: any): void {
     localStorage.setItem('user_data', JSON.stringify(userData));
     this.userDataSubject.next(userData);

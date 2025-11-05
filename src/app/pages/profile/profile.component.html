@@ -54,6 +54,16 @@
       </div>
 
       <div class="detail-card">
+        <span class="detail-label">Estado Civil</span>
+        <span class="detail-value" *ngIf="!isEditing">{{ usuario.estadoCivil }}</span>
+        <select class="detail-select" [(ngModel)]="usuario.estadoCivil" *ngIf="isEditing">
+          <option value="Casado">Casado</option>
+          <option value="Soltero">Soltero</option>
+          <option value="N/A">N/A</option>
+        </select>
+      </div>
+
+      <div class="detail-card">
         <span class="detail-label">Profesión</span>
         <span class="detail-value" *ngIf="!isEditing">{{ usuario.profesion }}</span>
         <mat-select class="detail-select" [(ngModel)]="usuario.profesion" *ngIf="isEditing">

@@ -19,6 +19,7 @@ export class ProfileComponent implements OnInit {
   usuario = {
     ingresoMensual: 0,
     situacionLaboral: 'Freelance',
+    estadoCivil: 'N/A',
     localidad: 'CABA',
     municipio: 'Comuna 1',
     provincia: 'Buenos Aires',
@@ -62,11 +63,47 @@ export class ProfileComponent implements OnInit {
     this.loadProvincias();
   }
 
+  private loadUserData(): void {
+    const userData = this.userService.getUserData();
+    if (userData) {
+      // Si hay datos de ubicación, cargarlos
+      if (userData.ubicacion) {
+        this.usuario.provincia = userData.ubicacion.provincia || this.usuario.provincia;
+        this.usuario.municipio = userData.ubicacion.municipio || this.usuario.municipio;
+        this.usuario.localidad = userData.ubicacion.localidad || this.usuario.localidad;
+
+        // Cargar municipios y localidades según la provincia y municipio seleccionados
+        if (this.usuario.provincia && this.provincias.length > 0) {
+          this.setMunicipiosFromProvincia(this.usuario.provincia);
+          if (this.usuario.municipio) {
+            this.setLocalidadesFromMunicipio(this.usuario.municipio);
+          }
+        }
+      }
+
+      // Cargar otros datos del usuario si existen
+      if (userData.ingresoMensual !== undefined) {
+        this.usuario.ingresoMensual = userData.ingresoMensual;
+      }
+      if (userData.situacionLaboral) {
+        this.usuario.situacionLaboral = userData.situacionLaboral;
+      }
+      if (userData.profesion) {
+        this.usuario.profesion = userData.profesion;
+      }
+      if (userData.estadoCivil) {
+        this.usuario.estadoCivil = userData.estadoCivil;
+      }
+    }
+  }
+
   private loadProvincias(): void {
     const cached = localStorage.getItem('provincias_cache');
     if (cached) {
       try {
         this.provincias = JSON.parse(cached);
+        // Cargar datos del usuario después de cargar provincias desde cache
+        this.loadUserData();
       } catch {
         localStorage.removeItem('provincias_cache');
       }
@@ -78,6 +115,9 @@ export class ProfileComponent implements OnInit {
         try {
           localStorage.setItem('provincias_cache', JSON.stringify(this.provincias));
         } catch { /* ignore quota errors */ }
+
+        // Cargar datos del usuario después de cargar las provincias
+        this.loadUserData();
 
         // Inicializar listas dependientes si hay valores existentes
         if (this.usuario.provincia) {
@@ -121,13 +161,45 @@ export class ProfileComponent implements OnInit {
 
   editProfile(): void {
     this.isEditing = true;
+    // Guardar una copia de los valores originales para poder descartar cambios
+    this.originalUser = { ...this.usuario };
   }
 
   saveChanges(): void {
-    this.isEditing = false;
+    const userData = this.userService.getUserData();
+    if (!userData || !userData.id) {
+      console.error('No se pudo obtener el ID del usuario');
+      return;
+    }
+
+    // Construir el objeto con los datos en el formato requerido
+    const updateData = {
+      ubicacion: {
+        provincia: this.usuario.provincia,
+        municipio: this.usuario.municipio,
+        localidad: this.usuario.localidad,
+      },
+      sueldo: this.usuario.ingresoMensual,
+      estadoCivil: this.usuario.estadoCivil,
+      situacionLaboral: this.usuario.situacionLaboral,
+    };
+
+    // Enviar la actualización al backend
+    this.userService.updateUser(userData.id, updateData).subscribe({
+      next: (response) => {
+        console.log('Usuario actualizado correctamente', response);
+        this.isEditing = false;
+      },
+      error: (err) => {
+        console.error('Error al actualizar el usuario:', err);
+        // Opcional: mostrar un mensaje de error al usuario
+      },
+    });
   }
 
   discardChanges(): void {
+    // Restaurar los valores originales
+    this.usuario = { ...this.originalUser };
     this.isEditing = false;
   }
 
