@@ -342,8 +342,7 @@
 }
 
 .wallet-item {
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  position: relative;
   border-radius: 14px;
   padding: 14px 16px;
   margin-bottom: 10px;
@@ -354,13 +353,32 @@
     transform 0.2s ease,
     box-shadow 0.2s ease,
     background 0.2s ease;
-  backdrop-filter: blur(8px);
   box-shadow: 0 6px 24px rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.wallet-item::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 0;
+}
+
+.wallet-item > * {
+  position: relative;
+  z-index: 1;
 }
 
 .wallet-item:hover {
   transform: translateY(-2px);
   box-shadow: 0 10px 28px rgba(0, 0, 0, 0.3);
+}
+
+.wallet-item:hover::before {
   background: rgba(255, 255, 255, 0.08);
 }
 
@@ -665,10 +683,27 @@
   color: var(--gastify-green);
 }
 
+/* Grid para balances secundarios */
+.popup-balance-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-bottom: 32px;
+}
+
+.popup-balance-section.small {
+  padding: 16px;
+}
+
+.popup-balance-section.small .popup-balance-amount {
+  font-size: 1.25rem;
+}
+
 /* Acciones rápidas */
 .popup-actions {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
+  justify-items: center;
   gap: 12px;
   margin-bottom: 32px;
 }
@@ -737,6 +772,32 @@
   font-size: 0.875rem;
   color: var(--gastify-light);
   font-weight: 500;
+}
+
+/* Inputs dentro de popups (transferencia) */
+.form-input {
+  height: 40px;
+  min-width: 180px;
+  padding: 0 12px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 10px;
+  background: var(--gastify-purple);
+  color: var(--gastify-light);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+select.form-input {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background: var(--gastify-purple);
+  color: var(--gastify-light);
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: var(--gastify-green);
+  box-shadow: 0 0 0 3px rgba(61, 205, 153, 0.25);
 }
 
 .default-badge {
@@ -846,7 +907,7 @@
   }
 
   .popup-actions {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
     gap: 8px;
   }
 
@@ -862,6 +923,20 @@
 
   .popup-balance-amount {
     font-size: 1.75rem;
+  }
+
+  .popup-balance-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 24px;
+  }
+
+  .popup-balance-section.small {
+    padding: 12px;
+  }
+
+  .popup-balance-section.small .popup-balance-amount {
+    font-size: 1.1rem;
   }
 }
 
@@ -885,6 +960,11 @@
   .popup-main-btn {
     padding: 14px 20px;
     font-size: 0.8rem;
+  }
+
+  .popup-balance-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
   }
 
   .popup-wallet-icon {

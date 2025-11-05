@@ -56,7 +56,8 @@
   border-bottom: 1px solid rgba(255, 255, 255, 0.12);
 }
 
-.close-btn {
+.close-btn,
+.save-btn {
   background: var(--gastify-purple);
   border: 1px solid rgba(255, 255, 255, 0.12);
   font-size: 20px;
@@ -72,7 +73,8 @@
   justify-content: center;
 }
 
-.close-btn:hover {
+.close-btn:hover,
+.save-btn:hover {
   background: rgba(59, 59, 88, 0.85);
   color: white;
   transform: scale(1.03);
@@ -101,7 +103,7 @@
   font-size: 13px;
   font-weight: 500;
   color: rgba(255, 255, 255, 0.75);
-  margin-bottom: 4px;
+  margin: 6px 0px 0px;
 }
 
 .form-input {
@@ -113,6 +115,11 @@
   background: var(--gastify-blue);
   transition: all 0.3s ease;
   color: #fff;
+  width: 100%;
+  appearance: none;
+  -webkit-appearance: none; /* Chrome, Safari, Edge */
+  -moz-appearance: none;    /* Firefox */
+  background-image: none;   /* Oculta flecha/estilos por defecto en algunos navegadores */
 }
 
 .form-input:focus {
@@ -139,7 +146,68 @@
   transform: translateY(-50%);
   color: rgba(255, 255, 255, 0.55);
   font-size: 18px;
-  pointer-events: none;
+  pointer-events: none; /* Solo indicador visual en este modal */
+}
+
+.input-with-icon:focus-within i {
+  color: var(--gastify-green);
+}
+
+/*Oculto la flecha nativa*/
+select.form-input {
+  padding-right: 44px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+select.form-input::-ms-expand {
+  display: none;
+}
+select.form-input option[disabled] {
+  color: rgba(255, 255, 255, 0.45);
+}
+
+/* Toggle de tipo de billetera (banco/digital/efectivo) */
+.transaction-toggle {
+  display: flex;
+  background: var(--gastify-purple);
+  border-radius: 20px;
+  padding: 6px;
+  margin-bottom: 20px;
+  gap: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.toggle-btn {
+  flex: 1;
+  min-height: 40px;
+  padding: 0 16px;
+  border: none;
+  border-radius: 16px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background-color: transparent;
+  color: var(--gastify-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  i { font-size: 18px; }
+
+  &.active {
+    color: #fff;
+
+    &.bank-btn { background: #3b82f6; }
+    &.digital-btn { background: var(--gastify-green); }
+    &.cash-btn { background: #E4C513; }
+  }
+
+  &:not(.active):hover {
+    background: rgba(255, 255, 255, 0.08);
+  }
 }
 
 .type-toggle {
@@ -185,5 +253,22 @@
     height: 46px;
     padding: 0 14px;
     font-size: 13px;
+  }
+  .transaction-toggle {
+    padding: 5px;
+    gap: 5px;
+    flex-wrap: wrap;
+  }
+  .toggle-btn {
+    min-height: 38px;
+    padding: 0 12px;
+    font-size: 13px;
+    flex: 1 1 32%; /* 3 por fila cuando haya espacio */
+  }
+  select.form-input {
+    font-size: 13px;
+  }
+  .form-label {
+    font-size: 12px; /* Mejora adaptación del label 'Saldo Inicial' */
   }
 }

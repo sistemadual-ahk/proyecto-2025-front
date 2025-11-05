@@ -33,15 +33,15 @@
 <div class="transaction-form">
   <!-- Campo de monto -->
   <div class="form-group amount-group">
-    <label class="amount-label">$ {{ amount.toFixed(1) }}</label>
+    <label class="amount-label">$ {{ (amount ?? 0).toFixed(1) }}</label>
     <input
       type="number"
       class="amount-input"
       [(ngModel)]="amount"
-      placeholder="0.0"
+      placeholder="0"
       min="0"
     />
-    <button class="clear-amount" (click)="amount = 0">
+    <button class="clear-amount" (click)="amount = null">
       <i class="mdi mdi-close"></i>
     </button>
   </div>
@@ -60,8 +60,8 @@
   <div class="form-group">
     <label class="form-label">Fecha</label>
     <div class="input-with-icon">
-      <input type="date" class="form-input" [(ngModel)]="date" />
-      <i class="mdi mdi-calendar"></i>
+      <input #dateInput type="date" class="form-input" [(ngModel)]="date" />
+      <i class="mdi mdi-calendar" (click)="openDatePicker(dateInput)"></i>
     </div>
   </div>
 

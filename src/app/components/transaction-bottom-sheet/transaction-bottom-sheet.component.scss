@@ -286,6 +286,24 @@
     padding-right: 44px;
   }
 
+  // Ocultar el icono nativo del date input y usar el personalizado
+  .form-input[type="date"] {
+    appearance: none;
+    -webkit-appearance: none; // Chrome, Safari, Edge
+    -moz-appearance: none;    // Firefox
+    background-image: none;   // Evitar imágenes por defecto
+  }
+
+  .form-input[type="date"]::-webkit-calendar-picker-indicator {
+    opacity: 0;
+    display: none;
+    -webkit-appearance: none;
+  }
+
+  .form-input[type="date"]::-webkit-clear-button {
+    display: none;
+  }
+
   i {
     position: absolute;
     right: 12px;
@@ -293,7 +311,8 @@
     transform: translateY(-50%);
     color: rgba(255, 255, 255, 0.55);
     font-size: 18px;
-    pointer-events: none;
+    pointer-events: auto;
+    cursor: pointer;
     transition: all 0.3s ease;
   }
 

@@ -30,7 +30,7 @@ export class TransactionBottomSheet implements OnInit {
 
   // --- ESTADO DEL FORMULARIO ---
   transactionType: 'income' | 'expense' = 'expense';
-  amount: number = 0;
+  amount: number | null = null;
   description: string = '';
   date: string = new Date().toISOString().split('T')[0];
   wallet: string = ''; // Almacena el NOMBRE de la billetera seleccionada
@@ -76,7 +76,7 @@ export class TransactionBottomSheet implements OnInit {
     const selectedWallet = this.billetera.find(b => b.nombre === this.wallet);
     const selectedCategory = this.categorias.find(c => c.nombre === this.category);
 
-    if (!selectedWallet || !selectedCategory || this.amount <= 0) {
+    if (!selectedWallet || !selectedCategory || this.amount == null || this.amount <= 0) {
       console.error(
         'Validación fallida: El monto debe ser > 0 y debe seleccionar billetera/categoría.'
       );
@@ -85,7 +85,7 @@ export class TransactionBottomSheet implements OnInit {
 
     // 2. Construir el objeto para el backend (usando IDs)
     const operacionData: Omit<Operacion, '_id' | 'user'> = {
-      monto: Math.abs(this.amount),
+      monto: Math.abs(this.amount!),
       descripcion: this.description,
       fecha: new Date(this.date).toISOString(),
       tipo: this.transactionType === 'income' ? 'Ingreso' : 'Egreso',
@@ -105,9 +105,21 @@ export class TransactionBottomSheet implements OnInit {
     });
   }
 
+  openDatePicker(input: HTMLInputElement): void {
+    if (!input) return;
+    const anyInput = input as any;
+    if (typeof anyInput.showPicker === 'function') {
+      anyInput.showPicker();
+    } else {
+      // Fallback para navegadores sin showPicker
+      input.focus();
+      input.click();
+    }
+  }
+
   private resetForm(): void {
     this.transactionType = 'expense';
-    this.amount = 0;
+    this.amount = null;
     this.description = '';
     this.date = new Date().toISOString().split('T')[0];
     this.wallet = '';

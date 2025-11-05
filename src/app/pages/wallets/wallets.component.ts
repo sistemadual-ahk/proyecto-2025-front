@@ -1,5 +1,6 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { AddAccountModalComponent } from '../../components/add-account-modal/add-account-modal.component';
@@ -13,6 +14,7 @@ import { BilleteraService, Billetera } from '../../services/billetera.service';
   standalone: true,
   imports: [
     CommonModule,
+    FormsModule,
     AddAccountModalComponent,
     HeaderComponent,
     SidebarComponent,
@@ -27,6 +29,15 @@ export class WalletsComponent implements OnInit {
   isMenuOpen = false;
   showAddAccountModal = false;
   showWalletPopup = false;
+  showTransferModal = false;
+  showTransferHistory = false;
+  transferMode: 'from' | 'to' = 'from';
+  transferForm = {
+    originId: '',
+    originAmount: 0,
+    destinationId: '',
+    destinationAmount: 0,
+  };
   selectedWallet: any = null;
 
   billeteras: Billetera[] = [];
@@ -42,6 +53,8 @@ export class WalletsComponent implements OnInit {
       icon: 'mdi-wallet',
       color: 'var(--gastify-green)',
       balance: 1250000,
+      ingresosHistoricos: 2600000,
+      gastosHistoricos: 1350000,
       isDefault: true,
     },
     {
@@ -51,6 +64,8 @@ export class WalletsComponent implements OnInit {
       icon: 'mdi-credit-card',
       color: '#3b82f6',
       balance: 150000,
+      ingresosHistoricos: 450000,
+      gastosHistoricos: 300000,
     },
     {
       id: 3,
@@ -59,6 +74,8 @@ export class WalletsComponent implements OnInit {
       icon: 'mdi-bank',
       color: '#ef4444',
       balance: 180000,
+      ingresosHistoricos: 800000,
+      gastosHistoricos: 620000,
     },
     {
       id: 4,
@@ -67,6 +84,8 @@ export class WalletsComponent implements OnInit {
       icon: 'mdi-cash-multiple',
       color: '#f59e0b',
       balance: 43000,
+      ingresosHistoricos: 90000,
+      gastosHistoricos: 47000,
     },
   ];
 
@@ -136,7 +155,7 @@ export class WalletsComponent implements OnInit {
   }
 
   openNewTransfer() {
-    console.log('Abrir nueva transferencia');
+    this.openTransfer('from');
   }
 
   addAccount() {
@@ -181,18 +200,17 @@ export class WalletsComponent implements OnInit {
   }
 
   openWalletTransfer() {
-    console.log('Abrir transferencia para:', this.selectedWallet?.name);
-    // Aquí puedes implementar la lógica para abrir la transferencia
+    this.openTransfer('from');
   }
 
   openWalletHistory() {
-    console.log('Abrir historial para:', this.selectedWallet?.name);
-    // Aquí puedes implementar la lógica para abrir el historial
+    this.showTransferHistory = true;
+    // Si hay backend de operaciones, podríamos cargar aquí
+    // Por ahora, se muestra modal y se podría integrar OperacionService
   }
 
   openWalletSettings() {
-    console.log('Abrir ajustes para:', this.selectedWallet?.name);
-    // Aquí puedes implementar la lógica para abrir los ajustes
+    this.openTransfer('to');
   }
 
   setAsDefault() {
@@ -262,5 +280,36 @@ export class WalletsComponent implements OnInit {
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     }).format(amount);
+  }
+
+  // --- Transfer modal helpers ---
+  openTransfer(mode: 'from' | 'to') {
+    this.transferMode = mode;
+    // Preseleccionar origen/destino con la billetera actual
+    const currentId = this.selectedWallet?.id ?? this.billeteras[0]?.id ?? this.wallets[0]?.id;
+    if (mode === 'from') {
+      this.transferForm.originId = currentId;
+      this.transferForm.destinationId = '';
+    } else {
+      this.transferForm.destinationId = currentId;
+      this.transferForm.originId = '';
+    }
+    this.transferForm.originAmount = 0;
+    this.transferForm.destinationAmount = 0;
+    this.showTransferModal = true;
+  }
+
+  closeTransferModal() {
+    this.showTransferModal = false;
+  }
+
+  submitTransfer() {
+    // Aquí podríamos llamar a un endpoint de transferencia si existiera
+    console.log('Transferencia enviada:', this.transferMode, this.transferForm);
+    this.showTransferModal = false;
+  }
+
+  closeTransferHistory() {
+    this.showTransferHistory = false;
   }
 }

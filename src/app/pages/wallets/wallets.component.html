@@ -87,27 +87,34 @@
           <div class="popup-balance-amount">{{ formatCurrency(selectedWallet?.balance || 0) }}</div>
         </div>
 
+        <div class="popup-balance-grid">
+          <!-- Ingresos históricos -->
+          <div class="popup-balance-section small">
+            <div class="popup-balance-label">Ingresos históricos</div>
+            <div class="popup-balance-amount">{{ formatCurrency(selectedWallet?.ingresosHistoricos || 0) }}</div>
+          </div>
+
+          <!-- Gastos históricos -->
+          <div class="popup-balance-section small">
+            <div class="popup-balance-label">Gastos históricos</div>
+            <div class="popup-balance-amount">{{ formatCurrency(selectedWallet?.gastosHistoricos || 0) }}</div>
+          </div>
+        </div>
+
         <!-- Acciones rápidas -->
         <div class="popup-actions">
           <button class="popup-action-btn" (click)="openWalletTransfer()">
             <div class="popup-action-icon">
               <i class="mdi mdi-swap-horizontal"></i>
             </div>
-            <span>Transferir desde</span>
-          </button>
-
-          <button class="popup-action-btn" (click)="openWalletSettings()">
-            <div class="popup-action-icon">
-              <i class="mdi mdi-swap-horizontal"></i>
-            </div>
-            <span>Transferir hacia</span>
+            <span>Nueva transferencia</span>
           </button>
 
           <button class="popup-action-btn" (click)="openWalletHistory()">
             <div class="popup-action-icon">
               <i class="mdi mdi-history"></i>
             </div>
-            <span>Ver transacciones</span>
+            <span>Ver transferencias</span>
           </button>
         </div>
 
@@ -142,6 +149,103 @@
             Eliminar billetera
           </button>
         </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de Transferencia -->
+<div class="wallet-popup-overlay" *ngIf="showTransferModal" (click)="closeTransferModal()">
+  <div class="wallet-popup" (click)="$event.stopPropagation()">
+    <div class="popup-header">
+      <div class="popup-title">
+        <div class="popup-wallet-icon" [style.background-color]="selectedWallet?.color || '#3b3b58'">
+          <i class="mdi mdi-swap-horizontal"></i>
+        </div>
+        <div class="popup-wallet-info">
+          <h3 class="popup-wallet-name">Nueva transferencia</h3>
+          <p class="popup-wallet-type">Completa los datos de la transferencia</p>
+        </div>
+      </div>
+      <button class="popup-close-btn" (click)="closeTransferModal()">
+        <i class="mdi mdi-close"></i>
+      </button>
+    </div>
+
+    <div class="popup-content">
+      <div class="popup-details">
+        <div class="popup-detail-item">
+          <span class="detail-label">Banco origen</span>
+          <span class="detail-value">
+            <select class="form-input" [(ngModel)]="transferForm.originId">
+              <option [ngValue]="''" disabled>Seleccionar</option>
+              <option *ngFor="let w of billeteras" [ngValue]="w.id">{{ w.nombre }}</option>
+            </select>
+          </span>
+        </div>
+        <div class="popup-detail-item">
+          <span class="detail-label">Monto a transferir</span>
+          <span class="detail-value">
+            <input class="form-input" type="number" min="0" [(ngModel)]="transferForm.originAmount" placeholder="0" />
+          </span>
+        </div>
+        <div class="popup-detail-item">
+          <span class="detail-label">Banco destino</span>
+          <span class="detail-value">
+            <select class="form-input" [(ngModel)]="transferForm.destinationId">
+              <option [ngValue]="''" disabled>Seleccionar</option>
+              <option *ngFor="let w of billeteras" [ngValue]="w.id">{{ w.nombre }}</option>
+            </select>
+          </span>
+        </div>
+        
+      </div>
+
+      <div class="popup-main-actions">
+        <button class="popup-main-btn primary" (click)="submitTransfer()">
+          <i class="mdi mdi-check"></i>
+          Confirmar transferencia
+        </button>
+        <button class="popup-main-btn danger" (click)="closeTransferModal()">
+          <i class="mdi mdi-close"></i>
+          Cancelar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Historial de Transferencias -->
+<div class="wallet-popup-overlay" *ngIf="showTransferHistory" (click)="closeTransferHistory()">
+  <div class="wallet-popup" (click)="$event.stopPropagation()">
+    <div class="popup-header">
+      <div class="popup-title">
+        <div class="popup-wallet-icon" [style.background-color]="selectedWallet?.color || '#3b3b58'">
+          <i class="mdi mdi-history"></i>
+        </div>
+        <div class="popup-wallet-info">
+          <h3 class="popup-wallet-name">Historial de transferencias</h3>
+          <p class="popup-wallet-type">Últimas transferencias realizadas</p>
+        </div>
+      </div>
+      <button class="popup-close-btn" (click)="closeTransferHistory()">
+        <i class="mdi mdi-close"></i>
+      </button>
+    </div>
+
+    <div class="popup-content">
+      <div class="popup-details" *ngIf="billeteras && billeteras.length">
+        <div class="popup-detail-item" *ngFor="let w of billeteras | slice:0:5">
+          <span class="detail-label">{{ getLastUpdate() }}</span>
+          <span class="detail-value">{{ w.nombre }} → {{ billeteras[0]?.nombre }} — {{ formatCurrency(w.balance || 0) }}</span>
+        </div>
+      </div>
+
+      <div class="popup-main-actions">
+        <button class="popup-main-btn secondary" (click)="closeTransferHistory()">
+          <i class="mdi mdi-close"></i>
+          Cerrar
+        </button>
       </div>
     </div>
   </div>

@@ -19,6 +19,7 @@ export class AddAccountModalComponent implements OnInit {
     type: WalletType;
     provider?: string;
     initialBalance: number;
+    currency: string;
   }>();
 
   private billeteraService: BilleteraService = inject(BilleteraService);
@@ -36,7 +37,8 @@ export class AddAccountModalComponent implements OnInit {
   name = '';
   type: WalletType = 'bank';
   provider = '';
-  initialBalance = 0;
+  initialBalance: number | null = null;
+  currency = 'ARS';
 
   // Opciones (pueden mapearse a íconos/colores luego)
   providersByType: Record<WalletType, string[]> = {
@@ -69,16 +71,17 @@ export class AddAccountModalComponent implements OnInit {
       name: this.name.trim(),
       type: this.type,
       provider: this.provider || undefined,
-      initialBalance: Math.max(0, Math.floor(this.initialBalance)),
+      initialBalance: Math.max(0, Math.floor(this.initialBalance ?? 0)),
+      currency: this.currency,
     });
-
     const billeteraData: Billetera = {
-      nombre: this.name,
+      nombre: this.name.trim(),
       type: this.type,
       proveedor: this.provider || 'N/A',
-      balance: Math.max(0, Math.floor(this.initialBalance)),
-      isDefault: false
-    }
+      balance: Math.max(0, Math.floor(this.initialBalance ?? 0)),
+      isDefault: false,
+      moneda: this.currency,
+    };
 
     this.billeteraService.createBilletera(billeteraData).subscribe({
       next: (bill) => {
@@ -96,6 +99,7 @@ export class AddAccountModalComponent implements OnInit {
     this.name = '';
     this.type = 'bank';
     this.provider = '';
-    this.initialBalance = 0;
+    this.initialBalance = null;
+    this.currency = 'ARS';
   }
 }

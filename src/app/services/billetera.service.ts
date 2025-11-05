@@ -13,6 +13,7 @@ export interface Billetera {
   type: 'bank' | 'digital' | 'cash';
   isDefault: boolean;
   color?: string;
+  moneda?: string;
 }
 
 // Interfaz para la RESPUESTA COMPLETA del API
