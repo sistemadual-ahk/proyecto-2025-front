@@ -6,6 +6,7 @@ import { UserService } from '../../services/user.service';
 import { PageTitleComponent } from '../../components/page-title/page-title.component';
 import { AuthService } from '@auth0/auth0-angular';
 import { MatSelectModule } from '@angular/material/select';
+import { ApiService } from '../../services/api.service';
 
 @Component({
   selector: 'app-profile',
@@ -14,7 +15,7 @@ import { MatSelectModule } from '@angular/material/select';
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.scss',
 })
-export class ProfileComponent {
+export class ProfileComponent implements OnInit {
   usuario = {
     ingresoMensual: 0,
     situacionLaboral: 'Freelance',
@@ -26,63 +27,16 @@ export class ProfileComponent {
   isEditing = false;
   originalUser: any = {};
 
-  municipioOptions: string[] = [
-    'Comuna 1',
-    'Comuna 2',
-    'Comuna 3',
-    'Comuna 4',
-    'Comuna 5',
-    'Comuna 6',
-    'Comuna 7',
-    'Comuna 8',
-    'Comuna 9',
-    'Comuna 10',
-    'Comuna 11',
-    'Comuna 12',
-    'Comuna 13',
-    'Comuna 14',
-    'Comuna 15',
-  ];
+  // Datos remotos
+  provincias: any[] = [];
+  municipios: any[] = [];
+  localidades: any[] = [];
 
-  provinciaOptions: string[] = [
-    'Buenos Aires',
-    'Ciudad Autónoma de Buenos Aires',
-    'Catamarca',
-    'Chaco',
-    'Chubut',
-    'Córdoba',
-    'Corrientes',
-    'Entre Ríos',
-    'Formosa',
-    'Jujuy',
-    'La Pampa',
-    'La Rioja',
-    'Mendoza',
-    'Misiones',
-    'Neuquén',
-    'Río Negro',
-    'Salta',
-    'San Juan',
-    'San Luis',
-    'Santa Cruz',
-    'Santa Fe',
-    'Santiago del Estero',
-    'Tierra del Fuego',
-    'Tucumán',
-  ];
+  // municipios now come from selected provincia -> this.municipios
 
-  localidadOptions: string[] = [
-    'CABA',
-    'Lanús',
-    'Avellaneda',
-    'Quilmes',
-    'Lomas de Zamora',
-    'La Plata',
-    'Morón',
-    'Vicente López',
-    'San Isidro',
-    'San Martín',
-  ];
+  // provincias now come from API -> this.provincias
+
+  // localidades now come from selected municipio -> this.localidades
 
   profesionOptions: string[] = [
     'Tecnología',
@@ -100,8 +54,70 @@ export class ProfileComponent {
   constructor(
     private router: Router,
     private userService: UserService,
-    public auth: AuthService
+    public auth: AuthService,
+    private api: ApiService
   ) { }
+
+  ngOnInit(): void {
+    this.loadProvincias();
+  }
+
+  private loadProvincias(): void {
+    const cached = localStorage.getItem('provincias_cache');
+    if (cached) {
+      try {
+        this.provincias = JSON.parse(cached);
+      } catch {
+        localStorage.removeItem('provincias_cache');
+      }
+    }
+
+    this.api.getAll<any>('/provincias/all').subscribe({
+      next: (data) => {
+        this.provincias = data ?? [];
+        try {
+          localStorage.setItem('provincias_cache', JSON.stringify(this.provincias));
+        } catch { /* ignore quota errors */ }
+
+        // Inicializar listas dependientes si hay valores existentes
+        if (this.usuario.provincia) {
+          this.setMunicipiosFromProvincia(this.usuario.provincia);
+          if (this.usuario.municipio) {
+            this.setLocalidadesFromMunicipio(this.usuario.municipio);
+          }
+        }
+      },
+      error: (err) => {
+        console.error('Error cargando provincias', err);
+      },
+    });
+  }
+
+  onProvinciaChange(provinciaNombre: string): void {
+    this.usuario.provincia = provinciaNombre;
+    this.setMunicipiosFromProvincia(provinciaNombre);
+    // Reset dependientes
+    this.usuario.municipio = '';
+    this.usuario.localidad = '';
+    this.localidades = [];
+  }
+
+  onMunicipioChange(municipioNombre: string): void {
+    this.usuario.municipio = municipioNombre;
+    this.setLocalidadesFromMunicipio(municipioNombre);
+    // Reset dependiente
+    this.usuario.localidad = '';
+  }
+
+  private setMunicipiosFromProvincia(provinciaNombre: string): void {
+    const provincia = this.provincias.find((p) => p?.nombre === provinciaNombre);
+    this.municipios = provincia?.municipios ?? [];
+  }
+
+  private setLocalidadesFromMunicipio(municipioNombre: string): void {
+    const municipio = this.municipios.find((m) => m?.nombre === municipioNombre);
+    this.localidades = municipio?.localidades ?? [];
+  }
 
   editProfile(): void {
     this.isEditing = true;

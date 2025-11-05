@@ -65,23 +65,23 @@
         <span class="detail-label">Localidad</span>
         <span class="detail-value" *ngIf="!isEditing">{{ usuario.localidad }}</span>
         <mat-select class="detail-select" [(ngModel)]="usuario.localidad" *ngIf="isEditing">
-          <mat-option *ngFor="let l of localidadOptions" [value]="l">{{ l }}</mat-option>
+          <mat-option *ngFor="let l of localidades" [value]="l.nombre">{{ l.nombre }}</mat-option>
         </mat-select>
       </div>
 
       <div class="detail-card">
         <span class="detail-label">Municipio</span>
         <span class="detail-value" *ngIf="!isEditing">{{ usuario.municipio }}</span>
-        <mat-select class="detail-select" [(ngModel)]="usuario.municipio" *ngIf="isEditing">
-          <mat-option *ngFor="let m of municipioOptions" [value]="m">{{ m }}</mat-option>
+        <mat-select class="detail-select" [(ngModel)]=" usuario.municipio" (ngModelChange)="onMunicipioChange($event)" *ngIf="isEditing">
+          <mat-option *ngFor="let m of municipios" [value]="m.nombre">{{ m.nombre }}</mat-option>
         </mat-select>
       </div>
 
       <div class="detail-card">
         <span class="detail-label">Provincia</span>
         <span class="detail-value" *ngIf="!isEditing">{{ usuario.provincia }}</span>
-        <mat-select class="detail-select" [(ngModel)]="usuario.provincia" *ngIf="isEditing">
-          <mat-option *ngFor="let p of provinciaOptions" [value]="p">{{ p }}</mat-option>
+        <mat-select class="detail-select" [(ngModel)]="usuario.provincia" (ngModelChange)="onProvinciaChange($event)" *ngIf="isEditing">
+          <mat-option *ngFor="let p of provincias" [value]="p.nombre">{{ p.nombre }}</mat-option>
         </mat-select>
       </div>
     </div>
