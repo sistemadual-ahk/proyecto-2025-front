@@ -71,6 +71,7 @@
     display: flex; 
     flex-direction: column; 
     gap: 6px; 
+    position: relative; /* para posicionar el panel del dropdown */
   }
   .field input { 
     background: transparent; 
@@ -78,6 +79,188 @@
     outline: none; 
     color: #e5e7eb; 
     font-size: 1rem; /* Tamaño de fuente consistente */
+  }
+  .field select {
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #e5e7eb;
+    font-size: 1rem;
+    appearance: none;
+    width: 100%;
+  }
+  .icon-select {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 10px;
+  }
+  .icon-select .icon-preview {
+    display: inline-flex;
+    width: 36px;
+    height: 36px;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255,255,255,0.06);
+    border-radius: 10px;
+    color: #e5e7eb;
+    font-size: 20px;
+  }
+
+  /* Nuevo picker de iconos, amigable para mobile */
+  .icon-field {
+    display: grid;
+    grid-template-columns: 36px 1fr 20px;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    background: #1a2340;
+    border: 1px solid rgba(255,255,255,0.08);
+    color: #e5e7eb;
+    padding: 10px 12px;
+    cursor: pointer;
+    text-align: left;
+    border-radius: 12px;
+    outline: none;
+    appearance: none;
+  }
+  .icon-field .left {
+    display: inline-grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.06);
+    font-size: 20px;
+  }
+  .icon-field .text {
+    color: #e5e7eb;
+    font-size: 1rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .icon-field .chevron {
+    color: #c7cbda;
+    font-size: 18px;
+    justify-self: end;
+  }
+
+  /* Panel del dropdown */
+  .icon-panel {
+    position: static;
+    margin-top: 8px;
+    background: #141b2e;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 14px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.18);
+    padding: 10px;
+    max-height: 220px;
+    overflow-y: auto;
+    display: grid;
+    gap: 10px;
+  }
+  .icon-panel.always-open {
+    box-shadow: none;
+    max-height: 220px;
+    margin-bottom: 8px;
+  }
+  /* (se removió el buscador) */
+  .icon-grid {
+    display: flex;
+    overflow-x: auto;
+    gap: 16px;
+    padding: 8px 0 8px 2px;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+  }
+  .icon-grid.horizontal-scroll {
+    min-height: 80px;
+    margin-bottom: 8px;
+  }
+  .icon-cell {
+    flex: 0 0 auto;
+    width: 72px;
+    height: 80px;
+    display: grid;
+    grid-template-rows: 56px 1fr;
+    align-items: center;
+    justify-items: center;
+    gap: 6px;
+    color: #c7cbda;
+    padding: 8px 4px;
+    border-radius: 16px;
+    background: transparent;
+    border: none;
+    scroll-snap-align: start;
+  }
+  .icon-badge {
+    width: 56px;
+    height: 56px;
+    border-radius: 14px;
+    display: grid;
+    place-items: center;
+    background: #232b45;
+    color: #e5e7eb;
+    font-size: 32px;
+    border: 2px solid transparent;
+    transition: border-color 0.2s;
+  }
+  .icon-badge.selected {
+    border-color: #6ea8fe;
+    box-shadow: 0 0 0 2px rgba(110,168,254,0.25);
+  }
+  .icon-cell .name {
+    font-size: 13px;
+    text-align: center;
+    max-width: 70px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .row.spaced {
+    gap: 18px;
+    margin-top: 12px;
+    margin-bottom: 8px;
+  }
+  .field {
+    margin-bottom: 12px;
+  }
+  .icon-cell {
+    background: transparent;
+    border: none;
+    display: grid;
+    grid-template-rows: auto 1fr;
+    align-items: center;
+    justify-items: center;
+    gap: 6px;
+    color: #c7cbda;
+    padding: 8px 4px;
+    border-radius: 12px;
+  }
+  .icon-cell:active { background: rgba(255,255,255,0.06); }
+  .icon-badge {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: grid;
+    place-items: center;
+    background: #232b45;
+    color: #e5e7eb;
+    font-size: 24px;
+    border: 1px solid transparent;
+  }
+  .icon-badge.selected {
+    border-color: #6ea8fe;
+    box-shadow: 0 0 0 2px rgba(110,168,254,0.25);
+  }
+  .icon-cell .name {
+    font-size: 12px;
+    text-align: center;
+    max-width: 80px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .label { 
     font-size: 12px; 
@@ -143,4 +326,49 @@
       background-color: #3e8e41; /* Tono aún más oscuro al hacer clic */
       transform: translateY(0); /* Vuelve a la posición original */
     }
+  }
+
+  /* Paletas de color */
+  .palette {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 4px;
+  }
+  .palette .swatch {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 2px solid rgba(255,255,255,0.12);
+    outline: none;
+    cursor: pointer;
+  }
+  .palette .swatch.selected {
+    box-shadow: 0 0 0 2px rgba(110,168,254,0.35);
+    border-color: #6ea8fe;
+  }
+  .palette .more {
+    background: #1a2340;
+    border: 1px solid rgba(255,255,255,0.08);
+    color: #e5e7eb;
+    border-radius: 999px;
+    padding: 6px 10px;
+    font-size: 0.85rem;
+  }
+  .custom-color {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 8px;
+  }
+  .custom-color input[type="color"] {
+    width: 44px;
+    height: 32px;
+    padding: 0;
+    border: none;
+    background: transparent;
+  }
+  .custom-color .hex {
+    font-size: 0.9rem;
+    color: #c7cbda;
   }

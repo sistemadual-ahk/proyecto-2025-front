@@ -24,19 +24,43 @@
         <label class="label">Descripción</label>
         <input type="text" [(ngModel)]="temp.description" name="description" placeholder="Ej: Gastos de comida y hogar">
       </div>
+
       <div class="field">
-        <label class="label">Icono (Clase MDI)</label>
-        <input type="text" [(ngModel)]="temp.icon" name="icon" placeholder="Ej: mdi-cart" required>
+        <label class="label">Ícono</label>
+        <div class="icon-panel always-open">
+          <div class="icon-grid horizontal-scroll">
+            <button type="button" class="icon-cell" *ngFor="let opt of filteredIconOptions()" (click)="selectIcon(opt.class)">
+              <div class="icon-badge" [class.selected]="opt.class === temp.icon">
+                <i class="mdi" [ngClass]="opt.class"></i>
+              </div>
+              <div class="name">{{ opt.name }}</div>
+            </button>
+          </div>
+        </div>
       </div>
 
-      <div class="row">
+  <div class="row spaced">
         <div class="field color">
           <label class="label">Color de Fondo</label>
-          <input type="color" [(ngModel)]="temp.color" name="color">
+          <div class="palette">
+            <button type="button" class="swatch" *ngFor="let c of popularBgColors" [style.background]="c" [class.selected]="c === temp.color" (click)="selectBgColor(c)"></button>
+            <button type="button" class="more" (click)="showCustomBgPicker = !showCustomBgPicker">Más colores…</button>
+          </div>
+          <div class="custom-color" *ngIf="showCustomBgPicker">
+            <input type="color" [(ngModel)]="temp.color" name="color">
+            <span class="hex">{{ temp.color }}</span>
+          </div>
         </div>
         <div class="field color">
-          <label class="label">Color de Icono</label>
-          <input type="color" [(ngModel)]="temp.iconColor" name="iconColor">
+          <label class="label">Color de Ícono</label>
+          <div class="palette">
+            <button type="button" class="swatch" *ngFor="let c of popularIconColors" [style.background]="c" [class.selected]="c === temp.iconColor" (click)="selectIconColor(c)"></button>
+            <button type="button" class="more" (click)="showCustomIconPicker = !showCustomIconPicker">Más colores…</button>
+          </div>
+          <div class="custom-color" *ngIf="showCustomIconPicker">
+            <input type="color" [(ngModel)]="temp.iconColor" name="iconColor">
+            <span class="hex">{{ temp.iconColor }}</span>
+          </div>
         </div>
       </div>
 
