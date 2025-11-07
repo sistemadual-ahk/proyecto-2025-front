@@ -32,6 +32,7 @@ export class ProfileComponent implements OnInit {
   provincias: any[] = [];
   municipios: any[] = [];
   localidades: any[] = [];
+  profesionOptions: string[] = [];
 
   // municipios now come from selected provincia -> this.municipios
 
@@ -39,18 +40,7 @@ export class ProfileComponent implements OnInit {
 
   // localidades now come from selected municipio -> this.localidades
 
-  profesionOptions: string[] = [
-    'Tecnología',
-    'Docente',
-    'Salud',
-    'Administración',
-    'Ventas',
-    'Construcción',
-    'Industria',
-    'Abogacía',
-    'Diseño',
-    'Otro',
-  ];
+  // profesiones now come from API -> this.profesionOptions
 
   constructor(
     private router: Router,
@@ -60,39 +50,50 @@ export class ProfileComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    // Cargar datos básicos del usuario inmediatamente (no depende de provincias)
+    this.loadUserData();
     this.loadProvincias();
+    this.loadProfesiones();
   }
 
   private loadUserData(): void {
     const userData = this.userService.getUserData();
     if (userData) {
-      // Si hay datos de ubicación, cargarlos
-      if (userData.ubicacion) {
-        this.usuario.provincia = userData.ubicacion.provincia || this.usuario.provincia;
-        this.usuario.municipio = userData.ubicacion.municipio || this.usuario.municipio;
-        this.usuario.localidad = userData.ubicacion.localidad || this.usuario.localidad;
-
-        // Cargar municipios y localidades según la provincia y municipio seleccionados
-        if (this.usuario.provincia && this.provincias.length > 0) {
-          this.setMunicipiosFromProvincia(this.usuario.provincia);
-          if (this.usuario.municipio) {
-            this.setLocalidadesFromMunicipio(this.usuario.municipio);
-          }
-        }
-      }
-
-      // Cargar otros datos del usuario si existen
-      if (userData.ingresoMensual !== undefined) {
+      // Cargar datos básicos del usuario primero (no dependen de provincias)
+      // El backend devuelve 'sueldo', pero también verificamos 'ingresoMensual' por compatibilidad
+      if (userData.sueldo !== undefined) {
+        this.usuario.ingresoMensual = userData.sueldo;
+      } else if (userData.ingresoMensual !== undefined) {
         this.usuario.ingresoMensual = userData.ingresoMensual;
       }
-      if (userData.situacionLaboral) {
+      // Cargar situación laboral desde el backend
+      // Verificamos diferentes nombres por compatibilidad
+      if (userData.situacionLaboral !== undefined && userData.situacionLaboral !== null) {
         this.usuario.situacionLaboral = userData.situacionLaboral;
+      } else if (userData.situacion_laboral !== undefined && userData.situacion_laboral !== null) {
+        this.usuario.situacionLaboral = userData.situacion_laboral;
       }
       if (userData.profesion) {
         this.usuario.profesion = userData.profesion;
       }
       if (userData.estadoCivil) {
         this.usuario.estadoCivil = userData.estadoCivil;
+      }
+
+      // Cargar datos de ubicación (dependen de que las provincias estén cargadas)
+      if (userData.ubicacion) {
+        this.usuario.provincia = userData.ubicacion.provincia || this.usuario.provincia;
+        this.usuario.municipio = userData.ubicacion.municipio || this.usuario.municipio;
+        this.usuario.localidad = userData.ubicacion.localidad || this.usuario.localidad;
+
+        // Cargar municipios y localidades según la provincia y municipio seleccionados
+        // Solo si las provincias ya están cargadas
+        if (this.usuario.provincia && this.provincias.length > 0) {
+          this.setMunicipiosFromProvincia(this.usuario.provincia);
+          if (this.usuario.municipio) {
+            this.setLocalidadesFromMunicipio(this.usuario.municipio);
+          }
+        }
       }
     }
   }
@@ -159,6 +160,49 @@ export class ProfileComponent implements OnInit {
     this.localidades = municipio?.localidades ?? [];
   }
 
+  private loadProfesiones(): void {
+    this.api.getAll<any>('/profesiones').subscribe({
+      next: (data) => {
+        // Si el backend devuelve objetos con propiedad 'nombre', mapearlos a strings
+        if (data && data.length > 0) {
+          this.profesionOptions = data.map((prof: any) => 
+            typeof prof === 'string' ? prof : prof.nombre || prof
+          );
+        } else {
+          // Fallback a valores por defecto si el backend no devuelve datos
+          this.profesionOptions = [
+            'Tecnología',
+            'Docente',
+            'Salud',
+            'Administración',
+            'Ventas',
+            'Construcción',
+            'Industria',
+            'Abogacía',
+            'Diseño',
+            'Otro',
+          ];
+        }
+      },
+      error: (err) => {
+        console.error('Error cargando profesiones', err);
+        // Fallback a valores por defecto en caso de error
+        this.profesionOptions = [
+          'Tecnología',
+          'Docente',
+          'Salud',
+          'Administración',
+          'Ventas',
+          'Construcción',
+          'Industria',
+          'Abogacía',
+          'Diseño',
+          'Otro',
+        ];
+      },
+    });
+  }
+
   editProfile(): void {
     this.isEditing = true;
     // Guardar una copia de los valores originales para poder descartar cambios
@@ -173,6 +217,7 @@ export class ProfileComponent implements OnInit {
     }
 
     // Construir el objeto con los datos en el formato requerido
+    // El parámetro 'profesion' va sin tilde, pero el valor mantiene su formato original
     const updateData = {
       ubicacion: {
         provincia: this.usuario.provincia,
@@ -182,12 +227,15 @@ export class ProfileComponent implements OnInit {
       sueldo: this.usuario.ingresoMensual,
       estadoCivil: this.usuario.estadoCivil,
       situacionLaboral: this.usuario.situacionLaboral,
+      profesion: this.usuario.profesion, // Valor original con mayúsculas y tildes
     };
 
     // Enviar la actualización al backend
     this.userService.updateUser(userData.id, updateData).subscribe({
       next: (response) => {
         console.log('Usuario actualizado correctamente', response);
+        // Recargar los datos del usuario después de guardar para reflejar los cambios
+        this.loadUserData();
         this.isEditing = false;
       },
       error: (err) => {
