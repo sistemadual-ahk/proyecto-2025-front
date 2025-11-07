@@ -3,6 +3,8 @@ export interface Billetera {
   nombre: string;
   moneda: string;
   balance: number;
-  balanceHistorico: number;
+  gastoHistorico: number;
+  ingresoHistorico: number;
+  isDefault: boolean;
   color: string;
 }

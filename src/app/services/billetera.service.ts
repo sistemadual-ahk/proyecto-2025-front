@@ -14,6 +14,8 @@ export interface Billetera {
   isDefault: boolean;
   color?: string;
   moneda?: string;
+  ingresoHistorico: number;
+  gastoHistorico: number;
 }
 
 // Interfaz para la RESPUESTA COMPLETA del API

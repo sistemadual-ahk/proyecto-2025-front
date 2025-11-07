@@ -106,9 +106,11 @@ export class WalletsComponent implements OnInit {
       id: bill.id,
       type: bill.type,
       category: bill.balance,
-      icon: "hola",
+      icon: 'hola',
       nombre: bill.nombre,
       balance: bill.balance,
+      ingresoHistorico: bill.ingresoHistorico || 0,
+      gastoHistorico: bill.gastoHistorico || 0,
       color: bill.color || '#000000',
       isDefault: bill.isDefault || false
     }));

@@ -81,6 +81,8 @@ export class AddAccountModalComponent implements OnInit {
       balance: Math.max(0, Math.floor(this.initialBalance ?? 0)),
       isDefault: false,
       moneda: this.currency,
+      ingresoHistorico: 0,
+      gastoHistorico: 0
     };
 
     this.billeteraService.createBilletera(billeteraData).subscribe({
