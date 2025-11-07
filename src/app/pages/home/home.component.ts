@@ -11,7 +11,7 @@ import {
   MatBottomSheetRef,
 } from '@angular/material/bottom-sheet';
 import {MatButtonModule} from '@angular/material/button';
-import { TransactionBottomSheet } from '../../components/transaction-bottom-sheet/transaction-bottom-sheet.component';
+import { TransactionBottomSheet } from '../../components/add-operation-modal/add-operation-modal.component';
 
 @Component({
   selector: 'app-home',

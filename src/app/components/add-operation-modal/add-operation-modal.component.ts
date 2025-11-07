@@ -14,11 +14,11 @@ import { OperacionService } from '../../services/operacion.service';
 import { Operacion } from '../../../models/operacion.model';
 
 @Component({
-  selector: 'transaction-bottom-sheet',
+  selector: 'add-operation-modal',
   standalone: true,
   imports: [CommonModule, FormsModule, MatButtonModule, MatBottomSheetModule],
-  templateUrl: './transaction-bottom-sheet.component.html',
-  styleUrls: ['./transaction-bottom-sheet.component.scss'],
+  templateUrl: './add-operation-modal.component.html',
+  styleUrls: ['./add-operation-modal.component.scss'],
 })
 export class TransactionBottomSheet implements OnInit {
   // --- INYECCIÓN DE DEPENDENCIAS ---

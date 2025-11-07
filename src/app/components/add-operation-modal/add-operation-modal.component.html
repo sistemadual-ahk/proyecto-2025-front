@@ -4,7 +4,7 @@
     <i class="mdi mdi-close"></i>
   </button>
 
-  <h2 class="bottom-sheet-title">Registro Gasto</h2>
+  <h2 class="bottom-sheet-title">Registrar Operacion</h2>
 
   <button class="save-btn" (click)="onSave()">
     <i class="mdi mdi-check"></i>
@@ -33,7 +33,6 @@
 <div class="transaction-form">
   <!-- Campo de monto -->
   <div class="form-group amount-group">
-    <label class="amount-label">$ {{ (amount ?? 0).toFixed(1) }}</label>
     <input
       type="number"
       class="amount-input"
