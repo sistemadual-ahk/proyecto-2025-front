@@ -23,24 +23,54 @@ export class SettingsComponent {
   constructor(private router: Router) {}
 
   goBack(): void {
-    this.router.navigate(['/home']);
+    // Desde settings principal, volvemos al home
+    this.router.navigate(['/home']).catch(() => {
+      window.history.back();
+    });
   }
 
   openProfile(): void {
     // Placeholder: adjust when profile route is ready
-    this.router.navigate(['/profile']);
+    this.router.navigate(['/profile']).catch(() => {
+      console.error('Error navigating to profile');
+    });
   }
 
   openSecurity(): void {
-    this.router.navigate(['/settings/security']);
+    this.router.navigate(['/settings/security']).catch(() => {
+      console.error('Error navigating to security');
+    });
   }
 
   openNotifications(): void {
-    this.router.navigate(['/settings/notifications']);
+    this.router.navigate(['/settings/notifications']).catch(() => {
+      console.error('Error navigating to notifications');
+    });
   }
+
+  openPrivacy(): void {
+    // Por ahora navegamos a settings, puedes crear la pantalla después
+    console.log('Privacy settings - pantalla pendiente de crear');
+    // this.router.navigate(['/settings/privacy']);
+  }
+
+  openHelp(): void {
+    // Por ahora navegamos a settings, puedes crear la pantalla después
+    console.log('Help settings - pantalla pendiente de crear');
+    // this.router.navigate(['/settings/help']);
+  }
+
+  openAbout(): void {
+    // Por ahora navegamos a settings, puedes crear la pantalla después
+    console.log('About settings - pantalla pendiente de crear');
+    // this.router.navigate(['/settings/about']);
+  }
+
   logout(): void {
     // TODO: Hook into auth service when available
-    this.router.navigate(['/login']);
+    this.router.navigate(['/login']).catch(() => {
+      console.error('Error during logout');
+    });
   }
   
 }

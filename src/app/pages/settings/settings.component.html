@@ -8,24 +8,50 @@
       <div class="list">
         <button class="item" (click)="openProfile()">
           <div class="left">
-            <span class="icon">👤</span>
+            <i class="mdi mdi-account-circle icon"></i>
             <span class="label">Perfil</span>
           </div>
-          <span class="more">⋯</span>
+          <i class="mdi mdi-chevron-right more"></i>
         </button>
 
         <button class="item" (click)="openSecurity()">
           <div class="left">
-            <span class="icon">🔒</span>
+            <i class="mdi mdi-shield-lock icon"></i>
             <span class="label">Seguridad</span>
           </div>
+          <i class="mdi mdi-chevron-right more"></i>
         </button>
 
         <button class="item" (click)="openNotifications()">
           <div class="left">
-            <span class="icon">🔔</span>
+            <i class="mdi mdi-bell-outline icon"></i>
             <span class="label">Notificaciones</span>
           </div>
+          <i class="mdi mdi-chevron-right more"></i>
+        </button>
+
+        <button class="item" (click)="openPrivacy()">
+          <div class="left">
+            <i class="mdi mdi-eye-off-outline icon"></i>
+            <span class="label">Privacidad</span>
+          </div>
+          <i class="mdi mdi-chevron-right more"></i>
+        </button>
+
+        <button class="item" (click)="openHelp()">
+          <div class="left">
+            <i class="mdi mdi-help-circle-outline icon"></i>
+            <span class="label">Ayuda y soporte</span>
+          </div>
+          <i class="mdi mdi-chevron-right more"></i>
+        </button>
+
+        <button class="item" (click)="openAbout()">
+          <div class="left">
+            <i class="mdi mdi-information-outline icon"></i>
+            <span class="label">Acerca de</span>
+          </div>
+          <i class="mdi mdi-chevron-right more"></i>
         </button>
       </div>
 
@@ -34,5 +60,8 @@
 
       <!-- Logout Button -->
       <div class="footer">
-        <button class="logout" (click)="logout()">Cerrar sesión</button>
+        <button class="logout" (click)="logout()">
+          <i class="mdi mdi-logout"></i>
+          <span>Cerrar sesión</span>
+        </button>
       </div>

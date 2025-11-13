@@ -17,7 +17,11 @@ export class NotificationsSettingsComponent {
   constructor(private router: Router) {}
 
   goBack(): void {
-    this.router.navigate(['/settings']);
+    // Navegación específica de vuelta a settings
+    this.router.navigate(['/settings']).catch(() => {
+      // Fallback si hay problemas con la navegación
+      window.history.back();
+    });
   }
 
   onToggleChange(checked: boolean): void {

@@ -14,15 +14,23 @@ export class SecuritySettingsComponent {
   constructor(private router: Router) {}
 
   goBack(): void {
-    this.router.navigate(['/settings']);
+    // Navegación específica de vuelta a settings
+    this.router.navigate(['/settings']).catch(() => {
+      // Fallback si hay problemas con la navegación
+      window.history.back();
+    });
   }
 
   openPin(): void {
-    this.router.navigate(['/settings/security/pin']);
+    this.router.navigate(['/settings/security/pin']).catch(() => {
+      console.error('Error navigating to PIN settings');
+    });
   }
 
   openPolicies(): void {
-    this.router.navigate(['/settings/security/data']);
+    this.router.navigate(['/settings/security/data']).catch(() => {
+      console.error('Error navigating to policies');
+    });
   }
 }
 

@@ -25,7 +25,11 @@ export class PinSettingsComponent {
   }
 
   goBack(): void {
-    this.router.navigate(['/settings/security']);
+    // Navegación específica de vuelta a security
+    this.router.navigate(['/settings/security']).catch(() => {
+      // Fallback si hay problemas con la navegación
+      window.history.back();
+    });
   }
 
   startEdit(): void {

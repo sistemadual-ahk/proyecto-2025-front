@@ -14,11 +14,18 @@ export class DataPoliciesComponent {
   constructor(private router: Router) {}
 
   goBack(): void {
-    this.router.navigate(['/settings/security']);
+    // Navegación específica de vuelta a security
+    this.router.navigate(['/settings/security']).catch(() => {
+      // Fallback si hay problemas con la navegación
+      window.history.back();
+    });
   }
 
   accept(): void {
-    this.router.navigate(['/settings/security']);
+    // Después de aceptar, volver a security
+    this.router.navigate(['/settings/security']).catch(() => {
+      window.history.back();
+    });
   }
 }
 
