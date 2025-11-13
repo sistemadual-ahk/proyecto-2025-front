@@ -1,0 +1,158 @@
+<div class="container">
+  <!-- Main Content -->
+  <div class="main">
+    <!-- Navigation and Title -->
+    <app-page-title title="Comparación de Usuarios" (back)="goBack()"></app-page-title>
+
+    <!-- Loading State -->
+    <div class="loading-container" *ngIf="loading">
+      <div class="loading-spinner">
+        <i class="mdi mdi-loading mdi-spin"></i>
+      </div>
+      <p>Cargando comparación...</p>
+    </div>
+
+    <!-- Comparison Content -->
+    <div class="comparison-content" *ngIf="!loading && currentUser && comparedUser">
+      <!-- Comparison Cards -->
+      <div class="comparison-cards">
+        <!-- Current User Card -->
+        <div class="user-card current-user">
+          <div class="user-header">
+            <div class="user-icon">
+              <i class="mdi mdi-account"></i>
+            </div>
+            <h3 class="user-name">{{ currentUser.name }}</h3>
+          </div>
+
+          <!-- User Info -->
+          <div class="user-info-section">
+            <div class="info-item">
+              <span class="info-label">Sueldo</span>
+              <span class="info-value">${{ currentUser.sueldo | number }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Profesión</span>
+              <span class="info-value">{{ currentUser.profesion }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Estado Civil</span>
+              <span class="info-value">{{ currentUser.estadoCivil }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Ubicación</span>
+              <span class="info-value">
+                {{ currentUser.ubicacion.localidad }}, {{ currentUser.ubicacion.provincia }}
+              </span>
+            </div>
+          </div>
+
+          <!-- Categories Section -->
+          <div class="categories-section">
+            <h4 class="section-title">Gastos por Categoría</h4>
+            <div class="categories-list">
+              <div class="category-item" *ngFor="let categoria of currentUser.categorias">
+                <span class="category-name">{{ categoria.name }}</span>
+                <span class="category-amount">${{ categoria.total | number }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Statistics Section -->
+          <div class="statistics-section">
+            <div class="stat-item">
+              <i class="mdi mdi-cash-multiple"></i>
+              <div class="stat-content">
+                <span class="stat-label">Total Operaciones</span>
+                <span class="stat-value">{{ currentUser.totalOperaciones }}</span>
+              </div>
+            </div>
+            <div class="stat-item">
+              <i class="mdi mdi-calendar-start"></i>
+              <div class="stat-content">
+                <span class="stat-label">Primera Fecha</span>
+                <span class="stat-value">{{ formatDate(currentUser.primeraFecha) }}</span>
+              </div>
+            </div>
+            <div class="stat-item">
+              <i class="mdi mdi-calendar-end"></i>
+              <div class="stat-content">
+                <span class="stat-label">Última Fecha</span>
+                <span class="stat-value">{{ formatDate(currentUser.ultimaFecha) }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Compared User Card -->
+        <div class="user-card compared-user">
+          <div class="user-header">
+            <div class="user-icon">
+              <i class="mdi mdi-account"></i>
+            </div>
+            <h3 class="user-name">Usuario Comparado</h3>
+          </div>
+
+          <!-- User Info -->
+          <div class="user-info-section">
+            <div class="info-item">
+              <span class="info-label">Sueldo</span>
+              <span class="info-value">${{ comparedUser.sueldo | number }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Profesión</span>
+              <span class="info-value">{{ comparedUser.profesion }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Estado Civil</span>
+              <span class="info-value">{{ comparedUser.estadoCivil }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Ubicación</span>
+              <span class="info-value">
+                {{ comparedUser.ubicacion.localidad }}, {{ comparedUser.ubicacion.provincia }}
+              </span>
+            </div>
+          </div>
+
+          <!-- Categories Section -->
+          <div class="categories-section">
+            <h4 class="section-title">Gastos por Categoría</h4>
+            <div class="categories-list">
+              <div class="category-item" *ngFor="let categoria of comparedUser.categorias">
+                <span class="category-name">{{ categoria.name }}</span>
+                <span class="category-amount">${{ categoria.total | number }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Statistics Section -->
+          <div class="statistics-section">
+            <div class="stat-item">
+              <i class="mdi mdi-cash-multiple"></i>
+              <div class="stat-content">
+                <span class="stat-label">Total Operaciones</span>
+                <span class="stat-value">{{ comparedUser.totalOperaciones }}</span>
+              </div>
+            </div>
+            <div class="stat-item">
+              <i class="mdi mdi-calendar-start"></i>
+              <div class="stat-content">
+                <span class="stat-label">Primera Fecha</span>
+                <span class="stat-value">{{ formatDate(comparedUser.primeraFecha) }}</span>
+              </div>
+            </div>
+            <div class="stat-item">
+              <i class="mdi mdi-calendar-end"></i>
+              <div class="stat-content">
+                <span class="stat-label">Última Fecha</span>
+                <span class="stat-value">{{ formatDate(comparedUser.ultimaFecha) }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

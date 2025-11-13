@@ -14,6 +14,7 @@ import { NotificationsSettingsComponent } from './pages/settings/notifications/n
 import { SecuritySettingsComponent } from './pages/settings/security/security-settings.component';
 import { PinSettingsComponent } from './pages/settings/security/pin/pin-settings.component';
 import { DataPoliciesComponent } from './pages/settings/security/data/data-policies.component';
+import { UserComparisonComponent } from './pages/user-comparison/user-comparison.component';
 
 export const routes: Routes = [
   // Rutas públicas (sin autenticación)
@@ -33,6 +34,7 @@ export const routes: Routes = [
   { path: 'settings/security/pin', component: PinSettingsComponent, canActivate: [AuthGuard] },
   { path: 'settings/security/data', component: DataPoliciesComponent, canActivate: [AuthGuard] },
   { path: 'categories', component: CategoriesComponent, canActivate: [AuthGuard] },
+  { path: 'user-comparison', component: UserComparisonComponent, canActivate: [AuthGuard] },
 
   // Ruta wildcard - redirige al login si la ruta no existe
   { path: '**', redirectTo: '' },

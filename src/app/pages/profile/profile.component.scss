@@ -18,11 +18,7 @@
     color: var(--gastify-light);
     position: relative;
     overflow-x: hidden;
-    overflow-y: hidden; /* solo scrollea en modo edición */
-}
-
-.container.editing {
-  overflow-y: auto;
+    overflow-y: auto; /* siempre scrolleable */
 }
 
 .main {
@@ -119,6 +115,7 @@
 
 .user-details {
   padding: 0;
+  padding-right: 6px;
   margin-bottom: 15px;
 }
 
@@ -145,6 +142,7 @@
   font-size: 16px;
   color: white;
   font-weight: 500;
+  flex: 0 0 auto;
 }
 
 .detail-value {
@@ -158,10 +156,13 @@
   background: #4a5568;
   border: 1px solid #718096;
   border-radius: 8px;
-  padding: 6px 10px;
+  padding: 8px 12px;
   color: white;
   font-size: 14px;
   width: 180px;
+  min-height: 36px;
+  flex-shrink: 0;
+  margin-left: auto;
 
   &:focus {
     outline: none;
@@ -170,11 +171,17 @@
   }
 }
 
-/* Scroll solo cuando se edita: limita el bloque de detalles */
-.container.editing .user-details {
-  max-height: calc(100vh - 260px);
-  overflow-y: auto;
-  padding-right: 6px;
+// Estilos para mat-select (Material Angular)
+::ng-deep .detail-select.mat-mdc-select {
+  .mat-mdc-select-trigger {
+    min-height: 36px;
+    padding: 8px 12px;
+  }
+  
+  .mat-mdc-select-value {
+    color: white;
+    font-size: 14px;
+  }
 }
 
 .action-buttons {
