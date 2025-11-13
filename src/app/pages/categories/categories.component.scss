@@ -74,6 +74,12 @@
   align-items: center;
   gap: 8px;
   width: 72px; /* celdas uniformes para evitar saltos por textos largos */
+  position: relative;
+  cursor: pointer;
+  
+  &.default-category {
+    opacity: 0.9;
+  }
 }
 
 .icon {

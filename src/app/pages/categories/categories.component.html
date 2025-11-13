@@ -7,7 +7,7 @@
     </div>
 
     <div class="grid">
-      <div class="item" *ngFor="let cat of categoriesToShow; let i = index" (click)="openEditCategory(i)">
+      <div class="item" *ngFor="let cat of categoriesToShow; let i = index" (click)="openEditCategory(i)" [class.default-category]="cat.isDefault">
         <div class="icon" [ngStyle]="{ 'background-color': cat.color, color: cat.iconColor }">
           <i class="mdi" [ngClass]="cat.icon"></i>
         </div>
@@ -21,7 +21,16 @@
         <div class="label">Nueva Categoria</div>
       </div>
     </div>
-    <app-category-modal *ngIf="showCategoryModal" [title]="editMode ? 'Editar categoría' : 'Nueva categoría'" [edit]="editMode" [value]="modalCategory" (close)="closeCategoryModal()" (save)="saveCategory($event)" (delete)="deleteCategory()"></app-category-modal>
+    <app-category-modal 
+      *ngIf="showCategoryModal" 
+      [title]="modalCategory.isDefault ? 'Categoría Predefinida' : (editMode ? 'Editar categoría' : 'Nueva categoría')" 
+      [edit]="editMode" 
+      [value]="modalCategory" 
+      [isReadOnly]="modalCategory.isDefault || false"
+      (close)="closeCategoryModal()" 
+      (save)="saveCategory($event)" 
+      (delete)="deleteCategory()">
+    </app-category-modal>
   </div>
 </div>
 
