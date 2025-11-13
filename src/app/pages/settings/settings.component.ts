@@ -48,24 +48,6 @@ export class SettingsComponent {
     });
   }
 
-  openPrivacy(): void {
-    // Por ahora navegamos a settings, puedes crear la pantalla después
-    console.log('Privacy settings - pantalla pendiente de crear');
-    // this.router.navigate(['/settings/privacy']);
-  }
-
-  openHelp(): void {
-    // Por ahora navegamos a settings, puedes crear la pantalla después
-    console.log('Help settings - pantalla pendiente de crear');
-    // this.router.navigate(['/settings/help']);
-  }
-
-  openAbout(): void {
-    // Por ahora navegamos a settings, puedes crear la pantalla después
-    console.log('About settings - pantalla pendiente de crear');
-    // this.router.navigate(['/settings/about']);
-  }
-
   logout(): void {
     // TODO: Hook into auth service when available
     this.router.navigate(['/login']).catch(() => {
