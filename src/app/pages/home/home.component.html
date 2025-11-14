@@ -7,7 +7,7 @@
         <i class="mdi mdi-chevron-left"></i>
       </button>
       <h2 class="current-month">{{ currentMonth }}</h2>
-      <button class="nav-btn" (click)="nextMonth()">
+      <button class="nav-btn" (click)="nextMonth()" [disabled]="isCurrentMonth()">
         <i class="mdi mdi-chevron-right"></i>
       </button>
     </div>
@@ -36,16 +36,27 @@
     </div>
 
     <!-- Payment Cards Stack -->
-    <div class="cards-stack" (click)="rotateCards()">
+    <div class="cards-stack" 
+         (touchstart)="onTouchStart($event)"
+         (touchmove)="onTouchMove($event)"
+         (touchend)="onTouchEnd($event)"
+         (mousedown)="onTouchStart($event)"
+         (mousemove)="onTouchMove($event)"
+         (mouseup)="onTouchEnd($event)"
+         (mouseleave)="onTouchEnd($event)">
       <div
         class="payment-card"
-        *ngFor="let card of cards; let i = index"
-        [ngStyle]="getCardStyle(i)"
+        *ngFor="let card of visibleCards; let i = index"
+        [class.active]="i === 1"
+        [class.prev]="i === 0"
+        [class.next]="i === 2"
         [style.background]="card.background"
+        [style.transform]="getCardTransform(i)"
       >
         <div class="card-header">
           <div class="card-logo">
-            <i class="mdi" [ngClass]="card.icon"></i>
+            <img *ngIf="card.isGeneral" src="assets/images/gastifyLogo.png" alt="Gastify" class="gastify-logo">
+            <i *ngIf="!card.isGeneral" class="mdi" [ngClass]="card.icon"></i>
           </div>
           <div class="card-type">{{ card.typeLabel }}</div>
         </div>
@@ -92,14 +103,12 @@
 
     <!-- Bottom Navigation -->
     <div class="bottom-nav">
-      <button class="bottom-nav-item" (click)="openGoals()">
-        <i class="mdi mdi-target"></i>
-        <span>Objetivos</span>
+      <button class="add-transaction-btn comparison-btn" (click)="openUserComparison()">
+        <i class="mdi mdi-account-group"></i>
       </button>
 
-      <button class="bottom-nav-item" (click)="openAnalysis()">
+      <button class="add-transaction-btn analysis-btn" (click)="openAnalysis()">
         <i class="mdi mdi-chart-bar"></i>
-        <span>Análisis</span>
       </button>
 
       <button class="add-transaction-btn" (click)="addTransaction()">

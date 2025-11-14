@@ -84,13 +84,13 @@ export class TransactionBottomSheet implements OnInit {
     }
 
     // 2. Construir el objeto para el backend (usando IDs)
-    const operacionData: Omit<Operacion, '_id' | 'user'> = {
+    const operacionData: any = {
       monto: Math.abs(this.amount!),
       descripcion: this.description,
       fecha: new Date(this.date).toISOString(),
-      tipo: this.transactionType === 'income' ? 'Ingreso' : 'Egreso',
-      billeteraId: selectedWallet.id?.toString(), // ID convertido a string
-      categoriaId: selectedCategory.id, // ID
+      tipo: this.transactionType, // Send 'income' or 'expense' as backend expects
+      billetera: selectedWallet.id?.toString(), // Backend expects 'billetera'
+      categoria: selectedCategory.id, // Backend expects 'categoria'
     };
 
     // 3. Llamada al servicio
