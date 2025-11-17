@@ -6,7 +6,13 @@
 
   <h2 class="bottom-sheet-title">Registrar Operacion</h2>
 
-  <button class="save-btn" (click)="onSave()">
+  <button
+    class="save-btn"
+    type="button"
+    (click)="onSave()"
+    [disabled]="!isFormValid"
+    [class.enabled]="isFormValid"
+  >
     <i class="mdi mdi-check"></i>
   </button>
 </div>
@@ -51,7 +57,7 @@
       type="text"
       class="form-input"
       [(ngModel)]="description"
-      placeholder="¿Qué compraste? (ej: Almuerzo, Gasolina, etc.)"
+      [placeholder]="descriptionPlaceholder"
     />
   </div>
 
@@ -59,7 +65,12 @@
   <div class="form-group">
     <label class="form-label">Fecha</label>
     <div class="input-with-icon">
-      <input #dateInput type="date" class="form-input" [(ngModel)]="date" />
+      <input
+        #dateInput
+        type="date"
+        class="form-input"
+        [(ngModel)]="date"
+      />
       <i class="mdi mdi-calendar" (click)="openDatePicker(dateInput)"></i>
     </div>
   </div>
@@ -67,12 +78,17 @@
   <div class="form-group">
     <label class="form-label">Billetera</label>
     <div class="input-with-icon">
-      <select class="form-input" [(ngModel)]="wallet" name="wallet">
-        <option value="">Seleccionar billetera</option>
-        <option *ngFor="let walletOption of nombresBilleteras" [value]="walletOption">
+      <mat-select
+        class="form-input"
+        [(ngModel)]="wallet"
+        name="wallet"
+        placeholder="Seleccionar billetera"
+      >
+        <mat-option value="">Seleccionar billetera</mat-option>
+        <mat-option *ngFor="let walletOption of nombresBilleteras" [value]="walletOption">
           {{ walletOption }}
-        </option>
-      </select>
+        </mat-option>
+      </mat-select>
       <i class="mdi mdi-wallet"></i>
     </div>
   </div>
@@ -81,12 +97,17 @@
   <div class="form-group">
     <label class="form-label">Categoria</label>
     <div class="input-with-icon">
-      <select class="form-input" [(ngModel)]="category" name="category">
-        <option value="">Seleccionar categoría</option>
-        <option *ngFor="let categoryOption of nombresCategorias" [value]="categoryOption">
+      <mat-select
+        class="form-input"
+        [(ngModel)]="category"
+        name="category"
+        placeholder="Seleccionar categoría"
+      >
+        <mat-option value="">Seleccionar categoría</mat-option>
+        <mat-option *ngFor="let categoryOption of nombresCategorias" [value]="categoryOption">
           {{ categoryOption }}
-        </option>
-      </select>
+        </mat-option>
+      </mat-select>
       <i class="mdi mdi-chevron-down"></i>
     </div>
   </div>

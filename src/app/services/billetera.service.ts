@@ -11,6 +11,7 @@ export interface Billetera {
   nombre: string;
   proveedor: string;
   type: 'bank' | 'digital' | 'cash';
+  icon?: string;
   isDefault: boolean;
   color?: string;
   moneda?: string;

@@ -12,11 +12,12 @@ import { BilleteraService, Billetera } from '../../services/billetera.service';
 import { CategoriaService, Categoria } from '../../services/categoria.service';
 import { OperacionService } from '../../services/operacion.service';
 import { Operacion } from '../../../models/operacion.model';
+import { MatSelectModule } from '@angular/material/select';
 
 @Component({
   selector: 'add-operation-modal',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatButtonModule, MatBottomSheetModule],
+  imports: [CommonModule, FormsModule, MatButtonModule, MatBottomSheetModule, MatSelectModule],
   templateUrl: './add-operation-modal.component.html',
   styleUrls: ['./add-operation-modal.component.scss'],
 })
@@ -115,6 +116,22 @@ export class TransactionBottomSheet implements OnInit {
       input.focus();
       input.click();
     }
+  }
+
+  get descriptionPlaceholder(): string {
+    return this.transactionType === 'income'
+      ? '¿Qué ingreso recibiste? (ej: Salario, Devolución, etc.)'
+      : '¿Qué compraste? (ej: Almuerzo, Gasolina, etc.)';
+  }
+
+  get isFormValid(): boolean {
+    const hasAmount = this.amount !== null && this.amount > 0;
+    const hasDescription = this.description.trim().length > 0;
+    const hasWallet = !!this.wallet;
+    const hasCategory = !!this.category;
+    const hasDate = !!this.date;
+
+    return hasAmount && hasDescription && hasWallet && hasCategory && hasDate;
   }
 
   private resetForm(): void {

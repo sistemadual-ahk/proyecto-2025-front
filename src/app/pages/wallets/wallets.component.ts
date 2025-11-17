@@ -8,6 +8,7 @@ import { HeaderComponent } from '../../components/header/header.component';
 import { SidebarComponent } from '../../components/sidebar/sidebar.component';
 import { PageTitleComponent } from '../../components/page-title/page-title.component';
 import { BilleteraService, Billetera } from '../../services/billetera.service';
+import { MatSelectModule } from '@angular/material/select';
 
 @Component({
   selector: 'app-wallets',
@@ -19,6 +20,7 @@ import { BilleteraService, Billetera } from '../../services/billetera.service';
     HeaderComponent,
     SidebarComponent,
     PageTitleComponent,
+    MatSelectModule,
   ],
   templateUrl: './wallets.component.html',
   styleUrl: './wallets.component.scss',

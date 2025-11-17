@@ -46,10 +46,18 @@
       <div class="form-group" *ngIf="type !== 'cash'">
         <label class="form-label">Proveedor / Banco</label>
         <div class="input-with-icon">
-          <select class="form-input" name="provider" [(ngModel)]="provider" required>
-            <option [ngValue]="''" disabled>Seleccionar proveedor</option>
-            <option *ngFor="let p of currentProviders" [ngValue]="p">{{ p }}</option>
-          </select>
+          <mat-select
+            class="form-input"
+            name="provider"
+            [(ngModel)]="provider"
+            required
+            placeholder="Seleccionar proveedor"
+          >
+            <mat-option [value]="''" disabled>Seleccionar proveedor</mat-option>
+            <mat-option *ngFor="let p of currentProviders" [value]="p">
+              {{ p }}
+            </mat-option>
+          </mat-select>
           <i class="mdi mdi-chevron-down"></i>
         </div>
       </div>
@@ -76,10 +84,16 @@
       <div class="form-group">
         <label class="form-label">Moneda</label>
         <div class="input-with-icon">
-          <select class="form-input" name="currency" [(ngModel)]="currency" required>
-            <option [ngValue]="'ARS'">ARS</option>
-            <option [ngValue]="'USD'">USD</option>
-          </select>
+          <mat-select
+            class="form-input"
+            name="currency"
+            [(ngModel)]="currency"
+            required
+            placeholder="Seleccionar moneda"
+          >
+            <mat-option value="ARS">ARS</mat-option>
+            <mat-option value="USD">USD</mat-option>
+          </mat-select>
           <i class="mdi mdi-currency-usd"></i>
         </div>
       </div>

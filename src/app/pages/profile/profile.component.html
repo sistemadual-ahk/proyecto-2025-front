@@ -44,23 +44,21 @@
       <div class="detail-card">
         <span class="detail-label">Situación laboral</span>
         <span class="detail-value" *ngIf="!isEditing">{{ usuario.situacionLaboral }}</span>
-        <select class="detail-select" [(ngModel)]="usuario.situacionLaboral" *ngIf="isEditing">
-          <option value="Freelance">Freelance</option>
-          <option value="Empleado">Empleado</option>
-          <option value="Empresario">Empresario</option>
-          <option value="Desempleado">Desempleado</option>
-          <option value="Estudiante">Estudiante</option>
-        </select>
+        <mat-select class="detail-select" [(ngModel)]="usuario.situacionLaboral" *ngIf="isEditing">
+          <mat-option *ngFor="let situacion of situacionLaboralOptions" [value]="situacion">
+            {{ situacion }}
+          </mat-option>
+        </mat-select>
       </div>
 
       <div class="detail-card">
         <span class="detail-label">Estado Civil</span>
         <span class="detail-value" *ngIf="!isEditing">{{ usuario.estadoCivil }}</span>
-        <select class="detail-select" [(ngModel)]="usuario.estadoCivil" *ngIf="isEditing">
-          <option value="Casado">Casado</option>
-          <option value="Soltero">Soltero</option>
-          <option value="N/A">N/A</option>
-        </select>
+        <mat-select class="detail-select" [(ngModel)]="usuario.estadoCivil" *ngIf="isEditing">
+          <mat-option *ngFor="let estado of estadoCivilOptions" [value]="estado">
+            {{ estado }}
+          </mat-option>
+        </mat-select>
       </div>
 
       <div class="detail-card">
@@ -82,7 +80,7 @@
       <div class="detail-card">
         <span class="detail-label">Municipio</span>
         <span class="detail-value" *ngIf="!isEditing">{{ usuario.municipio }}</span>
-        <mat-select class="detail-select" [(ngModel)]=" usuario.municipio" (ngModelChange)="onMunicipioChange($event)" *ngIf="isEditing">
+        <mat-select class="detail-select" [(ngModel)]="usuario.municipio" (ngModelChange)="onMunicipioChange($event)" *ngIf="isEditing">
           <mat-option *ngFor="let m of municipios" [value]="m.nombre">{{ m.nombre }}</mat-option>
         </mat-select>
       </div>

@@ -33,6 +33,8 @@ export class ProfileComponent implements OnInit {
   municipios: any[] = [];
   localidades: any[] = [];
   profesionOptions: string[] = [];
+  situacionLaboralOptions: string[] = ['Freelance', 'Empleado', 'Empresario', 'Desempleado', 'Estudiante'];
+  estadoCivilOptions: string[] = ['Casado', 'Soltero', 'N/A'];
 
   // municipios now come from selected provincia -> this.municipios
 

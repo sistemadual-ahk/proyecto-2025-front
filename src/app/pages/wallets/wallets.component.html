@@ -31,7 +31,7 @@
     <div class="wallets-list">
       <div class="wallet-item" *ngFor="let wallet of billeteras" (click)="openWalletPopup(wallet)" style="cursor: pointer">
         <div class="wallet-icon" [style.background-color]="wallet.color">
-          <i [class]="wallet"></i>
+          <i [class]="wallet.icon"></i>
         </div>
         <div class="wallet-info">
           <div class="wallet-name">{{ wallet.nombre }}</div>
@@ -51,7 +51,7 @@
     <!-- Add Account Button -->
     <button class="add-account-btn" (click)="addAccount()">
       <i class="mdi mdi-plus"></i>
-      <span>Agregar Cuenta</span>
+      <span>Agregar Billetera</span>
     </button>
   </div>
 
@@ -177,10 +177,14 @@
         <div class="popup-detail-item">
           <span class="detail-label">Banco origen</span>
           <span class="detail-value">
-            <select class="form-input" [(ngModel)]="transferForm.originId">
-              <option [ngValue]="''" disabled>Seleccionar</option>
-              <option *ngFor="let w of billeteras" [ngValue]="w.id">{{ w.nombre }}</option>
-            </select>
+            <mat-select
+              class="form-input"
+              [(ngModel)]="transferForm.originId"
+              placeholder="Banco origen"
+            >
+              <mat-option [value]="''" disabled>Seleccionar</mat-option>
+              <mat-option *ngFor="let w of billeteras" [value]="w.id">{{ w.nombre }}</mat-option>
+            </mat-select>
           </span>
         </div>
         <div class="popup-detail-item">
@@ -192,10 +196,14 @@
         <div class="popup-detail-item">
           <span class="detail-label">Banco destino</span>
           <span class="detail-value">
-            <select class="form-input" [(ngModel)]="transferForm.destinationId">
-              <option [ngValue]="''" disabled>Seleccionar</option>
-              <option *ngFor="let w of billeteras" [ngValue]="w.id">{{ w.nombre }}</option>
-            </select>
+            <mat-select
+              class="form-input"
+              [(ngModel)]="transferForm.destinationId"
+              placeholder="Banco destino"
+            >
+              <mat-option [value]="''" disabled>Seleccionar</mat-option>
+              <mat-option *ngFor="let w of billeteras" [value]="w.id">{{ w.nombre }}</mat-option>
+            </mat-select>
           </span>
         </div>
         
@@ -237,7 +245,7 @@
       <div class="popup-details" *ngIf="billeteras && billeteras.length">
         <div class="popup-detail-item" *ngFor="let w of billeteras | slice:0:5">
           <span class="detail-label">{{ getLastUpdate() }}</span>
-          <span class="detail-value">{{ w.nombre }} → {{ billeteras[0]?.nombre }} — {{ formatCurrency(w.balance || 0) }}</span>
+          <span class="detail-value">{{ w.nombre }} → {{ billeteras[0].nombre }} — {{ formatCurrency(w.balance || 0) }}</span>
         </div>
       </div>
 

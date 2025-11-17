@@ -133,6 +133,33 @@
   color: rgba(255, 255, 255, 0.45);
 }
 
+// Mat-select con el mismo look que el resto de inputs
+::ng-deep .form-input.mat-mdc-select {
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+
+  .mat-mdc-select-trigger {
+    width: 100%;
+    min-height: auto;
+    padding: 0;
+  }
+
+  .mat-mdc-select-value,
+  .mat-mdc-select-value-text {
+    color: #fff;
+    font-size: 14px;
+  }
+
+  .mat-mdc-select-placeholder {
+    color: rgba(255, 255, 255, 0.45);
+  }
+
+  .mat-mdc-select-arrow {
+    color: rgba(255, 255, 255, 0.65);
+  }
+}
+
 .input-with-icon {
   position: relative;
 }

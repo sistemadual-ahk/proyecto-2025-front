@@ -95,6 +95,30 @@
   }
 }
 
+.save-btn {
+  &.enabled {
+    background: var(--gastify-green);
+    border-color: var(--gastify-green);
+    box-shadow: var(--ring-green);
+    color: #0f172a;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.12);
+    color: rgba(255, 255, 255, 0.4);
+    box-shadow: none;
+    transform: none;
+  }
+
+  &:disabled:hover,
+  &:disabled:active {
+    transform: none;
+    background: rgba(255, 255, 255, 0.08);
+  }
+}
+
 // Toggle Ingreso/Gasto
 .transaction-toggle {
   display: flex;
@@ -196,6 +220,33 @@
   &:hover {
     border-color: rgba(255, 255, 255, 0.2);
     background: rgba(59, 59, 88, 0.85);
+  }
+}
+
+// Mat-select dropdown styled like the rest of the inputs
+::ng-deep .form-input.mat-mdc-select {
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+
+  .mat-mdc-select-trigger {
+    width: 100%;
+    min-height: auto;
+    padding: 0;
+  }
+
+  .mat-mdc-select-value,
+  .mat-mdc-select-value-text {
+    color: #fff;
+    font-size: 14px;
+  }
+
+  .mat-mdc-select-placeholder {
+    color: rgba(255, 255, 255, 0.45);
+  }
+
+  .mat-mdc-select-arrow {
+    color: rgba(255, 255, 255, 0.65);
   }
 }
 

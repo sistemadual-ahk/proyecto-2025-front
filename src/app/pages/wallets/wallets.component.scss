@@ -800,6 +800,33 @@ select.form-input {
   box-shadow: 0 0 0 3px rgba(61, 205, 153, 0.25);
 }
 
+// Normalizar mat-select para que siga el estilo de las wallets
+::ng-deep .form-input.mat-mdc-select {
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+
+  .mat-mdc-select-trigger {
+    width: 100%;
+    min-height: auto;
+    padding: 0;
+  }
+
+  .mat-mdc-select-value,
+  .mat-mdc-select-value-text {
+    color: var(--gastify-light);
+    font-size: 0.875rem;
+  }
+
+  .mat-mdc-select-placeholder {
+    color: rgba(255, 255, 255, 0.55);
+  }
+
+  .mat-mdc-select-arrow {
+    color: rgba(255, 255, 255, 0.65);
+  }
+}
+
 .default-badge {
   background: var(--gastify-green);
   color: white;

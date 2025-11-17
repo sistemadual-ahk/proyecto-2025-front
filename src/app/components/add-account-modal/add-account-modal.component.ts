@@ -2,13 +2,14 @@ import { Component, EventEmitter, OnInit, Output, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { BilleteraService, Billetera } from '../../services/billetera.service';
+import { MatSelectModule } from '@angular/material/select';
 
 type WalletType = 'bank' | 'digital' | 'cash';
 
 @Component({
   selector: 'app-add-account-modal',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, MatSelectModule],
   templateUrl: './add-account-modal.component.html',
   styleUrl: './add-account-modal.component.scss',
 })
