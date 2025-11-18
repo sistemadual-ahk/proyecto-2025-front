@@ -37,6 +37,7 @@
 
     <!-- Payment Cards Stack -->
     <div class="cards-stack" 
+         *ngIf="visibleCards.length > 0"
          (touchstart)="onTouchStart($event)"
          (touchmove)="onTouchMove($event)"
          (touchend)="onTouchEnd($event)"
@@ -47,9 +48,9 @@
       <div
         class="payment-card"
         *ngFor="let card of visibleCards; let i = index"
-        [class.active]="i === 1"
-        [class.prev]="i === 0"
-        [class.next]="i === 2"
+        [class.active]="isActiveCard(i)"
+        [class.prev]="isPrevCard(i)"
+        [class.next]="isNextCard(i)"
         [style.background]="card.background"
         [style.transform]="getCardTransform(i)"
       >

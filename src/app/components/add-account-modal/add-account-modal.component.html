@@ -80,7 +80,23 @@
         </div>
       </div>
 
-            <!-- Campo de Moneda -->
+      <!-- Campo de Color de Tarjeta -->
+      <div class="form-group">
+        <label class="form-label">Color de Tarjeta</label>
+        <div class="color-options">
+          <div 
+            *ngFor="let colorOption of colorOptions" 
+            class="color-circle"
+            [style.background]="colorOption.gradient"
+            [class.selected]="cardColor === colorOption.gradient"
+            (click)="cardColor = colorOption.gradient"
+          >
+            <i *ngIf="cardColor === colorOption.gradient" class="mdi mdi-check"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- Campo de Moneda -->
       <div class="form-group">
         <label class="form-label">Moneda</label>
         <div class="input-with-icon">

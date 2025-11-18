@@ -4,19 +4,22 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ApiService } from './api.service';
 
-// Interfaz básica asumida para la billetera
+// Interfaz basada en el modelo del backend
 export interface Billetera {
-  id?: number;
+  id?: string; // Backend usa string
   balance: number;
   nombre: string;
-  proveedor: string;
-  type: 'bank' | 'digital' | 'cash';
-  icon?: string;
+  balanceHistorico?: number; // Campo del backend
   isDefault: boolean;
   color?: string;
-  moneda?: string;
-  ingresoHistorico: number;
-  gastoHistorico: number;
+  user?: any;
+  // Campos adicionales del frontend (no están en backend)
+  proveedor?: string; // Solo frontend
+  type?: 'bank' | 'digital' | 'cash'; // Solo frontend
+  icon?: string; // Solo frontend
+  moneda?: string; // Solo frontend
+  ingresoHistorico?: number; // Solo frontend
+  gastoHistorico?: number; // Solo frontend
 }
 
 // Interfaz para la RESPUESTA COMPLETA del API

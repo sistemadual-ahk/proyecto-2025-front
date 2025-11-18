@@ -4,8 +4,6 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { AddAccountModalComponent } from '../../components/add-account-modal/add-account-modal.component';
-import { HeaderComponent } from '../../components/header/header.component';
-import { SidebarComponent } from '../../components/sidebar/sidebar.component';
 import { PageTitleComponent } from '../../components/page-title/page-title.component';
 import { BilleteraService, Billetera } from '../../services/billetera.service';
 import { MatSelectModule } from '@angular/material/select';
@@ -17,8 +15,6 @@ import { MatSelectModule } from '@angular/material/select';
     CommonModule,
     FormsModule,
     AddAccountModalComponent,
-    HeaderComponent,
-    SidebarComponent,
     PageTitleComponent,
     MatSelectModule,
   ],

@@ -40,6 +40,18 @@ export class AddAccountModalComponent implements OnInit {
   provider = '';
   initialBalance: number | null = null;
   currency = 'ARS';
+  cardColor = 'linear-gradient(135deg, #667EEA, #764BA2)';
+
+  colorOptions = [
+    { gradient: 'linear-gradient(135deg, #667EEA, #764BA2)' },
+    { gradient: 'linear-gradient(135deg, #009EE3, #0078BE)' },
+    { gradient: 'linear-gradient(135deg, #EC0000, #CC0000)' },
+    { gradient: 'linear-gradient(135deg, #51CF66, #40C057)' },
+    { gradient: 'linear-gradient(135deg, #8B5CF6, #7C3AED)' },
+    { gradient: 'linear-gradient(135deg, #F59E0B, #D97706)' },
+    { gradient: 'linear-gradient(135deg, #EF4444, #DC2626)' },
+    { gradient: 'linear-gradient(135deg, #06B6D4, #0891B2)' },
+  ];
 
   // Opciones (pueden mapearse a íconos/colores luego)
   providersByType: Record<WalletType, string[]> = {
@@ -68,13 +80,7 @@ export class AddAccountModalComponent implements OnInit {
     if (!this.name.trim()) {
       return;
     }
-    this.saveAccount.emit({
-      name: this.name.trim(),
-      type: this.type,
-      provider: this.provider || undefined,
-      initialBalance: Math.max(0, Math.floor(this.initialBalance ?? 0)),
-      currency: this.currency,
-    });
+    
     const billeteraData: Billetera = {
       nombre: this.name.trim(),
       type: this.type,
@@ -82,6 +88,7 @@ export class AddAccountModalComponent implements OnInit {
       balance: Math.max(0, Math.floor(this.initialBalance ?? 0)),
       isDefault: false,
       moneda: this.currency,
+      color: this.cardColor,
       ingresoHistorico: 0,
       gastoHistorico: 0
     };
@@ -89,13 +96,20 @@ export class AddAccountModalComponent implements OnInit {
     this.billeteraService.createBilletera(billeteraData).subscribe({
       next: (bill) => {
         console.log('Billetera creada:', bill);
+        this.saveAccount.emit({
+          name: this.name.trim(),
+          type: this.type,
+          provider: this.provider || undefined,
+          initialBalance: Math.max(0, Math.floor(this.initialBalance ?? 0)),
+          currency: this.currency,
+        });
+        this.resetForm();
+        this.onClose();
       },
       error: (error) => {
         console.error('Error al crear la billetera:', error);
       },
     });
-
-    this.resetForm();
   }
 
   private resetForm() {
@@ -104,5 +118,6 @@ export class AddAccountModalComponent implements OnInit {
     this.provider = '';
     this.initialBalance = null;
     this.currency = 'ARS';
+    this.cardColor = 'linear-gradient(135deg, #667EEA, #764BA2)';
   }
 }
