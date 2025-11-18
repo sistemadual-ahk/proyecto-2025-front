@@ -1,15 +1,14 @@
 .saving-goals-container {
   height: 100vh;
-  background: var(--gastify-dark);
+  background: linear-gradient(180deg, #0f1629 0%, #1a1f3a 50%, #0f1629 100%);
   color: white;
   font-family: 'Poppins', sans-serif;
   position: relative;
   overflow-x: hidden;
-  overflow-y: auto; /* permite scroll vertical */
-  -webkit-overflow-scrolling: touch; /* suaviza en móvil */
-  /* espacio para que el título quede debajo del header fijo */
-  padding-top: calc(var(--header-h, 70px) + 10px);
-  padding-bottom: 20px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-top: 80px;
+  padding-bottom: 140px;
 }
 
 /* Status Bar */
@@ -80,14 +79,21 @@
   margin-bottom: 40px;
 
   .goal-card {
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 14px;
-    padding: 16px 16px 14px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 18px;
+    padding: 20px;
     margin-bottom: 16px;
-    backdrop-filter: blur(8px);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
     position: relative;
+    
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+      border-color: rgba(255, 255, 255, 0.12);
+    }
 
     .goal-card-header {
       display: flex;
@@ -319,4 +325,56 @@
 }
 .tip-card:nth-child(3) {
   animation-delay: 0.5s;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .saving-goals-container {
+    padding-top: 80px;
+    padding-bottom: 120px;
+  }
+
+  .goals-section {
+    padding: 0 15px;
+  }
+
+  .tips-section {
+    padding: 0 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .saving-goals-container {
+    padding-top: 75px;
+    padding-bottom: 100px;
+  }
+
+  .goals-section {
+    padding: 0 12px;
+    margin-bottom: 30px;
+  }
+
+  .goal-card {
+    padding: 16px;
+  }
+
+  .goal-title {
+    font-size: 15px;
+  }
+
+  .goal-amounts {
+    font-size: 12px;
+  }
+
+  .tips-section {
+    padding: 0 12px;
+  }
+
+  .tip-card {
+    padding: 14px;
+  }
+
+  .page-title {
+    font-size: 20px;
+  }
 }

@@ -116,18 +116,18 @@ export class TransactionBottomSheet implements OnInit {
     console.log('Billetera seleccionada:', selectedWallet);
     console.log('Categoría seleccionada:', selectedCategory);
 
-    // 3. Construir el objeto para el backend (usando los nombres del DTO)
+    // 3. Construir el objeto para el backend (el servicio espera 'billetera' y 'categoria', no los del DTO)
     const operacionData: any = {
       monto: Math.abs(this.amount!),
       descripcion: this.description,
       fecha: new Date(this.date).toISOString(),
-      tipo: this.transactionType === 'income' ? 'Ingreso' : 'Egreso', // Convertir a TipoOperacion del backend
-      categoriaId: selectedCategory.id, // Backend DTO espera 'categoriaId'
+      tipo: this.transactionType === 'income' ? 'income' : 'expense', // El servicio traduce income/expense a Ingreso/Egreso
+      categoria: selectedCategory.id, // El servicio espera 'categoria'
     };
 
     // Agregar billetera solo si existe
     if (selectedWallet && selectedWallet.id) {
-      operacionData.billeteraId = selectedWallet.id.toString(); // Backend DTO espera 'billeteraId'
+      operacionData.billetera = selectedWallet.id.toString(); // El servicio espera 'billetera'
     }
 
     console.log('Datos a enviar:', operacionData);

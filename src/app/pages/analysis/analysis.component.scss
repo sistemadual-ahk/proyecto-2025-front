@@ -3,7 +3,7 @@
 */
 .container {
   height: 100vh;
-  background: var(--gastify-dark);
+  background: linear-gradient(180deg, #0f1629 0%, #1a1f3a 50%, #0f1629 100%);
   color: var(--gastify-light);
   position: relative;
   overflow-x: hidden;
@@ -13,10 +13,10 @@
 }
 
 .main {
-  padding: 24px 20px;
-  padding-top: 88px;
-  padding-bottom: 120px;
-  max-width: 1400px; // Ancho ampliado para acomodar 2 columnas en desktop
+  padding: 20px;
+  padding-top: 80px;
+  padding-bottom: 140px;
+  max-width: 1400px;
   margin: 0 auto;
   width: 100%;
   box-sizing: border-box;
@@ -36,10 +36,12 @@
 
 .tabs {
   display: flex;
-  background: #111a2c;
-  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
   overflow: hidden;
-  padding: 4px;
+  padding: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .tab {
@@ -50,19 +52,20 @@
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
-  border-radius: 8px;
-  transition: all 0.2s ease;
+  border-radius: 12px;
+  transition: all 0.3s ease;
 }
 
 .tab:hover:not(.active) {
   color: rgba(255, 255, 255, 0.9);
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.08);
 }
 
 .tab.active {
-  background: #2a3347;
+  background: linear-gradient(135deg, #3dcd99, #14b8a6);
   color: #fff;
   font-weight: 600;
+  box-shadow: 0 4px 12px rgba(61, 205, 153, 0.3);
 }
 
 .month-selector {
@@ -82,22 +85,24 @@
 }
 
 .month-selector .arrow {
-  background: rgba(255, 255, 255, 0.06);
-  border: none;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   color: #fff;
   font-size: 22px;
   cursor: pointer;
-  transition: all 0.2s ease;
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
+  transition: all 0.3s ease;
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .month-selector .arrow:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.15);
   transform: scale(1.05);
 }
 
@@ -132,16 +137,16 @@
   Tarjetas base
 */
 .card {
-  background: #15233c;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 18px;
-  padding: 20px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  margin-bottom: 0; // Removido el margin-bottom ya que el gap del grid lo maneja
-  overflow: hidden; // Previene que el contenido se desborde
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+  margin-bottom: 0;
+  overflow: hidden;
   
-  // Asegurar que los gráficos se contengan
   apx-chart {
     width: 100%;
     max-width: 100%;
@@ -150,8 +155,9 @@
 }
 
 .card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+  border-color: rgba(255, 255, 255, 0.12);
 }
 
 .card-title {
@@ -370,21 +376,24 @@
   Tarjetas de insights
 */
 .insight-card {
-  background: #1f2937;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 16px;
-  padding: 18px;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 18px;
+  padding: 20px;
   margin-bottom: 16px;
   display: flex;
   align-items: flex-start;
   gap: 14px;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
 }
 
 .insight-card:hover {
-  background: #242d3d;
+  background: rgba(255, 255, 255, 0.08);
   border-color: rgba(255, 255, 255, 0.15);
   transform: translateX(4px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
 }
 
 .insight-icon {
