@@ -1,5 +1,3 @@
-// src/app/pages/categories/categories.component.ts
-
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
@@ -27,11 +25,9 @@ interface UiCategory {
   styleUrl: './categories.component.scss',
 })
 export class CategoriesComponent {
-  // Categorías que vienen del backend, separadas por tipo
   defaultIncomeCategories: UiCategory[] = [];
   defaultExpenseCategories: UiCategory[] = [];
 
-  // Categorías personalizadas del usuario (las que creas/edita el user)
   customIncomeCategories: UiCategory[] = [];
   customExpenseCategories: UiCategory[] = [];
 
@@ -41,9 +37,6 @@ export class CategoriesComponent {
     this.loadData();
   }
 
-  // =======================
-  //  CARGA DESDE BACKEND
-  // =======================
   private loadData(): void {
     this.subscription.add(
       this.categoriasService.getAllCategories().subscribe({
@@ -78,10 +71,6 @@ export class CategoriesComponent {
       })
     );
   }
-
-  // =======================
-  //  ESTADO DE UI
-  // =======================
 
   activeTab: 'Ingreso' | 'Gasto' = 'Ingreso';
   showCategoryModal = false;
@@ -123,10 +112,6 @@ export class CategoriesComponent {
     return index < defaultCategoriesCount;
   }
 
-  // =======================
-  //  MODAL CREAR / EDITAR
-  // =======================
-
   openCreateCategory() {
     this.editMode = false;
     this.editingIndex = null;
@@ -145,7 +130,6 @@ export class CategoriesComponent {
     const isDefault = this.isCategoryDefault(index);
     const cat = this.categoriesToShow[index];
 
-    // Si es default, solo lectura
     this.editMode = !isDefault;
     this.editingIndex = isDefault ? null : index;
 
@@ -162,11 +146,7 @@ export class CategoriesComponent {
     this.showCategoryModal = true;
   }
 
-  // =======================
-  //   GUARDAR (POST / PUT)
-  // =======================
   saveCategory(value: EditableCategory) {
-    // 1) Nunca tocar las default
     if (value.isDefault) {
       console.warn('Intento de guardar una categoría default. Ignorado.');
       return;
@@ -179,7 +159,6 @@ export class CategoriesComponent {
       : `mdi-${normalizedIcon}`;
     const description = (value.description || '').trim();
 
-    // payload para el backend
     const payload: Partial<Categoria> = {
       nombre: normalizedName,
       descripcion: description,
@@ -190,7 +169,6 @@ export class CategoriesComponent {
       type: this.activeTab === 'Ingreso' ? 'income' : 'expense',
     };
 
-    // ===== CASO CREAR (POST) =====
     if (this.editingIndex === null) {
       console.log('Creando categoría...', payload);
 
@@ -225,7 +203,6 @@ export class CategoriesComponent {
       return;
     }
 
-    // ===== CASO EDITAR (PUT) – solo custom =====
     const editingDefaultOffset =
       this.activeTab === 'Ingreso'
         ? this.defaultIncomeCategories.length
@@ -282,9 +259,6 @@ export class CategoriesComponent {
     });
   }
 
-  // =======================
-  //  ELIMINAR (solo custom)
-  // =======================
   deleteCategory() {
     if (this.editingIndex === null) return;
 
@@ -315,7 +289,6 @@ export class CategoriesComponent {
 
     console.log('Eliminando categoría...', catToDelete.id);
 
-    // Si querés borrar en backend:
     this.categoriasService.deleteCategory(catToDelete.id).subscribe({
       next: () => {
         if (this.activeTab === 'Ingreso') {

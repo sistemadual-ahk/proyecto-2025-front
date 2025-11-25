@@ -35,7 +35,6 @@ export class CategoryModalComponent implements OnInit {
     iconColor: '#FFFFFF' 
   };
 
-  // Opciones de íconos principales
   public mainIconOptions: Array<{ name: string; class: string }> = [
     { name: 'Cartera', class: 'mdi-wallet' },
     { name: 'Comida', class: 'mdi-food' },
@@ -69,9 +68,7 @@ export class CategoryModalComponent implements OnInit {
     { name: 'Más iconos', class: 'mdi-dots-horizontal' },
   ];
 
-  // Iconos adicionales
   public extraIconOptions: Array<{ name: string; class: string }> = [
-    // Finanzas y Negocios
     { name: 'Banco', class: 'mdi-bank' },
     { name: 'Cheque', class: 'mdi-checkbook' },
     { name: 'Bitcoin', class: 'mdi-bitcoin' },
@@ -79,7 +76,6 @@ export class CategoryModalComponent implements OnInit {
     { name: 'Préstamo', class: 'mdi-handshake' },
     { name: 'Dividendos', class: 'mdi-chart-line' },
     
-    // Comida y Bebidas
     { name: 'Pizza', class: 'mdi-pizza' },
     { name: 'Hamburguesa', class: 'mdi-hamburger' },
     { name: 'Cerveza', class: 'mdi-beer' },
@@ -87,7 +83,6 @@ export class CategoryModalComponent implements OnInit {
     { name: 'Pastel', class: 'mdi-cake' },
     { name: 'Helado', class: 'mdi-ice-cream' },
     
-    // Hogar y Familia
     { name: 'Bebé', class: 'mdi-baby-face' },
     { name: 'Juguetes', class: 'mdi-toy-brick' },
     { name: 'Limpieza', class: 'mdi-spray-bottle' },
@@ -95,7 +90,6 @@ export class CategoryModalComponent implements OnInit {
     { name: 'Muebles', class: 'mdi-sofa' },
     { name: 'Electrodomésticos', class: 'mdi-washing-machine' },
     
-    // Transporte y Viajes
     { name: 'Motocicleta', class: 'mdi-motorbike' },
     { name: 'Bicicleta', class: 'mdi-bike' },
     { name: 'Metro', class: 'mdi-subway' },
@@ -103,7 +97,6 @@ export class CategoryModalComponent implements OnInit {
     { name: 'Hotel', class: 'mdi-bed' },
     { name: 'Equipaje', class: 'mdi-bag-suitcase' },
     
-    // Entretenimiento y Ocio
     { name: 'Música', class: 'mdi-music' },
     { name: 'Guitarra', class: 'mdi-guitar-acoustic' },
     { name: 'Gaming', class: 'mdi-gamepad-variant' },
@@ -111,7 +104,6 @@ export class CategoryModalComponent implements OnInit {
     { name: 'Cine', class: 'mdi-movie-open' },
     { name: 'Teatro', class: 'mdi-drama-masks' },
     
-    // Salud y Bienestar
     { name: 'Hospital', class: 'mdi-hospital-building' },
     { name: 'Dentista', class: 'mdi-tooth' },
     { name: 'Yoga', class: 'mdi-yoga' },
@@ -119,7 +111,6 @@ export class CategoryModalComponent implements OnInit {
     { name: 'Psicólogo', class: 'mdi-brain' },
     { name: 'Spa', class: 'mdi-spa' },
     
-    // Tecnología y Comunicaciones
     { name: 'Smartphone', class: 'mdi-smartphone' },
     { name: 'Tablet', class: 'mdi-tablet' },
     { name: 'Auriculares', class: 'mdi-headphones' },
@@ -127,7 +118,6 @@ export class CategoryModalComponent implements OnInit {
     { name: 'Impresora', class: 'mdi-printer' },
     { name: 'Router', class: 'mdi-router-wireless' },
     
-    // Servicios y Facturas
     { name: 'Electricidad', class: 'mdi-lightning-bolt' },
     { name: 'Agua', class: 'mdi-water' },
     { name: 'Gas', class: 'mdi-fire' },
@@ -135,7 +125,6 @@ export class CategoryModalComponent implements OnInit {
     { name: 'Seguros', class: 'mdi-shield-check' },
     { name: 'Netflix', class: 'mdi-netflix' },
     
-    // Trabajo y Educación
     { name: 'Oficina', class: 'mdi-office-building' },
     { name: 'Universidad', class: 'mdi-school' },
     { name: 'Libros Estudio', class: 'mdi-book-open' },
@@ -143,7 +132,6 @@ export class CategoryModalComponent implements OnInit {
     { name: 'Conferencia', class: 'mdi-account-group' },
     { name: 'Certificado', class: 'mdi-certificate' },
     
-    // Varios y Otros
     { name: 'Regalo Cumpleaños', class: 'mdi-cake-variant' },
     { name: 'Navidad', class: 'mdi-pine-tree' },
     { name: 'Vacaciones', class: 'mdi-beach' },
@@ -152,11 +140,9 @@ export class CategoryModalComponent implements OnInit {
     { name: 'Eventos', class: 'mdi-calendar-star' },
   ];
 
-  // Estado para iconos extra / picker
   public showExtraIcons = false;
   public isIconPickerOpen = false;
 
-  // Paletas de colores
   public popularBgColors: string[] = [
     '#4F46E5', '#059669', '#DC2626', '#D97706', '#7C3AED',
     '#0891B2', '#B91C1C', '#16A34A', '#EA580C', '#6366F1',
@@ -168,7 +154,6 @@ export class CategoryModalComponent implements OnInit {
     '#D1FAE5', '#111827', '#374151', '#FCD34D', '#60A5FA'
   ];
 
-  // Estado pickers custom
   public showCustomBgPicker = false;
   public showCustomIconPicker = false;
 
@@ -185,7 +170,6 @@ export class CategoryModalComponent implements OnInit {
     }
   }
 
-  // --- Helpers edición ---
   canEdit(): boolean {
     return !this.isReadOnly && !this.value.isDefault && !this.temp.isDefault;
   }
@@ -206,10 +190,8 @@ export class CategoryModalComponent implements OnInit {
     }
   }
 
-  // --- Iconos ---
   filteredIconOptions(): Array<{ name: string; class: string }> {
     if (this.showExtraIcons) {
-      // excluye el botón "Más iconos" al expandir
       return [...this.mainIconOptions.slice(0, -1), ...this.extraIconOptions];
     }
     return this.mainIconOptions;
@@ -248,7 +230,6 @@ export class CategoryModalComponent implements OnInit {
     this.isIconPickerOpen = false;
   }
 
-  // --- Colores ---
   selectBgColor(color: string) { 
     if (this.canEdit()) {
       this.temp.color = color; 
@@ -261,7 +242,6 @@ export class CategoryModalComponent implements OnInit {
     }
   }
 
-  // --- Inputs de texto ---
   updateName(newName: string) {
     if (this.canEdit()) {
       this.temp.name = newName;
@@ -274,7 +254,6 @@ export class CategoryModalComponent implements OnInit {
     }
   }
 
-  // Debug opcional
   getDebugInfo() {
     return {
       isReadOnly: this.isReadOnly,
