@@ -34,6 +34,13 @@ export class HomeComponent implements OnInit, OnDestroy {
   operaciones: Operacion[] = [];
   billeteras: Billetera[] = [];
   cards: any[] = [];
+  private walletTypeOverrides: Record<string, 'bank' | 'digital' | 'cash'> = {};
+  private readonly walletTypeOverridesKey = 'walletTypeOverrides';
+  private walletTypeIcons: Record<'bank' | 'digital' | 'cash', string> = {
+    bank: 'mdi-bank',
+    digital: 'mdi-credit-card',
+    cash: 'mdi-cash-multiple',
+  };
 
   // Variables para swipe
   currentIndex = 0;
@@ -88,6 +95,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.loadWalletTypeOverrides();
     this.loadData();
   }
 
@@ -464,18 +472,21 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   private mapBilleterasToCards(): void {
     this.cards = this.billeteras.map((billetera) => {
-      // Determinar el icono basado en el tipo
-      let icon = 'mdi-wallet';
+      const overrideType = this.getWalletTypeOverride(billetera.id);
+      const walletType = overrideType || this.resolveWalletType(billetera.type as string);
+      const walletCurrency = (billetera.moneda || 'ARS').toString().toUpperCase();
+
+      // Determinar el icono basado en el tipo, usando override
+      let icon = this.normalizeIcon(
+        billetera.icon || this.walletTypeIcons[walletType] || 'mdi-wallet'
+      );
       let background = 'linear-gradient(135deg, #667EEA, #764BA2)';
 
-      if (billetera.type === 'cash') {
-        icon = 'mdi-cash-multiple';
+      if (walletType === 'cash') {
         background = 'linear-gradient(135deg, #51CF66, #40C057)';
-      } else if (billetera.type === 'bank') {
-        icon = 'mdi-bank';
+      } else if (walletType === 'bank') {
         background = 'linear-gradient(135deg, #EC0000, #CC0000)';
-      } else if (billetera.type === 'digital') {
-        icon = 'mdi-credit-card';
+      } else if (walletType === 'digital') {
         background = 'linear-gradient(135deg, #009EE3, #0078BE)';
       }
 
@@ -487,12 +498,53 @@ export class HomeComponent implements OnInit, OnDestroy {
       return {
         typeLabel: billetera.nombre,
         icon: icon,
-        number: billetera.proveedor || 'Disponible',
-        holder: billetera.type === 'cash' ? 'En mano' : 'Titular',
+        number: billetera.nombre,
+        holder: walletCurrency,
         balance: `$${billetera.balance.toLocaleString('es-ES')}`,
         background: background,
         isGeneral: billetera.id === '0', // Marcar si es la billetera General
       };
     });
+  }
+
+  private resolveWalletType(type?: string | null): 'bank' | 'digital' | 'cash' {
+    const normalized = (type || '').toString().trim().toLowerCase();
+    if (normalized === 'digital') return 'digital';
+    if (normalized === 'cash' || normalized === 'efectivo') return 'cash';
+    return 'bank';
+  }
+
+  private normalizeIcon(icon?: string | null): string {
+    if (!icon || !icon.trim()) {
+      return 'mdi mdi-wallet';
+    }
+    const trimmed = icon.trim();
+    if (trimmed.startsWith('mdi ')) return trimmed;
+    if (trimmed.startsWith('mdi-')) return `mdi ${trimmed}`;
+    return `mdi ${trimmed}`;
+  }
+
+  private getWalletTypeOverride(id?: string | number | null) {
+    if (id === null || id === undefined) {
+      return undefined;
+    }
+    return this.walletTypeOverrides[String(id)];
+  }
+
+  private loadWalletTypeOverrides() {
+    if (!this.canUseLocalStorage()) {
+      this.walletTypeOverrides = {};
+      return;
+    }
+    try {
+      const stored = window.localStorage.getItem(this.walletTypeOverridesKey);
+      this.walletTypeOverrides = stored ? JSON.parse(stored) : {};
+    } catch {
+      this.walletTypeOverrides = {};
+    }
+  }
+
+  private canUseLocalStorage(): boolean {
+    return typeof window !== 'undefined' && !!window.localStorage;
   }
 }
