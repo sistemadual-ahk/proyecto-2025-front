@@ -158,6 +158,7 @@ export class CategoryModalComponent implements OnInit {
   public showCustomIconPicker = false;
 
   ngOnInit() {
+    console.log('CategoryModalComponent initialized with value:', this.value);
     this.temp = { ...this.value };
 
     if (!this.temp.icon) {

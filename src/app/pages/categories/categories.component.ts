@@ -4,7 +4,7 @@ import { Subscription } from 'rxjs';
 import { CategoryService } from '../../services/category.service';
 import { CategoryModalComponent } from '../../components/category-modal/category-modal.component';
 import { EditableCategory } from '../../../models/editable-category.model';
-import { Categoria } from '../../../models/categoria.model'; // <--- usa tu modelo "bueno"
+import { Categoria } from '../../../models/categoria.model';
 
 interface UiCategory {
   id?: string;
@@ -25,25 +25,46 @@ interface UiCategory {
   styleUrl: './categories.component.scss',
 })
 export class CategoriesComponent {
+  // Categorías globales por tipo
   defaultIncomeCategories: UiCategory[] = [];
   defaultExpenseCategories: UiCategory[] = [];
 
+  // Categorías personalizadas del usuario (también cargadas del backend)
   customIncomeCategories: UiCategory[] = [];
   customExpenseCategories: UiCategory[] = [];
 
   private subscription: Subscription = new Subscription();
 
+  // Estado de UI
+  activeTab: 'Ingreso' | 'Gasto' = 'Ingreso';
+  showCategoryModal = false;
+  editMode = false;
+  editingIndex: number | null = null;
+
+  // Datos que viajan al modal
+  modalCategory: EditableCategory = {
+    name: '',
+    description: '',
+    icon: 'mdi-cash',
+    color: '#E5E7EB',
+    iconColor: '#111827',
+  };
+
   constructor(private categoriasService: CategoryService) {
     this.loadData();
   }
 
+  // =======================
+  //  CARGA DESDE BACKEND
+  // =======================
   private loadData(): void {
     this.subscription.add(
       this.categoriasService.getAllCategories().subscribe({
-        next: (cat) => {
-          console.log('Categorías cargadas:', cat);
+        next: (cat: Categoria[]) => {
+          console.log('Categorías cargadas desde backend:', cat);
 
-          const uiCategories: UiCategory[] = cat.map((c: any) => ({
+          // 1) Mapear lo que viene del backend a UiCategory
+          const uiCategories: UiCategory[] = cat.map((c: Categoria) => ({
             id: c._id || c.id,
             name: c.nombre,
             description: c.descripcion || '',
@@ -54,16 +75,21 @@ export class CategoriesComponent {
             type: c.type ?? 'expense',
           }));
 
-          this.defaultIncomeCategories = uiCategories.filter(
-            (c) => c.type === 'income'
-          );
+          // 2) Separar por tipo
+          const incomeCats = uiCategories.filter((c) => c.type === 'income');
+          const expenseCats = uiCategories.filter((c) => c.type === 'expense');
 
-          this.defaultExpenseCategories = uiCategories.filter(
-            (c) => c.type === 'expense'
-          );
+          // 3) Dentro de cada tipo, separar default vs custom
+          this.defaultIncomeCategories = incomeCats.filter((c) => c.isDefault);
+          this.customIncomeCategories = incomeCats.filter((c) => !c.isDefault);
 
-          console.log('Income categories UI:', this.defaultIncomeCategories);
-          console.log('Expense categories UI:', this.defaultExpenseCategories);
+          this.defaultExpenseCategories = expenseCats.filter((c) => c.isDefault);
+          this.customExpenseCategories = expenseCats.filter((c) => !c.isDefault);
+
+          console.log('Income default:', this.defaultIncomeCategories);
+          console.log('Income custom:', this.customIncomeCategories);
+          console.log('Expense default:', this.defaultExpenseCategories);
+          console.log('Expense custom:', this.customExpenseCategories);
         },
         error: (error) => {
           console.error('Error al cargar categorías:', error);
@@ -72,23 +98,16 @@ export class CategoriesComponent {
     );
   }
 
-  activeTab: 'Ingreso' | 'Gasto' = 'Ingreso';
-  showCategoryModal = false;
-  editMode = false;
-  editingIndex: number | null = null;
-
-  modalCategory: EditableCategory = {
-    name: '',
-    description: '',
-    icon: 'mdi-cash',
-    color: '#E5E7EB',
-    iconColor: '#111827',
-  };
+  // =======================
+  //  TABS / LISTAS
+  // =======================
 
   setTab(tab: 'Ingreso' | 'Gasto') {
     this.activeTab = tab;
   }
 
+  // Lista total a mostrar según la pestaña:
+  // primero default (no editables), después custom (editables)
   get categoriesToShow(): UiCategory[] {
     const defaultCategories =
       this.activeTab === 'Ingreso'
@@ -103,18 +122,20 @@ export class CategoriesComponent {
     return [...defaultCategories, ...customCategories];
   }
 
+  // Saber si una categoría visible en categoriesToShow es default
   isCategoryDefault(index: number): boolean {
-    const defaultCategoriesCount =
-      this.activeTab === 'Ingreso'
-        ? this.defaultIncomeCategories.length
-        : this.defaultExpenseCategories.length;
-
-    return index < defaultCategoriesCount;
+    const cat = this.categoriesToShow[index];
+    return !!cat?.isDefault;
   }
+
+  // =======================
+  //  MODAL CREAR / EDITAR
+  // =======================
 
   openCreateCategory() {
     this.editMode = false;
     this.editingIndex = null;
+
     this.modalCategory = {
       name: '',
       description: '',
@@ -123,13 +144,15 @@ export class CategoriesComponent {
       iconColor: '#111827',
       isDefault: false,
     };
+
     this.showCategoryModal = true;
   }
 
   openEditCategory(index: number) {
-    const isDefault = this.isCategoryDefault(index);
     const cat = this.categoriesToShow[index];
+    const isDefault = this.isCategoryDefault(index);
 
+    // Si es default → solo lectura (no se puede editar ni borrar)
     this.editMode = !isDefault;
     this.editingIndex = isDefault ? null : index;
 
@@ -146,7 +169,12 @@ export class CategoriesComponent {
     this.showCategoryModal = true;
   }
 
+  // =======================
+  //  GUARDAR (CREAR / EDITAR)
+  // =======================
+
   saveCategory(value: EditableCategory) {
+    // Nunca permitir guardar cambios sobre default
     if (value.isDefault) {
       console.warn('Intento de guardar una categoría default. Ignorado.');
       return;
@@ -169,15 +197,16 @@ export class CategoriesComponent {
       type: this.activeTab === 'Ingreso' ? 'income' : 'expense',
     };
 
+    // 👇 Si no hay editingIndex → estamos creando
     if (this.editingIndex === null) {
       console.log('Creando categoría...', payload);
 
       this.categoriasService.createCategory(payload).subscribe({
-        next: (created) => {
+        next: (created: Categoria) => {
           console.log('Categoría creada en backend:', created);
 
           const ui: UiCategory = {
-            id: (created as any)._id || created.id,
+            id: created._id || created.id,
             name: created.nombre,
             description: created.descripcion,
             icon: created.icono,
@@ -200,23 +229,26 @@ export class CategoriesComponent {
         },
       });
 
-      return;
+      return; // importante
     }
 
-    const editingDefaultOffset =
+    // 👇 Si hay editingIndex → queremos EDITAR una categoría CUSTOM
+    const defaultCount =
       this.activeTab === 'Ingreso'
         ? this.defaultIncomeCategories.length
         : this.defaultExpenseCategories.length;
 
-    const customIndex = this.editingIndex - editingDefaultOffset;
+    // Restamos las default para obtener el índice dentro del array de custom
+    const customIndex = this.editingIndex - defaultCount;
     if (customIndex < 0) {
       console.warn('Intento de editar una categoría default. Ignorado.');
       return;
     }
 
-    const list = this.activeTab === 'Ingreso'
-      ? this.customIncomeCategories
-      : this.customExpenseCategories;
+    const list =
+      this.activeTab === 'Ingreso'
+        ? this.customIncomeCategories
+        : this.customExpenseCategories;
 
     const catToUpdate = list[customIndex];
     if (!catToUpdate?.id) {
@@ -227,11 +259,11 @@ export class CategoriesComponent {
     console.log('Actualizando categoría...', catToUpdate.id, payload);
 
     this.categoriasService.updateCategory(catToUpdate.id, payload).subscribe({
-      next: (updated) => {
+      next: (updated: Categoria) => {
         console.log('Categoría actualizada en backend:', updated);
 
         const ui: UiCategory = {
-          id: (updated as any)._id || updated.id,
+          id: updated._id || updated.id,
           name: updated.nombre,
           description: updated.descripcion,
           icon: updated.icono,
@@ -259,20 +291,25 @@ export class CategoriesComponent {
     });
   }
 
+  // =======================
+  //  ELIMINAR
+  // =======================
+
   deleteCategory() {
     if (this.editingIndex === null) return;
 
+    // Por si acaso: seguridad extra, no borrar default
     if (this.isCategoryDefault(this.editingIndex)) {
       console.warn('No se puede eliminar una categoría default.');
       return;
     }
 
-    const editingDefaultOffset =
+    const defaultCount =
       this.activeTab === 'Ingreso'
         ? this.defaultIncomeCategories.length
         : this.defaultExpenseCategories.length;
 
-    const customIndex = this.editingIndex - editingDefaultOffset;
+    const customIndex = this.editingIndex - defaultCount;
     if (customIndex < 0) return;
 
     const list =
