@@ -8,7 +8,8 @@ import {
   MatBottomSheetRef,
 } from '@angular/material/bottom-sheet';
 import { MatButtonModule } from '@angular/material/button';
-import { BilleteraService, Billetera } from '../../services/billetera.service';
+import { BilleteraService } from '../../services/billetera.service';
+import { Billetera } from '../../../models/billetera.model';
 import { CategoriaService, Categoria } from '../../services/categoria.service';
 import { OperacionService } from '../../services/operacion.service';
 import { Operacion } from '../../../models/operacion.model';

@@ -13,7 +13,9 @@ export interface Categoria {
   descripcion: string;
   icono: string;
   color: string;
+  iconColor: string;
   isDefault: boolean;
+  type?: 'income' | 'expense';
   user: any | null; // Puedes definir una interfaz más estricta para 'user'
 }
 

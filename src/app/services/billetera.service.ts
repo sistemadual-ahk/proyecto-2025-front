@@ -3,24 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ApiService } from './api.service';
-
-// Interfaz basada en el modelo del backend
-export interface Billetera {
-  id?: string; // Backend usa string
-  balance: number;
-  nombre: string;
-  balanceHistorico?: number; // Campo del backend
-  isDefault: boolean;
-  color?: string;
-  user?: any;
-  // Campos adicionales del frontend (no están en backend)
-  proveedor?: string; // Solo frontend
-  type?: 'bank' | 'digital' | 'cash'; // Solo frontend
-  icon?: string; // Solo frontend
-  moneda?: string; // Solo frontend
-  ingresoHistorico?: number; // Solo frontend
-  gastoHistorico?: number; // Solo frontend
-}
+import { Billetera } from '../../models/billetera.model';
 
 // Interfaz para la RESPUESTA COMPLETA del API
 interface ApiResponse {

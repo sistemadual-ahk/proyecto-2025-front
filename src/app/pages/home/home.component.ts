@@ -5,7 +5,8 @@ import { Router, RouterModule } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { OperacionService } from '../../services/operacion.service';
 import { Operacion } from '../../../models/operacion.model';
-import { BilleteraService, Billetera } from '../../services/billetera.service';
+import { BilleteraService } from '../../services/billetera.service';
+import { Billetera } from '../../../models/billetera.model';
 import {
   MatBottomSheet,
   MatBottomSheetModule,
