@@ -95,7 +95,9 @@
             </h4>
             <p class="movement-date">{{ movement.date }}</p>
           </div>
-          <div class="movement-amount" [class.income]="movement.type === 'income'">
+          <div class="movement-amount" 
+               [class.income]="movement.type === 'income' || movement.type === 'Ingreso'"
+               [class.expense]="movement.type === 'expense' || movement.type === 'Egreso'">
             {{ movement.amount > 0 ? '+' : '' }}${{ redondearAmount(movement.amount) }}
           </div>
         </div>

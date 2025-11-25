@@ -4,7 +4,7 @@ export interface Operacion {
   monto: number;
   billetera?: string | { id?: string; _id?: string; nombre?: string }; // Puede ser ID o objeto completo
   billeteraId?: string; // Alias para compatibilidad
-  categoria?: string | { id?: string; _id?: string; nombre?: string }; // Puede ser ID o objeto completo
+  categoria?: string | { id?: string; _id?: string; nombre?: string; icono?: string; color?: string }; // Puede ser ID o objeto completo con icono y color
   categoriaId?: string; // Alias para compatibilidad
   descripcion?: string;
   fecha: string;

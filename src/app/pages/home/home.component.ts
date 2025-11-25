@@ -269,16 +269,24 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     console.log('📌 Movimientos recientes a mostrar:', operacionesRecientes.length);
 
-    this.recentMovements = operacionesRecientes.map((operacion) => ({
-      id: operacion._id,
-      type: operacion.tipo,
-      category: operacion.categoriaId || operacion.categoria || 'Sin categoría',
-      description: operacion.descripcion,
-      icon: operacion.categoriaId || operacion.categoria || 'mdi-cash',
-      amount: operacion.tipo === 'Ingreso' || operacion.tipo === 'income' ? operacion.monto : -operacion.monto,
-      date: this.formatDateForHome(operacion.fecha.toString()),
-      color: operacion.tipo === 'Ingreso' || operacion.tipo === 'income' ? '#10b981' : operacion.categoriaId || operacion.categoria || '#6b7280',
-    }));
+    this.recentMovements = operacionesRecientes.map((operacion) => {
+      // Extraer información de la categoría si está como objeto
+      let categoriaInfo: any = {};
+      if (typeof operacion.categoria === 'object' && operacion.categoria !== null) {
+        categoriaInfo = operacion.categoria;
+      }
+
+      return {
+        id: operacion._id,
+        type: operacion.tipo,
+        category: categoriaInfo.nombre || operacion.categoriaId || operacion.categoria || 'Sin categoría',
+        description: operacion.descripcion,
+        icon: categoriaInfo.icono || 'mdi mdi-cash',
+        amount: operacion.tipo === 'Ingreso' || operacion.tipo === 'income' ? operacion.monto : -operacion.monto,
+        date: this.formatDateForHome(operacion.fecha.toString()),
+        color: categoriaInfo.color || '#6b7280',
+      };
+    });
   }
 
   // Métodos para el menú
