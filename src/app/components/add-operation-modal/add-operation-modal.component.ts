@@ -135,10 +135,11 @@ export class TransactionBottomSheet implements OnInit {
     // 3. Construir el objeto para el backend (el servicio espera 'billetera' y 'categoria', no los del DTO)
     const operacionData: any = {
       monto: Math.abs(this.amount!),
+      billeteraId: selectedWallet ? selectedWallet.id : null,
       descripcion: this.description,
       fecha: toLocalISOString(this.date),
       tipo: this.transactionType === 'income' ? 'income' : 'expense', // El servicio traduce income/expense a Ingreso/Egreso
-      categoria: selectedCategory.id, // El servicio espera 'categoria'
+      categoriaId: selectedCategory.id, // El servicio espera 'categoria'
     };
 
     // Agregar billetera solo si existe
