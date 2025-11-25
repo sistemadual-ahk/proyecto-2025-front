@@ -15,6 +15,20 @@ import { OperacionService } from '../../services/operacion.service';
 import { Operacion } from '../../../models/operacion.model';
 import { MatSelectModule } from '@angular/material/select';
 
+const formatLocalDate = (date: Date): string => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
+const toLocalISOString = (dateString: string): string => {
+  const [year, month, day] = dateString.split('-').map(Number);
+  // Construir la fecha directamente en UTC al mediodía para evitar corrimientos por huso horario
+  const utcDate = new Date(Date.UTC(year, (month || 1) - 1, day || 1, 12, 0, 0));
+  return utcDate.toISOString();
+};
+
 @Component({
   selector: 'add-operation-modal',
   standalone: true,
@@ -34,7 +48,7 @@ export class TransactionBottomSheet implements OnInit {
   transactionType: 'income' | 'expense' = 'expense';
   amount: number | null = null;
   description: string = '';
-  date: string = new Date().toISOString().split('T')[0];
+  date: string = '';
   wallet: string = ''; // Almacena el NOMBRE de la billetera seleccionada
   category: string = ''; // Almacena el NOMBRE de la categoría seleccionada
 
@@ -47,6 +61,7 @@ export class TransactionBottomSheet implements OnInit {
   constructor() {}
 
   ngOnInit(): void {
+    this.date = formatLocalDate(new Date());
     this.loadData();
   }
 
@@ -121,7 +136,7 @@ export class TransactionBottomSheet implements OnInit {
     const operacionData: any = {
       monto: Math.abs(this.amount!),
       descripcion: this.description,
-      fecha: new Date(this.date).toISOString(),
+      fecha: toLocalISOString(this.date),
       tipo: this.transactionType === 'income' ? 'income' : 'expense', // El servicio traduce income/expense a Ingreso/Egreso
       categoria: selectedCategory.id, // El servicio espera 'categoria'
     };
@@ -177,7 +192,7 @@ export class TransactionBottomSheet implements OnInit {
     this.transactionType = 'expense';
     this.amount = null;
     this.description = '';
-    this.date = new Date().toISOString().split('T')[0];
+    this.date = formatLocalDate(new Date());
     this.wallet = '';
     this.category = '';
   }

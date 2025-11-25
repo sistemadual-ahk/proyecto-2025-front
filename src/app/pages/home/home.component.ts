@@ -28,9 +28,9 @@ export class HomeComponent implements OnInit, OnDestroy {
   currentViewDate: Date = new Date();
   currentMonth = this.formatMonthTitle(this.currentViewDate);
   income = 0;
-  expenses = 4500;
-  availableBalance = 37300;
-  balanceChange = '+$200 vs mes anterior';
+  expenses = 0;
+  availableBalance = 0;
+  balanceChange = '';
   recentMovements: any[] = [];
   operaciones: Operacion[] = [];
   billeteras: Billetera[] = [];
@@ -169,7 +169,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.subscription.add(
       this.operacionesService.getAllOperaciones().subscribe({
         next: (op) => {
-          this.operaciones = op;
+          this.operaciones = this.filterOperacionesByMonth(op, this.currentViewDate);
           this.calculateStats();
           this.loadRecentMovements();
         },
@@ -463,20 +463,25 @@ export class HomeComponent implements OnInit, OnDestroy {
     yesterday.setDate(yesterday.getDate() - 1);
 
     if (date.toDateString() === today.toDateString()) {
-      return 'Hoy, ' + date.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+      return 'Hoy';
     } else if (date.toDateString() === yesterday.toDateString()) {
-      return 'Ayer, ' + date.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+      return 'Ayer';
     } else {
-      return (
-        date.toLocaleDateString('es-ES', { day: 'numeric', month: 'short' }) +
-        ', ' +
-        date.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })
-      );
+      return date.toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric' });
     }
   }
 
   redondearAmount(amount: number): number {
     return Math.round(amount);
+  }
+
+  private filterOperacionesByMonth(operaciones: Operacion[], referenceDate: Date): Operacion[] {
+    const targetMonth = referenceDate.getMonth();
+    const targetYear = referenceDate.getFullYear();
+    return operaciones.filter((op) => {
+      const opDate = new Date(op.fecha);
+      return opDate.getMonth() === targetMonth && opDate.getFullYear() === targetYear;
+    });
   }
 
   private mapBilleterasToCards(): void {

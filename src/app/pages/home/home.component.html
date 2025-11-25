@@ -86,12 +86,6 @@
           <div class="movement-details">
             <h4 class="movement-category">
               {{ movement.description }}
-              <span
-                *ngIf="movement.subcategory && movement.subcategory !== movement.description"
-                class="movement-subcategory"
-              >
-                - {{ movement.subcategory }}
-              </span>
             </h4>
             <p class="movement-date">{{ movement.date }}</p>
           </div>
