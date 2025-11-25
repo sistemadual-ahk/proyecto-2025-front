@@ -5,6 +5,8 @@ import { HeaderComponent } from '../../components/header/header.component';
 import { SidebarComponent } from '../../components/sidebar/sidebar.component';
 import { PageTitleComponent } from '../../components/page-title/page-title.component';
 import { AddGoalModalComponent } from '../../components/add-goal-modal/add-goal-modal.component';
+import { EstadoObjetivo } from '../../../models/objetivo.model';
+import { Operacion } from '../../../models/operacion.model';
 
 @Component({
   selector: 'app-saving-goals',
@@ -29,6 +31,8 @@ export class SavingGoalsComponent {
       targetAmount: 3000,
       progress: 40, // 1200/3000 * 100
       color: 'var(--gastify-purple)',
+      estado: EstadoObjetivo.PENDIENTE,
+      operaciones: [] as Operacion[],
     },
     {
       id: 2,
@@ -37,6 +41,8 @@ export class SavingGoalsComponent {
       targetAmount: 1200,
       progress: 62.5, // 750/1200 * 100
       color: 'var(--gastify-green)',
+      estado: EstadoObjetivo.COMPLETADO,
+      operaciones: [] as Operacion[],
     },
   ];
 
@@ -114,5 +120,21 @@ export class SavingGoalsComponent {
   // Métodos para tips
   viewTip(tipId: number) {
     console.log('Ver tip:', tipId);
+  }
+
+  // Toggle estado del objetivo
+  toggleGoalStatus(goalId: number, event: Event) {
+    event.stopPropagation();
+    const goal = this.savingGoals.find(g => g.id === goalId);
+    if (goal) {
+      goal.estado = goal.estado === EstadoObjetivo.COMPLETADO 
+        ? EstadoObjetivo.PENDIENTE 
+        : EstadoObjetivo.COMPLETADO;
+    }
+  }
+
+  isGoalCompleted(goalId: number): boolean {
+    const goal = this.savingGoals.find(g => g.id === goalId);
+    return goal?.estado === EstadoObjetivo.COMPLETADO;
   }
 }

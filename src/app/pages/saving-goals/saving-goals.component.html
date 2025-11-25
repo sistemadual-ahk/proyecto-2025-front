@@ -5,10 +5,10 @@
   <!-- Sección de objetivos de ahorro -->
   <div class="goals-section">
     <div class="goal-card" *ngFor="let goal of savingGoals">
+      <button class="goal-chevron" (click)="editGoal(goal.id)"><i class="mdi mdi-chevron-right"></i></button>
       <div class="goal-card-header">
         <h3 class="goal-title">{{ goal.title }}</h3>
       </div>
-      <button class="goal-chevron" (click)="editGoal(goal.id)"><i class="mdi mdi-chevron-right"></i></button>
       <div class="progress-container">
         <div class="progress-bar">
           <div
@@ -22,6 +22,10 @@
           <span class="separator">/</span>
           <span class="target-amount">${{ goal.targetAmount.toLocaleString() }}</span>
         </div>
+      </div>
+      <div class="goal-operations-info" *ngIf="goal.operaciones && goal.operaciones.length > 0">
+        <i class="mdi mdi-cash-multiple"></i>
+        <span>{{ goal.operaciones.length }} operación{{ goal.operaciones.length !== 1 ? 'es' : '' }} asociada{{ goal.operaciones.length !== 1 ? 's' : '' }}</span>
       </div>
     </div>
     <!-- Botón de nuevo objetivo debajo de los objetivos -->
