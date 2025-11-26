@@ -3,21 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ApiService } from './api.service';
-
-// Interfaz básica asumida para la billetera
-export interface Billetera {
-  id?: number;
-  balance: number;
-  nombre: string;
-  proveedor: string;
-  type: 'bank' | 'digital' | 'cash';
-  icon?: string;
-  isDefault: boolean;
-  color?: string;
-  moneda?: string;
-  ingresoHistorico: number;
-  gastoHistorico: number;
-}
+import { Billetera } from '../../models/billetera.model';
 
 // Interfaz para la RESPUESTA COMPLETA del API
 interface ApiResponse {

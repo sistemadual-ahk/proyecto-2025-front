@@ -5,24 +5,22 @@
   box-sizing: border-box;
 }
 
-:root {
-  --popup-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-  --popup-border-radius: 16px;
-  --popup-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
+
 .container {
   height: 100vh;
-  background: var(--gastify-dark);
+  background: linear-gradient(180deg, #0f1629 0%, #1a1f3a 50%, #0f1629 100%);
   font-family: 'Poppins', sans-serif;
   color: var(--gastify-light);
   position: relative;
   overflow-x: hidden;
-  overflow-y: auto; /* siempre scrolleable */
+  overflow-y: auto;
 }
 
 
 .main {
-  padding: 16px;
+  padding: 20px;
+  padding-top: 80px;
+  padding-bottom: 140px;
 }
 
 /* Ajustar tamaño del título para que no choque con la flecha */
@@ -80,21 +78,23 @@
 
 /* User Card */
 .user-card {
-  background: rgba(255, 255, 255, 0.08);
-  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 18px;
   padding: 20px;
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   display: flex;
   flex-direction: column;
   gap: 20px;
   transition: all 0.3s ease;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 }
 
 .user-card:hover {
-  background: rgba(255, 255, 255, 0.12);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+  background: rgba(255, 255, 255, 0.08);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+  border-color: rgba(255, 255, 255, 0.12);
 }
 
 .current-user {
@@ -265,23 +265,29 @@
 
 // Responsive design
 @media (max-width: 768px) {
-  .comparison-cards {
-    grid-template-columns: 1fr;
-    gap: 20px;
+  .main {
+    padding: 15px;
+    padding-top: 80px;
+    padding-bottom: 120px;
   }
 
-  .main {
-    padding: 12px;
-    padding-top: calc(var(--header-h, 70px) + 10px);
+  .comparison-cards {
+    grid-template-columns: 1fr;
+    gap: 16px;
   }
 }
 
 @media (max-width: 480px) {
-
   .main {
     padding: 12px;
-    padding-top: calc(var(--header-h, 70px) + 10px);
-  }   
+    padding-top: 75px;
+    padding-bottom: 100px;
+  }
+
+  .comparison-cards {
+    gap: 12px;
+  }
+
   .user-card {
     padding: 16px;
   }

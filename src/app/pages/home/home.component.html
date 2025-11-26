@@ -37,6 +37,7 @@
 
     <!-- Payment Cards Stack -->
     <div class="cards-stack" 
+         *ngIf="visibleCards.length > 0"
          (touchstart)="onTouchStart($event)"
          (touchmove)="onTouchMove($event)"
          (touchend)="onTouchEnd($event)"
@@ -47,9 +48,9 @@
       <div
         class="payment-card"
         *ngFor="let card of visibleCards; let i = index"
-        [class.active]="i === 1"
-        [class.prev]="i === 0"
-        [class.next]="i === 2"
+        [class.active]="isActiveCard(i)"
+        [class.prev]="isPrevCard(i)"
+        [class.next]="isNextCard(i)"
         [style.background]="card.background"
         [style.transform]="getCardTransform(i)"
       >
@@ -85,16 +86,12 @@
           <div class="movement-details">
             <h4 class="movement-category">
               {{ movement.description }}
-              <span
-                *ngIf="movement.subcategory && movement.subcategory !== movement.description"
-                class="movement-subcategory"
-              >
-                - {{ movement.subcategory }}
-              </span>
             </h4>
             <p class="movement-date">{{ movement.date }}</p>
           </div>
-          <div class="movement-amount" [class.income]="movement.type === 'income'">
+          <div class="movement-amount" 
+               [class.income]="movement.type === 'income' || movement.type === 'Ingreso'"
+               [class.expense]="movement.type === 'expense' || movement.type === 'Egreso'">
             {{ movement.amount > 0 ? '+' : '' }}${{ redondearAmount(movement.amount) }}
           </div>
         </div>

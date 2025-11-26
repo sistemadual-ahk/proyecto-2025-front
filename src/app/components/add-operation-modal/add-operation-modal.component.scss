@@ -453,6 +453,32 @@
     height: 44px;
     padding: 0 12px;
   }
+
+  .bottom-sheet-title {
+    font-size: 16px;
+  }
+
+  .form-label {
+    font-size: 13px;
+  }
+
+  .toggle-btn {
+    font-size: 13px;
+    padding: 0 14px;
+  }
+}
+
+@media (max-width: 360px) {
+  :host {
+    padding: 20px 16px;
+  }
+
+  .close-btn,
+  .save-btn {
+    width: 36px;
+    height: 36px;
+    font-size: 18px;
+  }
 }
 
 /* Preferencias de movimiento reducido */

@@ -5,7 +5,8 @@ import { Router, RouterModule } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { OperacionService } from '../../services/operacion.service';
 import { Operacion } from '../../../models/operacion.model';
-import { BilleteraService, Billetera } from '../../services/billetera.service';
+import { BilleteraService } from '../../services/billetera.service';
+import { Billetera } from '../../../models/billetera.model';
 import {
   MatBottomSheet,
   MatBottomSheetModule,
@@ -27,13 +28,20 @@ export class HomeComponent implements OnInit, OnDestroy {
   currentViewDate: Date = new Date();
   currentMonth = this.formatMonthTitle(this.currentViewDate);
   income = 0;
-  expenses = 4500;
-  availableBalance = 37300;
-  balanceChange = '+$200 vs mes anterior';
+  expenses = 0;
+  availableBalance = 0;
+  balanceChange = '';
   recentMovements: any[] = [];
   operaciones: Operacion[] = [];
   billeteras: Billetera[] = [];
   cards: any[] = [];
+  private walletTypeOverrides: Record<string, 'bank' | 'digital' | 'cash'> = {};
+  private readonly walletTypeOverridesKey = 'walletTypeOverrides';
+  private walletTypeIcons: Record<'bank' | 'digital' | 'cash', string> = {
+    bank: 'mdi-bank',
+    digital: 'mdi-credit-card',
+    cash: 'mdi-cash-multiple',
+  };
 
   // Variables para swipe
   currentIndex = 0;
@@ -51,6 +59,16 @@ export class HomeComponent implements OnInit, OnDestroy {
   ) {}
 
   get visibleCards() {
+    if (this.cards.length === 0) return [];
+    if (this.cards.length === 1) return [this.cards[0]];
+    
+    if (this.cards.length === 2) {
+      // Con 2 tarjetas, mostrar la actual y la siguiente en ciclo
+      const current = this.currentIndex % 2;
+      const next = (this.currentIndex + 1) % 2;
+      return [this.cards[current], this.cards[next]];
+    }
+    
     const prev = this.currentIndex === 0 ? this.cards.length - 1 : this.currentIndex - 1;
     const next = this.currentIndex === this.cards.length - 1 ? 0 : this.currentIndex + 1;
     return [
@@ -60,7 +78,25 @@ export class HomeComponent implements OnInit, OnDestroy {
     ];
   }
 
+  isActiveCard(index: number): boolean {
+    if (this.cards.length === 1) return true;
+    if (this.cards.length === 2) return index === 0; // La primera en visibleCards es la activa
+    return index === 1; // En 3+ tarjetas, la del medio es la activa
+  }
+
+  isPrevCard(index: number): boolean {
+    if (this.cards.length <= 2) return false; // Con 1 o 2 tarjetas no hay previa
+    return index === 0;
+  }
+
+  isNextCard(index: number): boolean {
+    if (this.cards.length === 1) return false;
+    if (this.cards.length === 2) return index === 1; // La segunda es la siguiente
+    return index === 2; // En 3+ tarjetas, la tercera es la siguiente
+  }
+
   ngOnInit(): void {
+    this.loadWalletTypeOverrides();
     this.loadData();
   }
 
@@ -69,87 +105,71 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   private loadData(): void {
-    // Hardcodear billeteras temporalmente para probar el diseño
-    this.billeteras = [
-      {
-        id: 0,
-        nombre: 'General',
-        proveedor: 'Todas las billeteras',
-        type: 'digital' as 'bank' | 'digital' | 'cash',
-        balance: 60600, // Suma de todas las billeteras
-        isDefault: true,
-        color: 'linear-gradient(135deg, #3dcd99, #2ba87a)',
-        moneda: 'ARS',
-        ingresoHistorico: 180000,
-        gastoHistorico: 119400
-      },
-      {
-        id: 1,
-        nombre: 'Mercado Pago',
-        proveedor: 'Mercado Pago',
-        type: 'digital',
-        balance: 15000,
-        isDefault: true,
-        color: 'linear-gradient(135deg, #009EE3, #0078BE)',
-        moneda: 'ARS',
-        ingresoHistorico: 50000,
-        gastoHistorico: 35000
-      },
-      {
-        id: 2,
-        nombre: 'Santander',
-        proveedor: 'Banco Santander',
-        type: 'bank',
-        balance: 28500,
-        isDefault: false,
-        color: 'linear-gradient(135deg, #EC0000, #CC0000)',
-        moneda: 'ARS',
-        ingresoHistorico: 80000,
-        gastoHistorico: 51500
-      },
-      {
-        id: 3,
-        nombre: 'Efectivo',
-        proveedor: 'Billetera física',
-        type: 'cash',
-        balance: 4300,
-        isDefault: false,
-        color: 'linear-gradient(135deg, #51CF66, #40C057)',
-        moneda: 'ARS',
-        ingresoHistorico: 20000,
-        gastoHistorico: 15700
-      },
-      {
-        id: 4,
-        nombre: 'Brubank',
-        proveedor: 'Brubank Digital',
-        type: 'digital',
-        balance: 12800,
-        isDefault: false,
-        color: 'linear-gradient(135deg, #8B5CF6, #7C3AED)',
-        moneda: 'ARS',
-        ingresoHistorico: 30000,
-        gastoHistorico: 17200
-      }
-    ];
-    this.mapBilleterasToCards();
+    // Guardar el índice actual para restaurarlo después
+    const previousIndex = this.currentIndex;
+    const previousLength = this.billeteras.length;
 
-    // Descomentar cuando la API esté lista
-    /* this.subscription.add(
+    // Cargar billeteras desde el servicio
+    this.subscription.add(
       this.billeteraService.getBilleteras().subscribe({
         next: (billeteras) => {
-          this.billeteras = billeteras;
+          // Crear billetera General con el total (siempre presente)
+          const totalBalance = billeteras.reduce((sum, b) => sum + b.balance, 0);
+          const billeteraGeneral: Billetera = {
+            id: '0',
+            nombre: 'General',
+            proveedor: 'Todas las billeteras',
+            type: 'digital',
+            balance: totalBalance,
+            isDefault: true,
+            color: 'linear-gradient(135deg, #3dcd99, #2ba87a)',
+            moneda: 'ARS',
+            ingresoHistorico: billeteras.reduce((sum, b) => sum + (b.ingresoHistorico || 0), 0),
+            gastoHistorico: billeteras.reduce((sum, b) => sum + (b.gastoHistorico || 0), 0)
+          };
+          
+          // Agregar billetera General al inicio (siempre, incluso si no hay otras)
+          this.billeteras = [billeteraGeneral, ...billeteras];
           this.mapBilleterasToCards();
+
+          // Restaurar el índice si es válido, o ajustar si hay nuevas tarjetas
+          if (this.billeteras.length > previousLength) {
+            // Se agregaron nuevas billeteras, mantener en la misma posición
+            this.currentIndex = Math.min(previousIndex, this.billeteras.length - 1);
+          } else if (previousIndex < this.billeteras.length) {
+            // Mantener el índice actual si sigue siendo válido
+            this.currentIndex = previousIndex;
+          } else {
+            // Si el índice ya no es válido, volver a la primera tarjeta
+            this.currentIndex = 0;
+          }
         },
-        error: (error) => console.error('Error al cargar billeteras:', error),
+        error: (error) => {
+          console.error('Error al cargar billeteras:', error);
+          // En caso de error, crear solo la billetera General vacía
+          this.billeteras = [{
+            id: '0',
+            nombre: 'General',
+            proveedor: 'Todas las billeteras',
+            type: 'digital',
+            balance: 0,
+            isDefault: true,
+            color: 'linear-gradient(135deg, #3dcd99, #2ba87a)',
+            moneda: 'ARS',
+            ingresoHistorico: 0,
+            gastoHistorico: 0
+          }];
+          this.mapBilleterasToCards();
+          this.currentIndex = 0;
+        },
       })
-    ); */
+    );
 
     // Cargar gastos desde la API
     this.subscription.add(
       this.operacionesService.getAllOperaciones().subscribe({
         next: (op) => {
-          this.operaciones = op;
+          this.operaciones = this.filterOperacionesByMonth(op, this.currentViewDate);
           this.calculateStats();
           this.loadRecentMovements();
         },
@@ -165,24 +185,35 @@ export class HomeComponent implements OnInit, OnDestroy {
     const billeteraActual = this.billeteras[this.currentIndex];
     if (!billeteraActual) return;
 
+    console.log('💰 Calculando stats para:', billeteraActual.nombre, 'ID:', billeteraActual.id);
+
     let operacionesBilletera: Operacion[];
 
-    // Si es la billetera General (id 0), mostrar todas las operaciones
-    if (billeteraActual.id === 0) {
+    // Si es la billetera General (id '0'), mostrar todas las operaciones
+    if (billeteraActual.id === '0') {
       operacionesBilletera = this.operaciones;
     } else {
       // Filtrar operaciones por la billetera específica
-      operacionesBilletera = this.operaciones.filter(
-        (op) => op.billeteraId === billeteraActual.id?.toString()
-      );
+      // El backend puede devolver billetera como string (ID) o como objeto {id, nombre, ...}
+      operacionesBilletera = this.operaciones.filter((op) => {
+        const billeteraId = typeof op.billetera === 'object' && op.billetera !== null 
+          ? (op.billetera as any).id || (op.billetera as any)._id
+          : op.billetera;
+        
+        return billeteraId === billeteraActual.id?.toString() || 
+               op.billeteraId === billeteraActual.id?.toString();
+      });
+      console.log(`📊Operaciones para stats: ${operacionesBilletera.length}`);
     }
 
-    const ingresos = operacionesBilletera.filter((g) => g.tipo === 'Ingreso');
-    const egresos = operacionesBilletera.filter((g) => g.tipo === 'Egreso');
+    const ingresos = operacionesBilletera.filter((g) => g.tipo === 'Ingreso' || g.tipo === 'income');
+    const egresos = operacionesBilletera.filter((g) => g.tipo === 'Egreso' || g.tipo === 'expense');
 
     this.income = ingresos.reduce((sum, g) => sum + g.monto, 0);
     this.expenses = egresos.reduce((sum, g) => sum + g.monto, 0);
     this.availableBalance = this.income - this.expenses;
+    
+    console.log(`💵 Ingresos: $${this.income}, Gastos: $${this.expenses}`);
   }
 
   private loadRecentMovements(): void {
@@ -193,32 +224,70 @@ export class HomeComponent implements OnInit, OnDestroy {
       return;
     }
 
+    console.log('🔍 Cargando movimientos para billetera:', billeteraActual.nombre, 'ID:', billeteraActual.id);
+    console.log('📋 Total operaciones disponibles:', this.operaciones.length);
+
     let operacionesBilletera: Operacion[];
 
-    // Si es la billetera General (id 0), mostrar todas las operaciones
-    if (billeteraActual.id === 0) {
+    // Si es la billetera General (id '0'), mostrar todas las operaciones
+    if (billeteraActual.id === '0') {
       operacionesBilletera = this.operaciones;
+      console.log('✅ Billetera General - Mostrando todas las operaciones');
     } else {
+      // Debug: Mostrar IDs de las operaciones
+      console.log('🔎 Buscando operaciones con billetera ID:', billeteraActual.id);
+      this.operaciones.forEach((op, index) => {
+        const billeteraId = typeof op.billetera === 'object' && op.billetera !== null 
+          ? (op.billetera as any).id || (op.billetera as any)._id
+          : op.billetera;
+        
+        console.log(`  Operación ${index}:`, {
+          descripcion: op.descripcion,
+          billetera: op.billetera,
+          billeteraIdExtraido: billeteraId,
+          billeteraId: op.billeteraId,
+          coincide: billeteraId === billeteraActual.id?.toString() || 
+                    op.billeteraId === billeteraActual.id?.toString()
+        });
+      });
+
       // Filtrar operaciones por la billetera específica
-      operacionesBilletera = this.operaciones.filter(
-        (op) => op.billeteraId === billeteraActual.id?.toString()
-      );
+      // El backend puede devolver billetera como string (ID) o como objeto {id, nombre, ...}
+      operacionesBilletera = this.operaciones.filter((op) => {
+        const billeteraId = typeof op.billetera === 'object' && op.billetera !== null 
+          ? (op.billetera as any).id || (op.billetera as any)._id
+          : op.billetera;
+        
+        return billeteraId === billeteraActual.id?.toString() || 
+               op.billeteraId === billeteraActual.id?.toString();
+      });
+      console.log(`✅ Operaciones filtradas: ${operacionesBilletera.length}`);
     }
 
     const operacionesRecientes = operacionesBilletera
       .sort((a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime())
       .slice(0, 3);
 
-    this.recentMovements = operacionesRecientes.map((operacion) => ({
-      id: operacion._id,
-      type: operacion.tipo,
-      category: operacion.categoriaId || 'Sin categoría',
-      description: operacion.descripcion,
-      icon: operacion.categoriaId || 'mdi-cash',
-      amount: operacion.tipo === 'Ingreso' ? operacion.monto : -operacion.monto,
-      date: this.formatDateForHome(operacion.fecha.toString()),
-      color: operacion.tipo === 'Ingreso' ? '#10b981' : operacion.categoriaId || '#6b7280',
-    }));
+    console.log('📌 Movimientos recientes a mostrar:', operacionesRecientes.length);
+
+    this.recentMovements = operacionesRecientes.map((operacion) => {
+      // Extraer información de la categoría si está como objeto
+      let categoriaInfo: any = {};
+      if (typeof operacion.categoria === 'object' && operacion.categoria !== null) {
+        categoriaInfo = operacion.categoria;
+      }
+
+      return {
+        id: operacion._id,
+        type: operacion.tipo,
+        category: categoriaInfo.nombre || operacion.categoriaId || operacion.categoria || 'Sin categoría',
+        description: operacion.descripcion,
+        icon: categoriaInfo.icono || 'mdi mdi-cash',
+        amount: operacion.tipo === 'Ingreso' || operacion.tipo === 'income' ? operacion.monto : -operacion.monto,
+        date: this.formatDateForHome(operacion.fecha.toString()),
+        color: categoriaInfo.color || '#6b7280',
+      };
+    });
   }
 
   // Métodos para el menú
@@ -279,19 +348,19 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   onTouchStart(event: any) {
-    if (this.isAnimating) return;
+    if (this.isAnimating || this.cards.length <= 1) return;
     this.isDragging = true;
     this.touchStartX = event.type.includes('mouse') ? event.clientX : event.touches[0].clientX;
     this.touchCurrentX = this.touchStartX;
   }
 
   onTouchMove(event: any) {
-    if (!this.isDragging || this.isAnimating) return;
+    if (!this.isDragging || this.isAnimating || this.cards.length <= 1) return;
     this.touchCurrentX = event.type.includes('mouse') ? event.clientX : event.touches[0].clientX;
   }
 
   onTouchEnd(event: any) {
-    if (!this.isDragging || this.isAnimating) return;
+    if (!this.isDragging || this.isAnimating || this.cards.length <= 1) return;
     this.isDragging = false;
     
     const diff = this.touchCurrentX - this.touchStartX;
@@ -326,6 +395,23 @@ export class HomeComponent implements OnInit, OnDestroy {
   getCardTransform(index: number): string {
     const diff = this.isDragging ? this.touchCurrentX - this.touchStartX : 0;
     
+    // Si solo hay 1 tarjeta, centrarla siempre
+    if (this.visibleCards.length === 1) {
+      return `translateX(0) scale(1)`;
+    }
+    
+    // Si hay 2 tarjetas, mejorar la animación
+    if (this.visibleCards.length === 2) {
+      if (index === 0) {
+        // Tarjeta activa
+        return `translateX(${diff / 2}px) scale(1)`;
+      } else {
+        // Tarjeta siguiente (fuera de vista a la derecha)
+        return `translateX(calc(100% + 20px + ${diff / 2}px)) scale(0.95)`;
+      }
+    }
+    
+    // Si hay 3 o más tarjetas, comportamiento normal
     if (index === 0) {
       // Tarjeta previa
       return `translateX(${-100 + (diff / 3)}%) scale(0.9)`;
@@ -377,15 +463,11 @@ export class HomeComponent implements OnInit, OnDestroy {
     yesterday.setDate(yesterday.getDate() - 1);
 
     if (date.toDateString() === today.toDateString()) {
-      return 'Hoy, ' + date.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+      return 'Hoy';
     } else if (date.toDateString() === yesterday.toDateString()) {
-      return 'Ayer, ' + date.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+      return 'Ayer';
     } else {
-      return (
-        date.toLocaleDateString('es-ES', { day: 'numeric', month: 'short' }) +
-        ', ' +
-        date.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })
-      );
+      return date.toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric' });
     }
   }
 
@@ -393,20 +475,32 @@ export class HomeComponent implements OnInit, OnDestroy {
     return Math.round(amount);
   }
 
+  private filterOperacionesByMonth(operaciones: Operacion[], referenceDate: Date): Operacion[] {
+    const targetMonth = referenceDate.getMonth();
+    const targetYear = referenceDate.getFullYear();
+    return operaciones.filter((op) => {
+      const opDate = new Date(op.fecha);
+      return opDate.getMonth() === targetMonth && opDate.getFullYear() === targetYear;
+    });
+  }
+
   private mapBilleterasToCards(): void {
     this.cards = this.billeteras.map((billetera) => {
-      // Determinar el icono basado en el tipo
-      let icon = 'mdi-wallet';
+      const overrideType = this.getWalletTypeOverride(billetera.id);
+      const walletType = overrideType || this.resolveWalletType(billetera.type as string);
+      const walletCurrency = (billetera.moneda || 'ARS').toString().toUpperCase();
+
+      // Determinar el icono basado en el tipo, usando override
+      let icon = this.normalizeIcon(
+        billetera.icon || this.walletTypeIcons[walletType] || 'mdi-wallet'
+      );
       let background = 'linear-gradient(135deg, #667EEA, #764BA2)';
 
-      if (billetera.type === 'cash') {
-        icon = 'mdi-cash-multiple';
+      if (walletType === 'cash') {
         background = 'linear-gradient(135deg, #51CF66, #40C057)';
-      } else if (billetera.type === 'bank') {
-        icon = 'mdi-bank';
+      } else if (walletType === 'bank') {
         background = 'linear-gradient(135deg, #EC0000, #CC0000)';
-      } else if (billetera.type === 'digital') {
-        icon = 'mdi-credit-card';
+      } else if (walletType === 'digital') {
         background = 'linear-gradient(135deg, #009EE3, #0078BE)';
       }
 
@@ -418,12 +512,53 @@ export class HomeComponent implements OnInit, OnDestroy {
       return {
         typeLabel: billetera.nombre,
         icon: icon,
-        number: billetera.proveedor || 'Disponible',
-        holder: billetera.type === 'cash' ? 'En mano' : 'Titular',
+        number: billetera.nombre,
+        holder: walletCurrency,
         balance: `$${billetera.balance.toLocaleString('es-ES')}`,
         background: background,
-        isGeneral: billetera.id === 0, // Marcar si es la billetera General
+        isGeneral: billetera.id === '0', // Marcar si es la billetera General
       };
     });
+  }
+
+  private resolveWalletType(type?: string | null): 'bank' | 'digital' | 'cash' {
+    const normalized = (type || '').toString().trim().toLowerCase();
+    if (normalized === 'digital') return 'digital';
+    if (normalized === 'cash' || normalized === 'efectivo') return 'cash';
+    return 'bank';
+  }
+
+  private normalizeIcon(icon?: string | null): string {
+    if (!icon || !icon.trim()) {
+      return 'mdi mdi-wallet';
+    }
+    const trimmed = icon.trim();
+    if (trimmed.startsWith('mdi ')) return trimmed;
+    if (trimmed.startsWith('mdi-')) return `mdi ${trimmed}`;
+    return `mdi ${trimmed}`;
+  }
+
+  private getWalletTypeOverride(id?: string | number | null) {
+    if (id === null || id === undefined) {
+      return undefined;
+    }
+    return this.walletTypeOverrides[String(id)];
+  }
+
+  private loadWalletTypeOverrides() {
+    if (!this.canUseLocalStorage()) {
+      this.walletTypeOverrides = {};
+      return;
+    }
+    try {
+      const stored = window.localStorage.getItem(this.walletTypeOverridesKey);
+      this.walletTypeOverrides = stored ? JSON.parse(stored) : {};
+    } catch {
+      this.walletTypeOverrides = {};
+    }
+  }
+
+  private canUseLocalStorage(): boolean {
+    return typeof window !== 'undefined' && !!window.localStorage;
   }
 }

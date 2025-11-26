@@ -22,26 +22,23 @@
             <!-- Ícono de categoría -->
             <div
               class="category-icon"
-              [style.background-color]="operacion.categoriaId || '#A8A8A8'"
+              [style.background-color]="operacion.categoriaColor || '#A8A8A8'"
             >
-              <i [class]="operacion.categoriaId || 'mdi-dots-horizontal'"></i>
+              <i [class]="operacion.categoriaIcono || 'mdi-dots-horizontal'"></i>
             </div>
 
-            <!-- Información del operacion -->
+            <!-- Información del operación -->
             <div class="transaction-info">
               <div class="transaction-main">
                 <h3 class="transaction-description">
                   {{ operacion.descripcion }}
-                  <span *ngIf="operacion.categoriaId" class="subcategory">
-                    - {{ operacion.categoriaId }}
-                  </span>
-                </h3>
-                <p class="transaction-category">{{ operacion.categoriaId || 'Sin categoría' }}</p>
+                                  </h3>
+                <p class="transaction-category">{{ operacion.categoriaNombre || 'Sin categor�a' }}</p>
                 <p class="transaction-time">{{ formatearFecha(operacion.fecha.toString()) }}</p>
               </div>
 
-              <div class="transaction-amount" [class.income]="operacion.tipo === 'Ingreso'">
-                <span class="amount-sign">{{ operacion.tipo === 'Ingreso' ? '+' : '-' }}</span>
+              <div class="transaction-amount" [class.income]="operacion.tipo === 'Ingreso' || operacion.tipo === 'income'">
+                <span class="amount-sign">{{ operacion.tipo === 'Ingreso' || operacion.tipo === 'income' ? '+' : '-' }}</span>
                 ${{ operacion.monto.toLocaleString() }}
               </div>
             </div>
@@ -50,7 +47,7 @@
       </div>
     </div>
 
-    <!-- Estado vacío -->
+    <!-- Estado vacío  -->
     <div class="empty-state" *ngIf="groupedOperaciones.length === 0">
       <div class="empty-icon">
         <i class="mdi mdi-receipt-text-outline"></i>
@@ -60,3 +57,4 @@
     </div>
   </div>
 </div>
+

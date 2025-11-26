@@ -35,6 +35,8 @@ export class SavingGoalsComponent {
       estado: EstadoObjetivo.PENDIENTE,
       operaciones: [],
       color: 'var(--gastify-purple)',
+      estado: EstadoObjetivo.PENDIENTE,
+      operaciones: [] as Operacion[],
     },
     {
       id: '2',
@@ -46,6 +48,8 @@ export class SavingGoalsComponent {
       estado: EstadoObjetivo.PENDIENTE,
       operaciones: [],
       color: 'var(--gastify-green)',
+      estado: EstadoObjetivo.COMPLETADO,
+      operaciones: [] as Operacion[],
     },
   ];
 
@@ -169,5 +173,21 @@ export class SavingGoalsComponent {
   // Métodos para tips
   viewTip(tipId: number) {
     console.log('Ver tip:', tipId);
+  }
+
+  // Toggle estado del objetivo
+  toggleGoalStatus(goalId: number, event: Event) {
+    event.stopPropagation();
+    const goal = this.savingGoals.find(g => g.id === goalId);
+    if (goal) {
+      goal.estado = goal.estado === EstadoObjetivo.COMPLETADO 
+        ? EstadoObjetivo.PENDIENTE 
+        : EstadoObjetivo.COMPLETADO;
+    }
+  }
+
+  isGoalCompleted(goalId: number): boolean {
+    const goal = this.savingGoals.find(g => g.id === goalId);
+    return goal?.estado === EstadoObjetivo.COMPLETADO;
   }
 }

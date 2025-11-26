@@ -228,10 +228,27 @@
       }
     }
 
-    .progress-container {
+    .goal-operations-info {
       display: flex;
       align-items: center;
-      gap: 16px;
+      gap: 6px;
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.7);
+
+      i {
+        font-size: 16px;
+        color: var(--gastify-green);
+      }
+    }
+
+    .progress-container {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 4px;
 
       @media (max-width: 480px) {
         gap: 12px;

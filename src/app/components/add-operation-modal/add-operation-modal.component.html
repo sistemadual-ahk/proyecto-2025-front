@@ -1,4 +1,4 @@
-<!-- Header del bottom sheet -->
+﻿<!-- Header del bottom sheet -->
 <div class="bottom-sheet-header">
   <button class="close-btn" (click)="onClose()">
     <i class="mdi mdi-close"></i>
@@ -76,24 +76,27 @@
   </div>
 
   <div class="form-group">
-    <label class="form-label">Billetera</label>
+    <label class="form-label">Billetera <span style="opacity: 0.6; font-size: 12px;">(opcional)</span></label>
     <div class="input-with-icon">
       <mat-select
         class="form-input"
         [(ngModel)]="wallet"
         name="wallet"
-        placeholder="Seleccionar billetera"
+        placeholder="Sin asignar"
       >
-        <mat-option value="">Seleccionar billetera</mat-option>
+        <mat-option value="">Sin asignar</mat-option>
         <mat-option *ngFor="let walletOption of nombresBilleteras" [value]="walletOption">
           {{ walletOption }}
         </mat-option>
       </mat-select>
       <i class="mdi mdi-wallet"></i>
     </div>
+    <small class="form-hint" style="color: rgba(255, 255, 255, 0.5); margin-top: 4px; display: block; font-size: 11px;">
+      Si no seleccionas, se asignará automáticamente
+    </small>
   </div>
 
-  <!-- Categoría -->
+  <!-- Categorí­a -->
   <div class="form-group">
     <label class="form-label">Categoria</label>
     <div class="input-with-icon">
@@ -101,15 +104,17 @@
         class="form-input"
         [(ngModel)]="category"
         name="category"
-        placeholder="Seleccionar categoría"
+        placeholder="Seleccionar categorÃ­a"
       >
-        <mat-option value="">Seleccionar categoría</mat-option>
+        <mat-option value="">Seleccionar categori­a</mat-option>
         <mat-option *ngFor="let categoryOption of nombresCategorias" [value]="categoryOption">
           {{ categoryOption }}
         </mat-option>
       </mat-select>
-      <i class="mdi mdi-chevron-down"></i>
+      
     </div>
+    <small class="form-hint" *ngIf="nombresCategorias.length === 0" style="color: #ff6b6b; margin-top: 4px; display: block;">
+      ⚠️ No hay categorías disponibles. Ve a Categorías y crea una primero.
+    </small>
   </div>
 </div>
-
