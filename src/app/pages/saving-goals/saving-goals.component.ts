@@ -33,10 +33,8 @@ export class SavingGoalsComponent {
       fechaInicio: '2024-01-01',
       fechaEsperadaFinalizacion: '2024-12-31',
       estado: EstadoObjetivo.PENDIENTE,
-      operaciones: [],
-      color: 'var(--gastify-purple)',
-      estado: EstadoObjetivo.PENDIENTE,
       operaciones: [] as Operacion[],
+      color: 'var(--gastify-purple)',
     },
     {
       id: '2',
@@ -45,11 +43,9 @@ export class SavingGoalsComponent {
       montoObjetivo: 1200,
       fechaInicio: '2024-02-01',
       fechaEsperadaFinalizacion: '2024-08-31',
-      estado: EstadoObjetivo.PENDIENTE,
-      operaciones: [],
-      color: 'var(--gastify-green)',
       estado: EstadoObjetivo.COMPLETADO,
       operaciones: [] as Operacion[],
+      color: 'var(--gastify-green)',
     },
   ];
 
@@ -147,7 +143,11 @@ export class SavingGoalsComponent {
 
   // Método para calcular el progreso
   getProgress(goal: Objetivo): number {
-    return goal.montoObjetivo > 0 ? (goal.montoActual / goal.montoObjetivo) * 100 : 0;
+    if (goal.montoObjetivo <= 0 || goal.montoActual < 0) {
+      return 0;
+    }
+    const progress = (goal.montoActual / goal.montoObjetivo) * 100;
+    return Math.min(progress, 100);
   }
 
   // Método para alternar el estado del objetivo
@@ -173,21 +173,5 @@ export class SavingGoalsComponent {
   // Métodos para tips
   viewTip(tipId: number) {
     console.log('Ver tip:', tipId);
-  }
-
-  // Toggle estado del objetivo
-  toggleGoalStatus(goalId: number, event: Event) {
-    event.stopPropagation();
-    const goal = this.savingGoals.find(g => g.id === goalId);
-    if (goal) {
-      goal.estado = goal.estado === EstadoObjetivo.COMPLETADO 
-        ? EstadoObjetivo.PENDIENTE 
-        : EstadoObjetivo.COMPLETADO;
-    }
-  }
-
-  isGoalCompleted(goalId: number): boolean {
-    const goal = this.savingGoals.find(g => g.id === goalId);
-    return goal?.estado === EstadoObjetivo.COMPLETADO;
   }
 }

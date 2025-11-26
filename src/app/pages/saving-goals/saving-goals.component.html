@@ -6,24 +6,29 @@
   <div class="goals-section">
     <div class="goal-card" *ngFor="let goal of savingGoals" [class.completed]="isCompleted(goal)">
       <div class="goal-card-header">
-        <h3 class="goal-title">{{ goal.titulo }}</h3>
-        <span class="goal-status-badge" [class.completed]="isCompleted(goal)">
-          {{ isCompleted(goal) ? 'Completado' : 'Pendiente' }}
-        </span>
+        <div class="goal-header-left">
+          <h3 class="goal-title">{{ goal.titulo }}</h3>
+          <span class="goal-status-badge" [class.completed]="isCompleted(goal)">
+            {{ isCompleted(goal) ? 'Completado' : 'Pendiente' }}
+          </span>
+        </div>
+        <button class="goal-chevron" (click)="editGoal(goal.id!)"><i class="mdi mdi-chevron-right"></i></button>
       </div>
-      <button class="goal-chevron" (click)="editGoal(goal.id!)"><i class="mdi mdi-chevron-right"></i></button>
       <div class="progress-container">
+        <div class="progress-header">
+          <div class="goal-amounts">
+            <span class="current-amount">${{ goal.montoActual.toLocaleString() }}</span>
+            <span class="separator">/</span>
+            <span class="target-amount">${{ goal.montoObjetivo.toLocaleString() }}</span>
+          </div>
+          <span class="progress-percentage">{{ getProgress(goal).toFixed(0) }}%</span>
+        </div>
         <div class="progress-bar">
           <div
             class="progress-fill"
             [style.width.%]="getProgress(goal)"
             [style.background-color]="goal.color"
           ></div>
-        </div>
-        <div class="goal-amounts">
-          <span class="current-amount">${{ goal.montoActual.toLocaleString() }}</span>
-          <span class="separator">/</span>
-          <span class="target-amount">${{ goal.montoObjetivo.toLocaleString() }}</span>
         </div>
       </div>
 

@@ -37,24 +37,6 @@
         <input type="number" placeholder="0.0" [(ngModel)]="montoActual" readonly />
       </div>
 
-      <!-- Estado (solo en edición) -->
-      <div class="field status-field" *ngIf="edit">
-        <div class="status-label-row">
-          <label>Estado del objetivo</label>
-          <span class="status-text" [class.completed]="isCompleted()">
-            {{ isCompleted() ? 'Completado' : 'Pendiente' }}
-          </span>
-        </div>
-        <label class="switch">
-          <input 
-            type="checkbox" 
-            [checked]="isCompleted()" 
-            (change)="toggleEstado()"
-          />
-          <span class="slider"></span>
-        </label>
-      </div>
-
       <!-- Fechas -->
       <div class="row">
         <div class="field date">
@@ -90,80 +72,118 @@
         </div>
       </div>
 
-      <!-- Operaciones Recientes (solo en edición) -->
-      <div class="operations-section" *ngIf="edit && operaciones && operaciones.length > 0">
-        <div class="operations-header">
-          <label>Operaciones Recientes</label>
-          <span class="operations-count">{{ operaciones.length }}</span>
+      <!-- Estado del objetivo (solo en edición) -->
+      <div class="field status-field" *ngIf="edit">
+        <div class="status-label-row">
+          <label>Estado del objetivo</label>
+          <span class="status-text" [class.completed]="isCompleted()">
+            {{ isCompleted() ? 'Completado' : 'Pendiente' }}
+          </span>
         </div>
-        <div class="operations-list">
-          <div class="operation-item" *ngFor="let operacion of getRecentOperations()">
-            <div class="operation-icon" [class.ingreso]="operacion.tipo === 'Ingreso'" [class.egreso]="operacion.tipo === 'Egreso'">
-              <i class="mdi" [class.mdi-arrow-up]="operacion.tipo === 'Ingreso'" [class.mdi-arrow-down]="operacion.tipo === 'Egreso'"></i>
-            </div>
-            <div class="operation-details">
-              <div class="operation-description">{{ operacion.descripcion || 'Sin descripción' }}</div>
-              <div class="operation-date">{{ formatDate(operacion.fecha) }}</div>
-            </div>
-            <div class="operation-amount" [class.ingreso]="operacion.tipo === 'Ingreso'" [class.egreso]="operacion.tipo === 'Egreso'">
-              {{ operacion.tipo === 'Ingreso' ? '+' : '-' }}${{ operacion.monto.toFixed(2) }}
-            </div>
-          </div>
-        </div>
+        <label class="switch">
+          <input 
+            type="checkbox" 
+            [checked]="isCompleted()" 
+            (change)="toggleEstado()"
+          />
+          <span class="slider"></span>
+        </label>
       </div>
 
-      <!-- Mensaje cuando no hay operaciones -->
-      <div class="no-operations" *ngIf="edit && (!operaciones || operaciones.length === 0)">
-        <i class="mdi mdi-information-outline"></i>
-        <p>No hay operaciones asociadas a este objetivo</p>
-      </div>
-
-      <!-- Estado del objetivo -->
-      <div class="field status-field">
-        <div class="status-section">
-          <span class="status-label">Estado del objetivo</span>
-          <div class="status-control">
-            <label class="switch">
-              <input 
-                type="checkbox" 
-                [checked]="isCompleted()"
-                (change)="toggleEstado()"
-              />
-              <span class="slider"></span>
-            </label>
-            <span class="status-text">{{ getStatusLabel() }}</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Lista de operaciones asociadas -->
-      <div class="field operations-field" *ngIf="edit">
-        <div class="operations-section">
-          <div class="operations-header">
+      <!-- Sección de operaciones (solo en edición) -->
+      <div class="operaciones-section" *ngIf="edit">
+        <div class="operaciones-header">
+          <div class="header-left">
             <i class="mdi mdi-cash-multiple"></i>
-            <span class="operations-label">Operaciones asociadas</span>
-            <span class="operations-count">{{ operaciones.length }}</span>
+            <span class="operaciones-label">Operaciones del objetivo</span>
+            <span class="operaciones-count">{{ operaciones.length }}</span>
           </div>
-          
-          <div class="operations-list" *ngIf="operaciones.length > 0">
-            <div class="operation-item" *ngFor="let op of operaciones">
-              <div class="operation-icon" [class.income]="op.tipo === 'Ingreso' || op.tipo === 'income'">
-                <i class="mdi" [ngClass]="op.tipo === 'Ingreso' || op.tipo === 'income' ? 'mdi-arrow-up' : 'mdi-arrow-down'"></i>
+          <button type="button" class="add-operacion-btn" (click)="addOperacion()" aria-label="Agregar operación">
+            <i class="mdi mdi-plus"></i>
+            <span>Agregar</span>
+          </button>
+        </div>
+
+        <div class="operaciones-list" *ngIf="operaciones.length > 0">
+          <div 
+            class="operacion-item" 
+            *ngFor="let operacion of operaciones; let i = index"
+            [class.editing]="editingIndex === i"
+            (click)="startEditOperacion(i)"
+          >
+            <div 
+              class="operacion-icon" 
+              [class.ingreso]="isIngreso(operacion)"
+              [class.egreso]="!isIngreso(operacion)"
+            >
+              <i class="mdi" [ngClass]="isIngreso(operacion) ? 'mdi-arrow-down' : 'mdi-arrow-up'"></i>
+            </div>
+            
+            <div class="operacion-content" *ngIf="editingIndex !== i">
+              <div class="operacion-info">
+                <span class="operacion-desc">{{ operacion.descripcion || 'Sin descripción' }}</span>
+                <span class="operacion-date">{{ formatDate(operacion.fecha) }}</span>
               </div>
-              <div class="operation-info">
-                <span class="operation-desc">{{ op.descripcion || 'Sin descripción' }}</span>
-                <span class="operation-date">{{ op.fecha | date: 'dd/MM/yyyy' }}</span>
-              </div>
-              <span class="operation-amount" [class.income]="op.tipo === 'Ingreso' || op.tipo === 'income'">
-                {{ (op.tipo === 'Ingreso' || op.tipo === 'income' ? '+' : '-') }}${{ op.monto.toLocaleString() }}
+              <span class="operacion-amount" [class.ingreso]="isIngreso(operacion)" [class.egreso]="!isIngreso(operacion)">
+                {{ isIngreso(operacion) ? '+' : '-' }}${{ operacion.monto.toFixed(2) }}
               </span>
             </div>
+
+            <div class="operacion-edit-form" *ngIf="editingIndex === i" (click)="$event.stopPropagation()">
+              <div class="edit-row tipo-toggle-row">
+                <div class="tipo-toggle" (click)="toggleTipo(operacion)">
+                  <div class="toggle-option" [class.active]="operacion.tipo === 'Ingreso'">
+                    <i class="mdi mdi-arrow-down"></i>
+                    Ingreso
+                  </div>
+                  <div class="toggle-option" [class.active]="operacion.tipo === 'Egreso'">
+                    <i class="mdi mdi-arrow-up"></i>
+                    Egreso
+                  </div>
+                </div>
+              </div>
+              <div class="edit-row">
+                <input 
+                  type="text" 
+                  class="edit-desc-input" 
+                  [(ngModel)]="operacion.descripcion"
+                  placeholder="Descripción"
+                />
+              </div>
+              <div class="edit-row">
+                <input 
+                  type="date" 
+                  class="edit-date-input" 
+                  [(ngModel)]="operacion.fecha"
+                />
+                <div class="edit-monto">
+                  <span class="monto-prefix">$</span>
+                  <input 
+                    type="number" 
+                    class="edit-monto-input" 
+                    [(ngModel)]="operacion.monto"
+                    placeholder="0.00"
+                    min="0"
+                    step="0.01"
+                  />
+                </div>
+              </div>
+              <div class="edit-actions">
+                <button type="button" class="edit-save-btn" (click)="saveOperacion(); $event.stopPropagation()">
+                  <i class="mdi mdi-check"></i>
+                </button>
+                <button type="button" class="edit-delete-btn" (click)="deleteOperacion(i); $event.stopPropagation()">
+                  <i class="mdi mdi-delete"></i>
+                </button>
+              </div>
+            </div>
           </div>
-          
-          <div class="operations-empty" *ngIf="operaciones.length === 0">
-            <i class="mdi mdi-information-outline"></i>
-            <span>No hay operaciones asociadas a este objetivo</span>
-          </div>
+        </div>
+
+        <div class="operaciones-empty" *ngIf="operaciones.length === 0">
+          <i class="mdi mdi-cash-plus"></i>
+          <p>No hay operaciones registradas</p>
+          <span>Haz clic en "Agregar" para registrar operaciones</span>
         </div>
       </div>
     </div>

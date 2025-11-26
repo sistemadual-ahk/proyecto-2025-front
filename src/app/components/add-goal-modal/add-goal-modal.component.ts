@@ -146,6 +146,70 @@ export class AddGoalModalComponent implements OnInit {
       });
     }
   }
+
+  getStatusLabel(): string {
+    return this.isCompleted() ? 'Completado' : 'Pendiente';
+  }
+
+  // Método para calcular el progreso
+  getProgress(): number {
+    if (!this.montoObjetivo || this.montoObjetivo === 0) return 0;
+    return Math.min((this.montoActual / this.montoObjetivo) * 100, 100);
+  }
+
+  // Control de edición
+  editingIndex: number | null = null;
+
+  // Método para agregar nueva operación
+  addOperacion() {
+    const newOperacion: Operacion = {
+      tipo: 'Ingreso',
+      monto: 0,
+      descripcion: '',
+      fecha: new Date().toISOString().split('T')[0],
+    };
+    this.operaciones.push(newOperacion);
+    this.editingIndex = this.operaciones.length - 1;
+  }
+
+  // Método para toggle del tipo de operación
+  toggleTipo(operacion: Operacion) {
+    operacion.tipo = operacion.tipo === 'Ingreso' ? 'Egreso' : 'Ingreso';
+  }
+
+  // Método para iniciar edición de operación
+  startEditOperacion(index: number) {
+    this.editingIndex = index;
+  }
+
+  // Método para guardar operación
+  saveOperacion() {
+    this.updateMontoActual();
+    this.editingIndex = null;
+  }
+
+  // Método para eliminar operación
+  deleteOperacion(index: number) {
+    this.operaciones.splice(index, 1);
+    this.editingIndex = null;
+    this.updateMontoActual();
+  }
+
+  // Método para actualizar el monto actual basado en las operaciones
+  updateMontoActual() {
+    this.montoActual = this.operaciones.reduce((total, op) => {
+      if (op.tipo === 'Ingreso' || op.tipo === 'income') {
+        return total + (op.monto || 0);
+      } else {
+        return total - (op.monto || 0);
+      }
+    }, 0);
+  }
+
+  // Método para verificar si es ingreso
+  isIngreso(operacion: Operacion): boolean {
+    return operacion.tipo === 'Ingreso' || operacion.tipo === 'income';
+  }
 }
 
 
