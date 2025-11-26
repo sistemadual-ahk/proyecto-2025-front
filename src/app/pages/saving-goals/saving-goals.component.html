@@ -4,29 +4,29 @@
 
   <!-- Sección de objetivos de ahorro -->
   <div class="goals-section">
-    <div class="goal-card" *ngFor="let goal of savingGoals">
-      <button class="goal-chevron" (click)="editGoal(goal.id)"><i class="mdi mdi-chevron-right"></i></button>
+    <div class="goal-card" *ngFor="let goal of savingGoals" [class.completed]="isCompleted(goal)">
       <div class="goal-card-header">
-        <h3 class="goal-title">{{ goal.title }}</h3>
+        <h3 class="goal-title">{{ goal.titulo }}</h3>
+        <span class="goal-status-badge" [class.completed]="isCompleted(goal)">
+          {{ isCompleted(goal) ? 'Completado' : 'Pendiente' }}
+        </span>
       </div>
+      <button class="goal-chevron" (click)="editGoal(goal.id!)"><i class="mdi mdi-chevron-right"></i></button>
       <div class="progress-container">
         <div class="progress-bar">
           <div
             class="progress-fill"
-            [style.width.%]="goal.progress"
+            [style.width.%]="getProgress(goal)"
             [style.background-color]="goal.color"
           ></div>
         </div>
         <div class="goal-amounts">
-          <span class="current-amount">${{ goal.currentAmount.toLocaleString() }}</span>
+          <span class="current-amount">${{ goal.montoActual.toLocaleString() }}</span>
           <span class="separator">/</span>
-          <span class="target-amount">${{ goal.targetAmount.toLocaleString() }}</span>
+          <span class="target-amount">${{ goal.montoObjetivo.toLocaleString() }}</span>
         </div>
       </div>
-      <div class="goal-operations-info" *ngIf="goal.operaciones && goal.operaciones.length > 0">
-        <i class="mdi mdi-cash-multiple"></i>
-        <span>{{ goal.operaciones.length }} operación{{ goal.operaciones.length !== 1 ? 'es' : '' }} asociada{{ goal.operaciones.length !== 1 ? 's' : '' }}</span>
-      </div>
+
     </div>
     <!-- Botón de nuevo objetivo debajo de los objetivos -->
     <div class="new-goal-inline">
@@ -38,5 +38,12 @@
   </div>
 
 
-  <app-add-goal-modal *ngIf="showAddGoal" [edit]="isEditMode" (close)="onCloseAddGoal()" (save)="onCloseAddGoal()" (delete)="onDeleteGoal()"></app-add-goal-modal>
+  <app-add-goal-modal 
+    *ngIf="showAddGoal" 
+    [edit]="isEditMode" 
+    [objetivo]="selectedGoal"
+    (close)="onCloseAddGoal()" 
+    (save)="onSaveGoal($event)" 
+    (delete)="onDeleteGoal()">
+  </app-add-goal-modal>
 </div>

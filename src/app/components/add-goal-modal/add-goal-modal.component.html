@@ -1,42 +1,121 @@
-<div class="modal-overlay" (click)="onClose()">
+<div class="modal-overlay" (click)="onClose()" role="dialog" aria-modal="true" [attr.aria-label]="edit ? 'Editar objetivo' : 'Nuevo objetivo'">
   <div class="modal" (click)="$event.stopPropagation()">
     <div class="modal-header">
-      <button class="icon-btn" (click)="onClose()"><i class="mdi mdi-close"></i></button>
-      <div class="modal-title"><i class="mdi mdi-target"></i><span>{{ edit ? 'Editar objetivo' : 'Nuevo Objetivo' }}</span></div>
+      <button class="icon-btn" (click)="onClose()" aria-label="Cerrar modal" type="button">
+        <i class="mdi mdi-close"></i>
+      </button>
+      <div class="modal-title">
+        <i class="mdi mdi-target"></i>
+        <span>{{ edit ? 'Editar objetivo' : 'Nuevo Objetivo' }}</span>
+      </div>
       <div class="header-actions">
-        <button class="icon-btn danger" *ngIf="edit" (click)="onDelete()"><i class="mdi mdi-delete"></i></button>
-        <button class="icon-btn" (click)="onSave()"><i class="mdi mdi-check"></i></button>
+        <button class="icon-btn danger" *ngIf="edit" (click)="onDelete()" aria-label="Eliminar objetivo" type="button">
+          <i class="mdi mdi-delete"></i>
+        </button>
+        <button class="icon-btn" (click)="onSave()" aria-label="Guardar objetivo" type="button">
+          <i class="mdi mdi-check"></i>
+        </button>
       </div>
     </div>
 
     <div class="form">
+      <!-- Título -->
+      <div class="field input">
+        <label>Título</label>
+        <input type="text" placeholder="Ej: Viaje a Brasil" [(ngModel)]="titulo" />
+      </div>
+
+      <!-- Monto Objetivo -->
       <div class="field pill">
-        <span class="prefix">$</span>
-        <input type="number" placeholder="0.0" [(ngModel)]="amount" />
-        <button class="suffix"><i class="mdi mdi-close"></i></button>
+        <span class="prefix">Objetivo: $</span>
+        <input type="number" placeholder="0.0" [(ngModel)]="montoObjetivo" />
       </div>
 
-      <div class="field select">
-        <span class="label">Categoría</span>
-        <div class="right">
-          <span class="color" [style.background]="color"></span>
-          <i class="mdi mdi-chevron-down"></i>
+      <!-- Monto Actual (solo en edición) -->
+      <div class="field pill" *ngIf="edit">
+        <span class="prefix">Actual: $</span>
+        <input type="number" placeholder="0.0" [(ngModel)]="montoActual" readonly />
+      </div>
+
+      <!-- Estado (solo en edición) -->
+      <div class="field status-field" *ngIf="edit">
+        <div class="status-label-row">
+          <label>Estado del objetivo</label>
+          <span class="status-text" [class.completed]="isCompleted()">
+            {{ isCompleted() ? 'Completado' : 'Pendiente' }}
+          </span>
         </div>
+        <label class="switch">
+          <input 
+            type="checkbox" 
+            [checked]="isCompleted()" 
+            (change)="toggleEstado()"
+          />
+          <span class="slider"></span>
+        </label>
       </div>
 
+      <!-- Fechas -->
       <div class="row">
         <div class="field date">
-          <span>Fecha Inicio</span>
-          <i class="mdi mdi-calendar"></i>
+          <label>Fecha Inicio</label>
+          <input type="date" [(ngModel)]="fechaInicio" />
         </div>
-        <div class="field date" [class.disabled]="edit">
-          <span>Fecha fin</span>
-          <i class="mdi mdi-calendar"></i>
+        <div class="field date">
+          <label>Fecha Esperada</label>
+          <input type="date" [(ngModel)]="fechaEsperadaFinalizacion" />
         </div>
       </div>
 
-      <div class="field input">
-        <span>Titulo</span>
+      <!-- Fecha de finalización (solo si está completado) -->
+      <div class="field date" *ngIf="isCompleted()">
+        <label>Fecha de Finalización</label>
+        <input type="date" [(ngModel)]="fechaFin" />
+      </div>
+
+      <!-- Color -->
+      <div class="field color-field">
+        <label>Color</label>
+        <div class="color-options">
+          <button 
+            type="button"
+            class="color-option" 
+            *ngFor="let colorOption of colorOptions" 
+            [style.background-color]="colorOption"
+            [class.selected]="color === colorOption"
+            (click)="selectColor(colorOption)"
+            [attr.aria-label]="'Seleccionar color ' + colorOption">
+            <i class="mdi mdi-check" *ngIf="color === colorOption"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Operaciones Recientes (solo en edición) -->
+      <div class="operations-section" *ngIf="edit && operaciones && operaciones.length > 0">
+        <div class="operations-header">
+          <label>Operaciones Recientes</label>
+          <span class="operations-count">{{ operaciones.length }}</span>
+        </div>
+        <div class="operations-list">
+          <div class="operation-item" *ngFor="let operacion of getRecentOperations()">
+            <div class="operation-icon" [class.ingreso]="operacion.tipo === 'Ingreso'" [class.egreso]="operacion.tipo === 'Egreso'">
+              <i class="mdi" [class.mdi-arrow-up]="operacion.tipo === 'Ingreso'" [class.mdi-arrow-down]="operacion.tipo === 'Egreso'"></i>
+            </div>
+            <div class="operation-details">
+              <div class="operation-description">{{ operacion.descripcion || 'Sin descripción' }}</div>
+              <div class="operation-date">{{ formatDate(operacion.fecha) }}</div>
+            </div>
+            <div class="operation-amount" [class.ingreso]="operacion.tipo === 'Ingreso'" [class.egreso]="operacion.tipo === 'Egreso'">
+              {{ operacion.tipo === 'Ingreso' ? '+' : '-' }}${{ operacion.monto.toFixed(2) }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mensaje cuando no hay operaciones -->
+      <div class="no-operations" *ngIf="edit && (!operaciones || operaciones.length === 0)">
+        <i class="mdi mdi-information-outline"></i>
+        <p>No hay operaciones asociadas a este objetivo</p>
       </div>
 
       <!-- Estado del objetivo -->
