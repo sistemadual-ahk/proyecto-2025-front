@@ -84,9 +84,9 @@
         name="wallet"
         placeholder="Seleccionar billetera"
       >
-        <mat-option value="">Seleccionar billetera</mat-option>
-        <mat-option *ngFor="let walletOption of nombresBilleteras" [value]="walletOption">
-          {{ walletOption }}
+        <mat-option value="">Sin asignar</mat-option>
+        <mat-option *ngFor="let walletOption of billeteras" [value]="walletOption">
+          {{ walletOption.nombre }}
         </mat-option>
       </mat-select>
       <i class="mdi mdi-wallet"></i>
@@ -103,9 +103,9 @@
         name="category"
         placeholder="Seleccionar categoría"
       >
-        <mat-option value="">Seleccionar categoría</mat-option>
-        <mat-option *ngFor="let categoryOption of nombresCategorias" [value]="categoryOption">
-          {{ categoryOption }}
+        <mat-option value="">Seleccionar categori­a</mat-option>
+        <mat-option *ngFor="let categoryOption of categorias" [value]="categoryOption">
+          {{ categoryOption.nombre }}
         </mat-option>
       </mat-select>
       <i class="mdi mdi-chevron-down"></i>

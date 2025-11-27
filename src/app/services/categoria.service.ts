@@ -5,17 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ApiService } from './api.service';
-
-// 1. Interfaz para el objeto Categoría (ajustada a tu respuesta real)
-export interface Categoria {
-  id: string;
-  nombre: string;
-  descripcion: string;
-  icono: string;
-  color: string;
-  isDefault: boolean;
-  user: any | null; // Puedes definir una interfaz más estricta para 'user'
-}
+import { Categoria } from '../../models/categoria.model';
 
 // 2. Interfaz para la RESPUESTA COMPLETA del API
 interface ApiResponse {

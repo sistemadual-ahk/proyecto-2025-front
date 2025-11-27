@@ -7,7 +7,8 @@ import { AddAccountModalComponent } from '../../components/add-account-modal/add
 import { HeaderComponent } from '../../components/header/header.component';
 import { SidebarComponent } from '../../components/sidebar/sidebar.component';
 import { PageTitleComponent } from '../../components/page-title/page-title.component';
-import { BilleteraService, Billetera } from '../../services/billetera.service';
+import { BilleteraService } from '../../services/billetera.service';
+import { Billetera } from '../../../models/billetera.model';
 import { MatSelectModule } from '@angular/material/select';
 
 @Component({

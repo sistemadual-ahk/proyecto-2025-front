@@ -1,10 +1,13 @@
 export interface Billetera {
-  _id: string;
-  nombre: string;
-  moneda: string;
+  id?: number;
   balance: number;
-  gastoHistorico: number;
-  ingresoHistorico: number;
+  nombre: string;
+  proveedor: string;
+  type: 'bank' | 'digital' | 'cash';
+  icon?: string;
   isDefault: boolean;
-  color: string;
+  color?: string;
+  moneda?: string;
+  ingresoHistorico: number;
+  gastoHistorico: number;
 }
