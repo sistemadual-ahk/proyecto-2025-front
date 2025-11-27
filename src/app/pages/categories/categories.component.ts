@@ -1,8 +1,10 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
+import { Router } from '@angular/router';
 import { CategoryService } from '../../services/category.service';
 import { CategoryModalComponent } from '../../components/category-modal/category-modal.component';
+import { PageTitleComponent } from '../../components/page-title/page-title.component';
 import { EditableCategory } from '../../../models/editable-category.model';
 import { Categoria } from '../../../models/categoria.model';
 
@@ -20,7 +22,7 @@ interface UiCategory {
 @Component({
   selector: 'app-categories',
   standalone: true,
-  imports: [CommonModule, CategoryModalComponent],
+  imports: [CommonModule, CategoryModalComponent, PageTitleComponent],
   templateUrl: './categories.component.html',
   styleUrl: './categories.component.scss',
 })
@@ -50,8 +52,15 @@ export class CategoriesComponent {
     iconColor: '#111827',
   };
 
-  constructor(private categoriasService: CategoryService) {
+  constructor(
+    private router: Router,
+    private categoriasService: CategoryService
+  ) {
     this.loadData();
+  }
+
+  goBack() {
+    this.router.navigate(['/home']);
   }
 
   // =======================

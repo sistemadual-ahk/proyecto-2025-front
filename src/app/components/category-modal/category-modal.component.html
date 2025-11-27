@@ -5,10 +5,6 @@
     <div class="bottom-sheet-handle"></div>
     
     <div class="modal-header">
-      <button class="close-btn" (click)="onClose()">
-        <i class="mdi mdi-close"></i>
-      </button>
-      
       <h2 class="modal-title">{{ title }}</h2>
       
       <div class="header-actions">
@@ -18,8 +14,8 @@
         <button *ngIf="canEdit()" class="save-btn" (click)="onSave()">
           <i class="mdi mdi-check"></i>
         </button>
-        <button *ngIf="!canEdit()" class="info-btn">
-          <i class="mdi mdi-information-outline"></i>
+        <button class="close-btn" (click)="onClose()">
+          <i class="mdi mdi-close"></i>
         </button>
       </div>
     </div>
@@ -106,17 +102,6 @@
                       [disabled]="!canEdit()"
                       [class.disabled]="!canEdit()"
                       [style.pointer-events]="!canEdit() ? 'none' : 'auto'"></button>
-              <button type="button" class="more-colors" 
-                      (click)="canEdit() && (showCustomBgPicker = !showCustomBgPicker)"
-                      [disabled]="!canEdit()"
-                      [class.disabled]="!canEdit()"
-                      [style.pointer-events]="!canEdit() ? 'none' : 'auto'">
-                <i class="mdi mdi-plus"></i>
-              </button>
-            </div>
-            <div class="custom-color-picker" *ngIf="showCustomBgPicker && canEdit()">
-              <input type="color" class="color-input" [(ngModel)]="temp.color" name="color">
-              <span class="color-hex">{{ temp.color }}</span>
             </div>
           </div>
           
@@ -131,17 +116,6 @@
                       [disabled]="!canEdit()"
                       [class.disabled]="!canEdit()"
                       [style.pointer-events]="!canEdit() ? 'none' : 'auto'"></button>
-              <button type="button" class="more-colors" 
-                      (click)="canEdit() && (showCustomIconPicker = !showCustomIconPicker)"
-                      [disabled]="!canEdit()"
-                      [class.disabled]="!canEdit()"
-                      [style.pointer-events]="!canEdit() ? 'none' : 'auto'">
-                <i class="mdi mdi-plus"></i>
-              </button>
-            </div>
-            <div class="custom-color-picker" *ngIf="showCustomIconPicker && canEdit()">
-              <input type="color" class="color-input" [(ngModel)]="temp.iconColor" name="iconColor">
-              <span class="color-hex">{{ temp.iconColor }}</span>
             </div>
           </div>
         </div>

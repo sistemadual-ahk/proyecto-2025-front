@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, inject } from '@angular/core';
+﻿import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
@@ -105,7 +105,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   private loadData(): void {
-    // Guardar el índice actual para restaurarlo después
+    // Guardar el í­ndice actual para restaurarlo después
     const previousIndex = this.currentIndex;
     const previousLength = this.billeteras.length;
 
@@ -132,7 +132,7 @@ export class HomeComponent implements OnInit, OnDestroy {
           this.billeteras = [billeteraGeneral, ...billeteras];
           this.mapBilleterasToCards();
 
-          // Restaurar el índice si es válido, o ajustar si hay nuevas tarjetas
+          // Restaurar el í­ndice si es válido, o ajustar si hay nuevas tarjetas
           if (this.billeteras.length > previousLength) {
             // Se agregaron nuevas billeteras, mantener en la misma posición
             this.currentIndex = Math.min(previousIndex, this.billeteras.length - 1);
@@ -146,7 +146,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         },
         error: (error) => {
           console.error('Error al cargar billeteras:', error);
-          // En caso de error, crear solo la billetera General vacía
+          // En caso de error, crear solo la billetera General vací­a
           this.billeteras = [{
             id: '0',
             nombre: 'General',
@@ -185,7 +185,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     const billeteraActual = this.billeteras[this.currentIndex];
     if (!billeteraActual) return;
 
-    console.log('💰 Calculando stats para:', billeteraActual.nombre, 'ID:', billeteraActual.id);
+    console.log('Calculando stats para:', billeteraActual.nombre, 'ID:', billeteraActual.id);
 
     let operacionesBilletera: Operacion[];
 
@@ -203,7 +203,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         return billeteraId === billeteraActual.id?.toString() || 
                op.billeteraId === billeteraActual.id?.toString();
       });
-      console.log(`📊Operaciones para stats: ${operacionesBilletera.length}`);
+      console.log(`Operaciones para stats: ${operacionesBilletera.length}`);
     }
 
     const ingresos = operacionesBilletera.filter((g) => g.tipo === 'Ingreso' || g.tipo === 'income');
@@ -213,7 +213,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.expenses = egresos.reduce((sum, g) => sum + g.monto, 0);
     this.availableBalance = this.income - this.expenses;
     
-    console.log(`💵 Ingresos: $${this.income}, Gastos: $${this.expenses}`);
+    console.log(`Ingresos: $${this.income}, Gastos: $${this.expenses}`);
   }
 
   private loadRecentMovements(): void {
@@ -224,18 +224,18 @@ export class HomeComponent implements OnInit, OnDestroy {
       return;
     }
 
-    console.log('🔍 Cargando movimientos para billetera:', billeteraActual.nombre, 'ID:', billeteraActual.id);
-    console.log('📋 Total operaciones disponibles:', this.operaciones.length);
+    console.log('Cargando movimientos para billetera:', billeteraActual.nombre, 'ID:', billeteraActual.id);
+    console.log('Total operaciones disponibles:', this.operaciones.length);
 
     let operacionesBilletera: Operacion[];
 
     // Si es la billetera General (id '0'), mostrar todas las operaciones
     if (billeteraActual.id === '0') {
       operacionesBilletera = this.operaciones;
-      console.log('✅ Billetera General - Mostrando todas las operaciones');
+      console.log('Billetera General - Mostrando todas las operaciones');
     } else {
       // Debug: Mostrar IDs de las operaciones
-      console.log('🔎 Buscando operaciones con billetera ID:', billeteraActual.id);
+      console.log('Buscando operaciones con billetera ID:', billeteraActual.id);
       this.operaciones.forEach((op, index) => {
         const billeteraId = typeof op.billetera === 'object' && op.billetera !== null 
           ? (op.billetera as any).id || (op.billetera as any)._id
@@ -261,17 +261,19 @@ export class HomeComponent implements OnInit, OnDestroy {
         return billeteraId === billeteraActual.id?.toString() || 
                op.billeteraId === billeteraActual.id?.toString();
       });
-      console.log(`✅ Operaciones filtradas: ${operacionesBilletera.length}`);
+      console.log(`Operaciones filtradas: ${operacionesBilletera.length}`);
     }
 
+    // Mostrar los últimos creados primero (sin mutar el arreglo original)
     const operacionesRecientes = operacionesBilletera
-      .sort((a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime())
+      .slice()
+      .reverse()
       .slice(0, 3);
 
-    console.log('📌 Movimientos recientes a mostrar:', operacionesRecientes.length);
+    console.log('Movimientos recientes a mostrar:', operacionesRecientes.length);
 
     this.recentMovements = operacionesRecientes.map((operacion) => {
-      // Extraer información de la categoría si está como objeto
+      // Extraer información de la categorí­a si está como objeto
       let categoriaInfo: any = {};
       if (typeof operacion.categoria === 'object' && operacion.categoria !== null) {
         categoriaInfo = operacion.categoria;
@@ -280,7 +282,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       return {
         id: operacion._id,
         type: operacion.tipo,
-        category: categoriaInfo.nombre || operacion.categoriaId || operacion.categoria || 'Sin categoría',
+        category: categoriaInfo.nombre || operacion.categoriaId || operacion.categoria || 'Sin categorí­a',
         description: operacion.descripcion,
         icon: categoriaInfo.icono || 'mdi mdi-cash',
         amount: operacion.tipo === 'Ingreso' || operacion.tipo === 'income' ? operacion.monto : -operacion.monto,
@@ -387,7 +389,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   private updateBilleteraData(): void {
-    // Recalcular estadísticas y movimientos para la billetera actual
+    // Recalcular estadí­sticas y movimientos para la billetera actual
     this.calculateStats();
     this.loadRecentMovements();
   }
@@ -425,7 +427,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   addTransaction() {
-    console.log('Agregar operacion');
+    console.log('Agregar operación');
     const bottomSheetRef = this._transactionBottomSheet.open(TransactionBottomSheet, {
       disableClose: false,
       hasBackdrop: true,
@@ -561,4 +563,5 @@ export class HomeComponent implements OnInit, OnDestroy {
   private canUseLocalStorage(): boolean {
     return typeof window !== 'undefined' && !!window.localStorage;
   }
+
 }

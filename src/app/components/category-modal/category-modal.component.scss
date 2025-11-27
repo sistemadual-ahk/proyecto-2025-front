@@ -88,8 +88,7 @@
 
 .close-btn,
 .save-btn,
-.delete-btn,
-.info-btn {
+.delete-btn {
   background: var(--gastify-purple);
   border: 1px solid rgba(255, 255, 255, 0.12);
   font-size: 20px;
@@ -108,17 +107,6 @@
     background: rgba(59, 59, 88, 0.85);
     color: white;
     transform: scale(1.03);
-  }
-}
-
-.info-btn {
-  color: #60A5FA;
-  border-color: rgba(96, 165, 250, 0.3);
-
-  &:hover {
-    background: rgba(96, 165, 250, 0.1);
-    border-color: rgba(96, 165, 250, 0.5);
-    color: #60A5FA;
   }
 }
 
@@ -390,37 +378,6 @@
   }
 }
 
-.more-colors {
-  background: var(--gastify-purple);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  color: #fff;
-  border-radius: 6px;
-  padding: 4px 8px;
-  font-size: 12px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-
-  &:hover {
-    background: rgba(59, 59, 88, 0.85);
-  }
-
-  i {
-    font-size: 14px;
-  }
-
-  &.disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    
-    &:hover {
-      background: var(--gastify-purple);
-    }
-  }
-}
-
 // Estados de solo lectura para paletas
 .color-palette.readonly {
   opacity: 0.6;
@@ -429,30 +386,6 @@
 
 .icon-panel.readonly {
   opacity: 0.7;
-}
-
-.custom-color-picker {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-top: 8px;
-  padding: 8px;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 8px;
-}
-
-.color-input {
-  width: 40px;
-  height: 30px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.color-hex {
-  font-size: 12px;
-  color: rgba(255, 255, 255, 0.65);
-  font-family: monospace;
 }
 
 // Vista previa

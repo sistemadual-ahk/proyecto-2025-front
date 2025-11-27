@@ -1,6 +1,7 @@
 <div class="container">
   <div class="main">
-  <div class="categories-container">
+    <app-page-title title="Categorias" (back)="goBack()"></app-page-title>
+    <div class="categories-container">
     <div class="tabs" role="tablist">
     <button class="tab left" [class.active]="activeTab === 'Ingreso'" (click)="setTab('Ingreso')" role="tab" [attr.aria-selected]="activeTab==='Ingreso'">Ingreso</button>
     <button class="tab right" [class.active]="activeTab === 'Gasto'" (click)="setTab('Gasto')" role="tab" [attr.aria-selected]="activeTab==='Gasto'">Gasto</button>

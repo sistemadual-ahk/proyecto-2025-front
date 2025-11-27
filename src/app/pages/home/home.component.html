@@ -100,13 +100,19 @@
 
     <!-- Bottom Navigation -->
     <div class="bottom-nav">
-      <button class="add-transaction-btn comparison-btn" (click)="openUserComparison()">
-        <i class="mdi mdi-account-group"></i>
-      </button>
+      <div class="nav-action">
+        <button class="add-transaction-btn comparison-btn" (click)="openUserComparison()">
+          <i class="mdi mdi-account-group"></i>
+        </button>
+        <span class="nav-label">Comparar</span>
+      </div>
 
-      <button class="add-transaction-btn analysis-btn" (click)="openAnalysis()">
-        <i class="mdi mdi-chart-bar"></i>
-      </button>
+      <div class="nav-action">
+        <button class="add-transaction-btn analysis-btn" (click)="openAnalysis()">
+          <i class="mdi mdi-chart-bar"></i>
+        </button>
+        <span class="nav-label">Análisis</span>
+      </div>
 
       <button class="add-transaction-btn" (click)="addTransaction()">
         <i class="mdi mdi-plus"></i>

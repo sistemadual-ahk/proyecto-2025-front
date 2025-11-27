@@ -146,16 +146,15 @@ export class CategoryModalComponent implements OnInit {
   public popularBgColors: string[] = [
     '#4F46E5', '#059669', '#DC2626', '#D97706', '#7C3AED',
     '#0891B2', '#B91C1C', '#16A34A', '#EA580C', '#6366F1',
-    '#0F172A', '#92400E'
+    '#0F172A', '#92400E', '#2563EB', '#14B8A6', '#F59E0B',
+    '#DB2777', '#10B981', '#F97316'
   ];
   
   public popularIconColors: string[] = [
     '#FFFFFF', '#F8FAFC', '#E2E8F0', '#FEF3C7', '#DBEAFE',
-    '#D1FAE5', '#111827', '#374151', '#FCD34D', '#60A5FA'
+    '#D1FAE5', '#111827', '#374151', '#FCD34D', '#60A5FA',
+    '#FCA5A5', '#A3E635', '#22D3EE', '#F3F4F6'
   ];
-
-  public showCustomBgPicker = false;
-  public showCustomIconPicker = false;
 
   ngOnInit() {
     console.log('CategoryModalComponent initialized with value:', this.value);
