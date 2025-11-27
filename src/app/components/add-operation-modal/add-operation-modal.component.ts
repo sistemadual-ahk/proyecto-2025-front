@@ -106,7 +106,6 @@ export class TransactionBottomSheet implements OnInit {
     }
 
     // 2. Mapear billetera: si no se seleccionó, usar la primera disponible o null
-    
 
     if (!selectedWallet && this.billeteras.length > 0) {
       selectedWallet = this.billeteras[0];
