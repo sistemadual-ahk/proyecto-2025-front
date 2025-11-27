@@ -1,5 +1,5 @@
 export interface Billetera {
-  id?: number;
+  id?: string;
   balance: number;
   nombre: string;
   proveedor: string;

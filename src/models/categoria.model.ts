@@ -6,6 +6,7 @@ export interface Categoria {
   icono: string;
   color: string;
   isDefault: boolean;
+  iconColor?: string;
   user: any | null; // Puedes definir una interfaz más estricta para 'user'
   type: 'income'|  'expense';
 }

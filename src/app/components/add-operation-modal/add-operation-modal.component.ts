@@ -73,7 +73,7 @@ export class TransactionBottomSheet implements OnInit {
     // Carga de Billeteras (filtrar la General id:0 ya que no existe en el backend)
     this.billeteraService.getBilleteras().subscribe(data => {
       // Filtrar billeteras reales (excluir cualquier billetera sin ID o con ID "0")
-      this.billeteras = data.filter(bill => bill.id && bill.id !== 0);
+      this.billeteras = data.filter(bill => bill.id && bill.id !== '0');
       console.log('Billeteras cargadas:', this.billeteras);
 
       if (this.billeteras.length === 0) {

@@ -65,7 +65,7 @@ export class CategoriesComponent {
 
           // 1) Mapear lo que viene del backend a UiCategory
           const uiCategories: UiCategory[] = cat.map((c: Categoria) => ({
-            id: c._id || c.id,
+            id: c.id,
             name: c.nombre,
             description: c.descripcion || '',
             color: c.color || '#E5E7EB',
@@ -206,7 +206,7 @@ export class CategoriesComponent {
           console.log('Categoría creada en backend:', created);
 
           const ui: UiCategory = {
-            id: created._id || created.id,
+            id: created.id || created.id,
             name: created.nombre,
             description: created.descripcion,
             icon: created.icono,
@@ -263,7 +263,7 @@ export class CategoriesComponent {
         console.log('Categoría actualizada en backend:', updated);
 
         const ui: UiCategory = {
-          id: updated._id || updated.id,
+          id: updated.id || updated.id,
           name: updated.nombre,
           description: updated.descripcion,
           icon: updated.icono,
