@@ -8,6 +8,12 @@ import { OperacionService } from '../../services/operacion.service';
 import { Operacion } from '../../../models/operacion.model';
 import { formatDate } from '../../utils/formatDate';
 
+type OperacionVista = Operacion & {
+  categoriaNombre: string;
+  categoriaColor: string;
+  categoriaIcono: string;
+};
+
 @Component({
   selector: 'app-activity',
   standalone: true,
@@ -28,7 +34,7 @@ export class ActivityComponent implements OnInit, OnDestroy {
   private subscription = new Subscription();
 
   // Operaciones agrupados
-  groupedOperaciones: { date: string; operaciones: Operacion[] }[] = [];
+  groupedOperaciones: { date: string; operaciones: OperacionVista[] }[] = [];
 
   ngOnInit(): void {
     this.loadOperaciones();
@@ -43,7 +49,8 @@ export class ActivityComponent implements OnInit, OnDestroy {
     this.subscription.add(
       this.operacionService.getAllOperaciones().subscribe({
         next: (op) => {
-          this.groupedOperaciones = this.groupOperacionesByDate(op);
+          const operacionesVista = op.map((operacion) => this.mapOperacionParaVista(operacion));
+          this.groupedOperaciones = this.groupOperacionesByDate(operacionesVista);
         },
         error: (error) => {
           console.error('Error al cargar operaciones:', error);
@@ -53,9 +60,9 @@ export class ActivityComponent implements OnInit, OnDestroy {
   }
 
   private groupOperacionesByDate(
-    operaciones: Operacion[]
-  ): { date: string; operaciones: Operacion[] }[] {
-    const groups: { [key: string]: Operacion[] } = {};
+    operaciones: OperacionVista[]
+  ): { date: string; operaciones: OperacionVista[] }[] {
+    const groups: { [key: string]: OperacionVista[] } = {};
 
     operaciones.forEach((op) => {
       const dateKey = formatDate(op.fecha.toString());
@@ -88,5 +95,37 @@ export class ActivityComponent implements OnInit, OnDestroy {
 
   goBack() {
     this.router.navigate(['/home']);
+  }
+
+  private mapOperacionParaVista(op: Operacion): OperacionVista {
+    let categoriaNombre = 'Sin categoría';
+    let categoriaColor = '#A8A8A8';
+    let categoriaIcono = 'mdi mdi-dots-horizontal';
+
+    if (typeof op.categoria === 'object' && op.categoria !== null) {
+      const catObj: any = op.categoria;
+      categoriaNombre = catObj.nombre || catObj._id || categoriaNombre;
+      categoriaColor = catObj.color || categoriaColor;
+      categoriaIcono = catObj.icono ? this.ensureMdiClass(catObj.icono) : categoriaIcono;
+    } else if (typeof op.categoria === 'string' && op.categoria.trim()) {
+      categoriaNombre = op.categoria.trim();
+    } else if (op.categoriaId) {
+      categoriaNombre = op.categoriaId;
+    }
+
+    return {
+      ...op,
+      categoriaNombre,
+      categoriaColor,
+      categoriaIcono,
+    };
+  }
+
+  private ensureMdiClass(icon: string): string {
+    if (!icon || !icon.trim()) return 'mdi mdi-dots-horizontal';
+    const trimmed = icon.trim();
+    if (trimmed.startsWith('mdi ')) return trimmed;
+    if (trimmed.startsWith('mdi-')) return `mdi ${trimmed}`;
+    return `mdi ${trimmed}`;
   }
 }

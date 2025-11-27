@@ -7,7 +7,6 @@ import { map } from 'rxjs/operators';
 import { ApiService } from './api.service';
 import { Categoria } from '../../models/categoria.model';
 
-// 2. Interfaz para la RESPUESTA COMPLETA del API
 interface ApiResponse {
   success: boolean;
   data: Categoria[];

@@ -1,13 +1,30 @@
-<div class="container">
+﻿<div class="container">
   <!-- Main Content -->
   <div class="main">
     <!-- Navigation and Title -->
     <app-page-title title="Mis billeteras" (back)="goBack()"></app-page-title>
 
+    <div class="currency-switch">
+      <button
+        class="currency-btn"
+        [class.active]="selectedCurrency === 'ARS'"
+        (click)="setCurrency('ARS')"
+      >
+        ARS
+      </button>
+      <button
+        class="currency-btn"
+        [class.active]="selectedCurrency === 'USD'"
+        (click)="setCurrency('USD')"
+      >
+        USD
+      </button>
+    </div>
+
     <!-- Total Balance Card -->
     <div class="total-balance-card">
       <div class="balance-label">Total:</div>
-      <div class="balance-amount">{{ formatCurrency(totalBalanceLoaded) }}</div>
+      <div class="balance-amount">{{ formatCurrency(filteredTotalBalance, selectedCurrency) }}</div>
     </div>
 
     <!-- Action Buttons -->
@@ -30,7 +47,7 @@
     <!-- Wallets List -->
     <div class="wallets-list">
       <div class="wallet-item" *ngFor="let wallet of billeteras" (click)="openWalletPopup(wallet)" style="cursor: pointer">
-        <div class="wallet-icon" [style.background-color]="wallet.color">
+        <div class="wallet-icon" [style.background]="wallet.color">
           <i [class]="wallet.icon"></i>
         </div>
         <div class="wallet-info">
@@ -42,7 +59,10 @@
           </div>
         </div>
         <div class="wallet-meta">
-          <div class="wallet-balance">{{ formatCurrency(wallet.balance) }}</div>
+          <div class="wallet-meta-text">
+            <div class="wallet-balance">{{ formatCurrency(wallet.balance, getWalletCurrency(wallet)) }}</div>
+            <div class="wallet-currency">{{ getWalletCurrency(wallet) }}</div>
+          </div>
           <i class="mdi mdi-chevron-right"></i>
         </div>
       </div>
@@ -56,8 +76,13 @@
   </div>
 
   <!-- Modal: Agregar cuenta -->
-  <app-add-account-modal *ngIf="showAddAccountModal" (closeModal)="closeAddAccountModal()"
-    (saveAccount)="saveAccount($event)">
+  <app-add-account-modal
+    *ngIf="showAddAccountModal"
+    [walletToEdit]="walletToEdit"
+    [mode]="addAccountMode"
+    (closeModal)="closeAddAccountModal()"
+    (saveAccount)="handleAccountSaved($event)"
+  >
   </app-add-account-modal>
 
   <!-- Popup: Detalles de billetera -->
@@ -66,7 +91,7 @@
       <!-- Header del popup -->
       <div class="popup-header">
         <div class="popup-title">
-          <div class="popup-wallet-icon" [style.background-color]="selectedWallet?.color">
+          <div class="popup-wallet-icon" [style.background]="selectedWallet?.color">
             <i [class]="selectedWallet?.icon"></i>
           </div>
           <div class="popup-wallet-info">
@@ -129,7 +154,7 @@
             <span class="detail-value default-badge">Predeterminada</span>
           </div>
           <div class="popup-detail-item">
-            <span class="detail-label">Última actualización:</span>
+            <span class="detail-label">última actualización:</span>
             <span class="detail-value">{{ getLastUpdate() }}</span>
           </div>
         </div>
@@ -154,12 +179,176 @@
   </div>
 </div>
 
+<!-- Modal: Editar billetera -->
+<div class="edit-wallet-overlay" *ngIf="showEditWalletModal" (click)="closeEditWalletModal()">
+  <form
+    class="edit-wallet-modal"
+    #walletEditForm="ngForm"
+    (ngSubmit)="submitWalletEdit()"
+    (click)="$event.stopPropagation()"
+  >
+    <div class="edit-wallet-header">
+      <button class="icon-btn" type="button" (click)="closeEditWalletModal()">
+        <i class="mdi mdi-close"></i>
+      </button>
+
+      <div class="edit-wallet-title">
+        <h2>Editar billetera</h2>
+        <p>Actualizar los datos principales</p>
+      </div>
+
+      <button
+        class="icon-btn save-btn"
+        type="submit"
+        [disabled]="walletEditForm.invalid || isSavingWallet"
+      >
+        <i class="mdi" [ngClass]="isSavingWallet ? 'mdi-loading mdi-spin' : 'mdi-check'"></i>
+      </button>
+    </div>
+
+    <div class="edit-wallet-body">
+      <div class="transaction-toggle">
+        <button
+          type="button"
+          class="toggle-btn bank-btn"
+          [class.active]="editWalletForm.type === 'bank'"
+          (click)="setEditWalletType('bank')"
+        >
+          <i class="mdi mdi-bank"></i> Banco
+        </button>
+        <button
+          type="button"
+          class="toggle-btn digital-btn"
+          [class.active]="editWalletForm.type === 'digital'"
+          (click)="setEditWalletType('digital')"
+        >
+          <i class="mdi mdi-credit-card"></i> Digital
+        </button>
+        <button
+          type="button"
+          class="toggle-btn cash-btn"
+          [class.active]="editWalletForm.type === 'cash'"
+          (click)="setEditWalletType('cash')"
+        >
+          <i class="mdi mdi-cash-multiple"></i> Efectivo
+        </button>
+      </div>
+
+      <div class="edit-wallet-form">
+        <div class="form-group">
+          <label class="form-label" for="walletName">Nombre de la billetera</label>
+          <input
+            type="text"
+            class="form-input"
+            id="walletName"
+            name="walletName"
+            [(ngModel)]="editWalletForm.nombre"
+            required
+            placeholder="Ej: Cuenta principal"
+          />
+        </div>
+
+        <div class="form-group" *ngIf="editWalletForm.type !== 'cash'">
+          <label class="form-label" for="walletProvider">Proveedor / Banco</label>
+          <div class="input-with-icon">
+            <mat-select
+              class="form-input"
+              id="walletProvider"
+              name="walletProvider"
+              [(ngModel)]="editWalletForm.proveedor"
+              placeholder="Seleccionar proveedor"
+              required
+            >
+              <mat-option [value]="''" disabled>Seleccionar proveedor</mat-option>
+              <mat-option *ngFor="let provider of editProviders" [value]="provider">
+                {{ provider }}
+              </mat-option>
+            </mat-select>
+            <i class="mdi mdi-chevron-down"></i>
+          </div>
+        </div>
+
+        <div class="form-group amount-group">
+          <label class="form-label" for="walletBalance">Balance actual</label>
+          <div class="input-with-icon">
+            <input
+              type="number"
+              class="form-input"
+              id="walletBalance"
+              name="walletBalance"
+              [(ngModel)]="editWalletForm.balance"
+              min="0"
+              step="1"
+              required
+              placeholder="Ingrese monto"
+            />
+            <i class="mdi mdi-currency-usd"></i>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="walletCurrency">Moneda</label>
+          <div class="input-with-icon">
+            <mat-select
+              class="form-input"
+              id="walletCurrency"
+              name="walletCurrency"
+              [(ngModel)]="editWalletForm.moneda"
+              required
+              placeholder="Seleccionar moneda"
+            >
+              <mat-option *ngFor="let currency of currencyOptions" [value]="currency.value">
+                {{ currency.label }}
+              </mat-option>
+            </mat-select>
+            <i class="mdi mdi-currency-usd"></i>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Color de la billetera</label>
+          <div class="color-options">
+            <div
+              class="color-circle"
+              *ngFor="let option of colorOptions"
+              [style.background]="option.gradient"
+              [class.selected]="editWalletForm.color === option.gradient"
+              (click)="selectEditWalletColor(option.gradient)"
+            >
+              <i class="mdi mdi-check" *ngIf="editWalletForm.color === option.gradient"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="error-message" *ngIf="walletEditForm.submitted && walletEditForm.invalid">
+          Completa todos los campos obligatorios para guardar los cambios.
+        </div>
+      </div>
+    </div>
+
+    <div class="edit-wallet-actions">
+      <button
+        class="popup-main-btn primary"
+        type="submit"
+        [disabled]="walletEditForm.invalid || isSavingWallet"
+      >
+        <i class="mdi mdi-content-save"></i>
+        Guardar cambios
+      </button>
+      <button class="popup-main-btn danger" type="button" (click)="closeEditWalletModal()">
+        <i class="mdi mdi-close"></i>
+        Cancelar
+      </button>
+    </div>
+  </form>
+</div>
+
 <!-- Modal de Transferencia -->
 <div class="wallet-popup-overlay" *ngIf="showTransferModal" (click)="closeTransferModal()">
   <div class="wallet-popup" (click)="$event.stopPropagation()">
     <div class="popup-header">
       <div class="popup-title">
-        <div class="popup-wallet-icon" [style.background-color]="selectedWallet?.color || '#3b3b58'">
+        <div class="popup-wallet-icon" [style.background]="selectedWallet?.color || '#3b3b58'">
           <i class="mdi mdi-swap-horizontal"></i>
         </div>
         <div class="popup-wallet-info">
@@ -175,34 +364,44 @@
     <div class="popup-content">
       <div class="popup-details">
         <div class="popup-detail-item">
-          <span class="detail-label">Banco origen</span>
+          <span class="detail-label">Billetera origen</span>
           <span class="detail-value">
             <mat-select
               class="form-input"
               [(ngModel)]="transferForm.originId"
-              placeholder="Banco origen"
+              placeholder="Billetera origen"
             >
               <mat-option [value]="''" disabled>Seleccionar</mat-option>
-              <mat-option *ngFor="let w of billeteras" [value]="w.id">{{ w.nombre }}</mat-option>
+              <mat-option *ngFor="let w of getFilteredTransferWallets('origin')" [value]="w.id">
+                {{ w.nombre }}
+              </mat-option>
             </mat-select>
           </span>
         </div>
         <div class="popup-detail-item">
           <span class="detail-label">Monto a transferir</span>
           <span class="detail-value">
-            <input class="form-input" type="number" min="0" [(ngModel)]="transferForm.originAmount" placeholder="0" />
+            <input
+              class="form-input"
+              type="number"
+              min="0"
+              [(ngModel)]="transferForm.originAmount"
+              placeholder="Ingrese monto"
+            />
           </span>
         </div>
         <div class="popup-detail-item">
-          <span class="detail-label">Banco destino</span>
+          <span class="detail-label">Billetera destino</span>
           <span class="detail-value">
             <mat-select
               class="form-input"
               [(ngModel)]="transferForm.destinationId"
-              placeholder="Banco destino"
+              placeholder="Billetera destino"
             >
               <mat-option [value]="''" disabled>Seleccionar</mat-option>
-              <mat-option *ngFor="let w of billeteras" [value]="w.id">{{ w.nombre }}</mat-option>
+              <mat-option *ngFor="let w of getFilteredTransferWallets('destination')" [value]="w.id">
+                {{ w.nombre }}
+              </mat-option>
             </mat-select>
           </span>
         </div>
@@ -228,12 +427,12 @@
   <div class="wallet-popup" (click)="$event.stopPropagation()">
     <div class="popup-header">
       <div class="popup-title">
-        <div class="popup-wallet-icon" [style.background-color]="selectedWallet?.color || '#3b3b58'">
+        <div class="popup-wallet-icon" [style.background]="selectedWallet?.color || '#3b3b58'">
           <i class="mdi mdi-history"></i>
         </div>
         <div class="popup-wallet-info">
           <h3 class="popup-wallet-name">Historial de transferencias</h3>
-          <p class="popup-wallet-type">Últimas transferencias realizadas</p>
+          <p class="popup-wallet-type">Últimas transferencias entre tus billeteras</p>
         </div>
       </div>
       <button class="popup-close-btn" (click)="closeTransferHistory()">
@@ -241,13 +440,31 @@
       </button>
     </div>
 
-    <div class="popup-content">
-      <div class="popup-details" *ngIf="billeteras && billeteras.length">
-        <div class="popup-detail-item" *ngFor="let w of billeteras | slice:0:5">
-          <span class="detail-label">{{ getLastUpdate() }}</span>
-          <span class="detail-value">{{ w.nombre }} → {{ billeteras[0].nombre }} — {{ formatCurrency(w.balance || 0) }}</span>
+      <div class="popup-content">
+        <div class="transfer-list" *ngIf="transferHistoryView.length; else noTransfers">
+          <div class="transfer-row" *ngFor="let t of transferHistoryView">
+          <div class="transfer-main">
+            <div class="transfer-title">
+              <span class="from">{{ t.from }}</span>
+              <span class="arrow">→</span>
+              <span class="to">{{ t.to }}</span>
+            </div>
+            <div class="transfer-meta">
+              <span class="status" [class.completed]="t.status === 'Completada'">{{ t.status }}</span>
+              <span class="date">{{ t.date }}</span>
+            </div>
+          </div>
+          <div class="transfer-amount">
+            {{ formatCurrency(t.amount, t.currency) }}
+          </div>
         </div>
       </div>
+      <ng-template #noTransfers>
+        <div class="empty-state">
+          <i class="mdi mdi-transfer"></i>
+          <p>No hay transferencias registradas aún.</p>
+        </div>
+      </ng-template>
 
       <div class="popup-main-actions">
         <button class="popup-main-btn secondary" (click)="closeTransferHistory()">
@@ -258,3 +475,4 @@
     </div>
   </div>
 </div>
+

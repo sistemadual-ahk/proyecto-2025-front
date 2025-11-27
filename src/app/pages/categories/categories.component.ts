@@ -1,16 +1,20 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-// Importamos la interfaz actualizada (que ahora tiene 'description')
-import { CategoryModalComponent, EditableCategory } from '../../components/category-modal/category-modal.component';
+import { Subscription } from 'rxjs';
+import { CategoryService } from '../../services/category.service';
+import { CategoryModalComponent } from '../../components/category-modal/category-modal.component';
+import { EditableCategory } from '../../../models/editable-category.model';
+import { Categoria } from '../../../models/categoria.model';
 
 interface UiCategory {
   id?: string;
-  name: string;
-  description: string;
-  icon: string; // mdi icon name
-  color: string; // background color for the circle
-  iconColor: string; // icon color
-  isDefault?: boolean; // Para marcar categorías predefinidas
+  name?: string;
+  description?: string;
+  icon?: string;
+  color?: string;
+  iconColor?: string;
+  isDefault?: boolean;
+  type?: 'income' | 'expense';
 }
 
 @Component({
@@ -21,230 +25,329 @@ interface UiCategory {
   styleUrl: './categories.component.scss',
 })
 export class CategoriesComponent {
+  // Categorías globales por tipo
+  defaultIncomeCategories: UiCategory[] = [];
+  defaultExpenseCategories: UiCategory[] = [];
+
+  // Categorías personalizadas del usuario (también cargadas del backend)
+  customIncomeCategories: UiCategory[] = [];
+  customExpenseCategories: UiCategory[] = [];
+
+  private subscription: Subscription = new Subscription();
+
+  // Estado de UI
   activeTab: 'Ingreso' | 'Gasto' = 'Ingreso';
   showCategoryModal = false;
   editMode = false;
   editingIndex: number | null = null;
-  modalCategory: EditableCategory = { name: '', description: '', icon: 'mdi-cash', color: '#E5E7EB', iconColor: '#111827' };
 
-  // Categorías predefinidas de ingresos
-  defaultIncomeCategories: UiCategory[] = [
-    { 
-      id: 'default-salary',
-      name: 'Salario', 
-      description: 'Sueldo mensual y bonificaciones', 
-      icon: 'mdi-cash-plus', 
-      color: '#16A34A', 
-      iconColor: '#FFFFFF',
-      isDefault: true 
-    },
-    { 
-      id: 'default-gift',
-      name: 'Regalos e Ingresos Extra', 
-      description: 'Dinero recibido como regalo', 
-      icon: 'mdi-gift', 
-      color: '#7C3AED', 
-      iconColor: '#FFFFFF',
-      isDefault: true 
-    },
-    { 
-      id: 'default-investment',
-      name: 'Inversiones', 
-      description: 'Ganancias de inversiones y dividendos', 
-      icon: 'mdi-chart-line', 
-      color: '#4F46E5', 
-      iconColor: '#FFFFFF',
-      isDefault: true 
-    },
-  ];
+  // Datos que viajan al modal
+  modalCategory: EditableCategory = {
+    name: '',
+    description: '',
+    icon: 'mdi-cash',
+    color: '#E5E7EB',
+    iconColor: '#111827',
+  };
 
-  // Categorías predefinidas de gastos  
-  defaultExpenseCategories: UiCategory[] = [
-    { 
-      id: 'default-food',
-      name: 'Comida y Restaurantes', 
-      description: 'Gastos en alimentación, restaurantes y delivery', 
-      icon: 'mdi-food', 
-      color: '#D97706', 
-      iconColor: '#FFFFFF',
-      isDefault: true 
-    },
-    { 
-      id: 'default-transport',
-      name: 'Transporte', 
-      description: 'Gastos en transporte público, combustible y estacionamiento', 
-      icon: 'mdi-bus', 
-      color: '#0891B2', 
-      iconColor: '#FFFFFF',
-      isDefault: true 
-    },
-    { 
-      id: 'default-shopping',
-      name: 'Compras y Supermercado', 
-      description: 'Compras del hogar, supermercado y productos básicos', 
-      icon: 'mdi-cart', 
-      color: '#059669', 
-      iconColor: '#FFFFFF',
-      isDefault: true 
-    },
-    { 
-      id: 'default-health',
-      name: 'Salud y Medicina', 
-      description: 'Gastos médicos, medicamentos y consultas', 
-      icon: 'mdi-heart-pulse', 
-      color: '#DC2626', 
-      iconColor: '#FFFFFF',
-      isDefault: true 
-    },
-    { 
-      id: 'default-bills',
-      name: 'Servicios y Facturas', 
-      description: 'Electricidad, agua, gas, internet y telefonía', 
-      icon: 'mdi-receipt', 
-      color: '#B91C1C', 
-      iconColor: '#FFFFFF',
-      isDefault: true 
-    },
-    { 
-      id: 'default-entertainment',
-      name: 'Entretenimiento', 
-      description: 'Cine, streaming, juegos y actividades de ocio', 
-      icon: 'mdi-movie-open', 
-      color: '#7C3AED', 
-      iconColor: '#FFFFFF',
-      isDefault: true 
-    },
-  ];
+  constructor(private categoriasService: CategoryService) {
+    this.loadData();
+  }
 
-  // Categorías personalizadas del usuario
-  customIncomeCategories: UiCategory[] = [];
-  customExpenseCategories: UiCategory[] = [];
+  // =======================
+  //  CARGA DESDE BACKEND
+  // =======================
+  private loadData(): void {
+    this.subscription.add(
+      this.categoriasService.getAllCategories().subscribe({
+        next: (cat: Categoria[]) => {
+          console.log('Categorías cargadas desde backend:', cat);
+
+          // 1) Mapear lo que viene del backend a UiCategory
+          const uiCategories: UiCategory[] = cat.map((c: Categoria) => ({
+            id: c._id || c.id,
+            name: c.nombre,
+            description: c.descripcion || '',
+            color: c.color || '#E5E7EB',
+            icon: c.icono || 'mdi-cash',
+            iconColor: c.iconColor || '#111827',
+            isDefault: c.isDefault ?? false,
+            type: c.type ?? 'expense',
+          }));
+
+          // 2) Separar por tipo
+          const incomeCats = uiCategories.filter((c) => c.type === 'income');
+          const expenseCats = uiCategories.filter((c) => c.type === 'expense');
+
+          // 3) Dentro de cada tipo, separar default vs custom
+          this.defaultIncomeCategories = incomeCats.filter((c) => c.isDefault);
+          this.customIncomeCategories = incomeCats.filter((c) => !c.isDefault);
+
+          this.defaultExpenseCategories = expenseCats.filter((c) => c.isDefault);
+          this.customExpenseCategories = expenseCats.filter((c) => !c.isDefault);
+
+          console.log('Income default:', this.defaultIncomeCategories);
+          console.log('Income custom:', this.customIncomeCategories);
+          console.log('Expense default:', this.defaultExpenseCategories);
+          console.log('Expense custom:', this.customExpenseCategories);
+        },
+        error: (error) => {
+          console.error('Error al cargar categorías:', error);
+        },
+      })
+    );
+  }
+
+  // =======================
+  //  TABS / LISTAS
+  // =======================
 
   setTab(tab: 'Ingreso' | 'Gasto') {
     this.activeTab = tab;
   }
 
+  // Lista total a mostrar según la pestaña:
+  // primero default (no editables), después custom (editables)
   get categoriesToShow(): UiCategory[] {
-    const defaultCategories = this.activeTab === 'Ingreso' ? this.defaultIncomeCategories : this.defaultExpenseCategories;
-    const customCategories = this.activeTab === 'Ingreso' ? this.customIncomeCategories : this.customExpenseCategories;
-    
-    // Primero las categorías por defecto, luego las personalizadas
+    const defaultCategories =
+      this.activeTab === 'Ingreso'
+        ? this.defaultIncomeCategories
+        : this.defaultExpenseCategories;
+
+    const customCategories =
+      this.activeTab === 'Ingreso'
+        ? this.customIncomeCategories
+        : this.customExpenseCategories;
+
     return [...defaultCategories, ...customCategories];
   }
 
-  // Método para verificar si una categoría es por defecto
+  // Saber si una categoría visible en categoriesToShow es default
   isCategoryDefault(index: number): boolean {
-    const defaultCategoriesCount = this.activeTab === 'Ingreso' 
-      ? this.defaultIncomeCategories.length 
-      : this.defaultExpenseCategories.length;
-    
-    return index < defaultCategoriesCount;
+    const cat = this.categoriesToShow[index];
+    return !!cat?.isDefault;
   }
+
+  // =======================
+  //  MODAL CREAR / EDITAR
+  // =======================
 
   openCreateCategory() {
     this.editMode = false;
     this.editingIndex = null;
-    // <-- 4. Añadimos 'description' al crear una nueva categoría
-    this.modalCategory = { name: '', description: '', icon: 'mdi-cash', color: '#E5E7EB', iconColor: '#111827' };
+
+    this.modalCategory = {
+      name: '',
+      description: '',
+      icon: 'mdi-cash',
+      color: '#E5E7EB',
+      iconColor: '#111827',
+      isDefault: false,
+    };
+
     this.showCategoryModal = true;
   }
 
   openEditCategory(index: number) {
-    const isDefault = this.isCategoryDefault(index);
     const cat = this.categoriesToShow[index];
-    
-    this.editMode = !isDefault; // Solo modo edición si no es por defecto
-    this.editingIndex = isDefault ? null : index; // No permitir edición de las por defecto
-    
-    this.modalCategory = { 
+    const isDefault = this.isCategoryDefault(index);
+
+    // Si es default → solo lectura (no se puede editar ni borrar)
+    this.editMode = !isDefault;
+    this.editingIndex = isDefault ? null : index;
+
+    this.modalCategory = {
       id: cat.id,
-      name: cat.name, 
-      description: cat.description,
-      icon: cat.icon, 
-      color: cat.color, 
-      iconColor: cat.iconColor,
-      isDefault: cat.isDefault || false
+      name: cat.name ?? '',
+      description: cat.description ?? '',
+      icon: cat.icon ?? 'mdi-cash',
+      color: cat.color ?? '#E5E7EB',
+      iconColor: cat.iconColor ?? '#111827',
+      isDefault: cat.isDefault,
     };
-    
+
     this.showCategoryModal = true;
   }
 
+  // =======================
+  //  GUARDAR (CREAR / EDITAR)
+  // =======================
+
   saveCategory(value: EditableCategory) {
-    // No permitir guardar categorías por defecto
+    // Nunca permitir guardar cambios sobre default
     if (value.isDefault) {
+      console.warn('Intento de guardar una categoría default. Ignorado.');
       return;
     }
 
     const normalizedName = (value.name || '').trim() || 'Nueva categoría';
     const normalizedIcon = (value.icon || '').trim();
-    const iconClass = normalizedIcon.startsWith('mdi-') ? normalizedIcon : `mdi-${normalizedIcon}`;
+    const iconClass = normalizedIcon.startsWith('mdi-')
+      ? normalizedIcon
+      : `mdi-${normalizedIcon}`;
     const description = (value.description || '').trim();
-    
-    const updated: UiCategory = { 
-      id: value.id || `custom-${Date.now()}`,
-      name: normalizedName, 
-      description: description,
-      icon: iconClass, 
-      color: value.color, 
+
+    const payload: Partial<Categoria> = {
+      nombre: normalizedName,
+      descripcion: description,
+      icono: iconClass,
+      color: value.color,
       iconColor: value.iconColor,
-      isDefault: false
+      isDefault: false,
+      type: this.activeTab === 'Ingreso' ? 'income' : 'expense',
     };
 
-    if (this.activeTab === 'Ingreso') {
-      if (this.editingIndex === null) {
-        // Agregar nueva categoría personalizada
-        this.customIncomeCategories = [...this.customIncomeCategories, updated];
-      } else {
-        // Editar categoría existente (solo personalizadas)
-        const customIndex = this.editingIndex - this.defaultIncomeCategories.length;
-        if (customIndex >= 0) {
-          this.customIncomeCategories = this.customIncomeCategories.map((c, i) =>
-            i === customIndex ? updated : c
-          );
-        }
-      }
-    } else {
-      if (this.editingIndex === null) {
-        // Agregar nueva categoría personalizada
-        this.customExpenseCategories = [...this.customExpenseCategories, updated];
-      } else {
-        // Editar categoría existente (solo personalizadas)
-        const customIndex = this.editingIndex - this.defaultExpenseCategories.length;
-        if (customIndex >= 0) {
-          this.customExpenseCategories = this.customExpenseCategories.map((c, i) =>
-            i === customIndex ? updated : c
-          );
-        }
-      }
-    }
-    this.closeCategoryModal();
-  }
+    // 👇 Si no hay editingIndex → estamos creando
+    if (this.editingIndex === null) {
+      console.log('Creando categoría...', payload);
 
-  deleteCategory() {
-    if (this.editingIndex === null) return;
-    
-    // No permitir eliminar categorías por defecto
-    if (this.isCategoryDefault(this.editingIndex)) {
+      this.categoriasService.createCategory(payload).subscribe({
+        next: (created: Categoria) => {
+          console.log('Categoría creada en backend:', created);
+
+          const ui: UiCategory = {
+            id: created._id || created.id,
+            name: created.nombre,
+            description: created.descripcion,
+            icon: created.icono,
+            color: created.color,
+            iconColor: created.iconColor,
+            isDefault: created.isDefault,
+            type: created.type,
+          };
+
+          if (ui.type === 'income') {
+            this.customIncomeCategories = [...this.customIncomeCategories, ui];
+          } else {
+            this.customExpenseCategories = [...this.customExpenseCategories, ui];
+          }
+
+          this.closeCategoryModal();
+        },
+        error: (err) => {
+          console.error('Error al crear categoría:', err);
+        },
+      });
+
+      return; // importante
+    }
+
+    // 👇 Si hay editingIndex → queremos EDITAR una categoría CUSTOM
+    const defaultCount =
+      this.activeTab === 'Ingreso'
+        ? this.defaultIncomeCategories.length
+        : this.defaultExpenseCategories.length;
+
+    // Restamos las default para obtener el índice dentro del array de custom
+    const customIndex = this.editingIndex - defaultCount;
+    if (customIndex < 0) {
+      console.warn('Intento de editar una categoría default. Ignorado.');
       return;
     }
 
-    if (this.activeTab === 'Ingreso') {
-      const customIndex = this.editingIndex - this.defaultIncomeCategories.length;
-      if (customIndex >= 0) {
-        this.customIncomeCategories.splice(customIndex, 1);
-      }
-    } else {
-      const customIndex = this.editingIndex - this.defaultExpenseCategories.length;
-      if (customIndex >= 0) {
-        this.customExpenseCategories.splice(customIndex, 1);
-      }
+    const list =
+      this.activeTab === 'Ingreso'
+        ? this.customIncomeCategories
+        : this.customExpenseCategories;
+
+    const catToUpdate = list[customIndex];
+    if (!catToUpdate?.id) {
+      console.error('No se encontró el id de la categoría a actualizar');
+      return;
     }
-    
-    this.closeCategoryModal();
+
+    console.log('Actualizando categoría...', catToUpdate.id, payload);
+
+    this.categoriasService.updateCategory(catToUpdate.id, payload).subscribe({
+      next: (updated: Categoria) => {
+        console.log('Categoría actualizada en backend:', updated);
+
+        const ui: UiCategory = {
+          id: updated._id || updated.id,
+          name: updated.nombre,
+          description: updated.descripcion,
+          icon: updated.icono,
+          color: updated.color,
+          iconColor: updated.iconColor,
+          isDefault: updated.isDefault,
+          type: updated.type,
+        };
+
+        if (this.activeTab === 'Ingreso') {
+          this.customIncomeCategories = this.customIncomeCategories.map(
+            (c, i) => (i === customIndex ? ui : c)
+          );
+        } else {
+          this.customExpenseCategories = this.customExpenseCategories.map(
+            (c, i) => (i === customIndex ? ui : c)
+          );
+        }
+
+        this.closeCategoryModal();
+      },
+      error: (err) => {
+        console.error('Error al actualizar categoría:', err);
+      },
+    });
+  }
+
+  // =======================
+  //  ELIMINAR
+  // =======================
+
+  deleteCategory() {
+    if (this.editingIndex === null) return;
+
+    // Por si acaso: seguridad extra, no borrar default
+    if (this.isCategoryDefault(this.editingIndex)) {
+      console.warn('No se puede eliminar una categoría default.');
+      return;
+    }
+
+    const defaultCount =
+      this.activeTab === 'Ingreso'
+        ? this.defaultIncomeCategories.length
+        : this.defaultExpenseCategories.length;
+
+    const customIndex = this.editingIndex - defaultCount;
+    if (customIndex < 0) return;
+
+    const list =
+      this.activeTab === 'Ingreso'
+        ? this.customIncomeCategories
+        : this.customExpenseCategories;
+
+    const catToDelete = list[customIndex];
+
+    if (!catToDelete?.id) {
+      console.error('No se encontró id para eliminar categoría');
+      return;
+    }
+
+    console.log('Eliminando categoría...', catToDelete.id);
+
+    this.categoriasService.deleteCategory(catToDelete.id).subscribe({
+      next: () => {
+        if (this.activeTab === 'Ingreso') {
+          this.customIncomeCategories = this.customIncomeCategories.filter(
+            (_c, i) => i !== customIndex
+          );
+        } else {
+          this.customExpenseCategories = this.customExpenseCategories.filter(
+            (_c, i) => i !== customIndex
+          );
+        }
+        this.closeCategoryModal();
+      },
+      error: (err) => {
+        console.error('Error al eliminar categoría:', err);
+      },
+    });
   }
 
   closeCategoryModal() {
     this.showCategoryModal = false;
     this.editingIndex = null;
+    this.editMode = false;
   }
 }

@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { WalletsComponent } from './wallets.component';
 import { Router } from '@angular/router';
+import { WalletsComponent } from './wallets.component';
+import { Billetera } from '../../services/billetera.service';
 
 describe('WalletsComponent', () => {
   let component: WalletsComponent;
@@ -11,8 +12,8 @@ describe('WalletsComponent', () => {
     mockRouter = jasmine.createSpyObj('Router', ['navigate']);
 
     await TestBed.configureTestingModule({
-      imports: [WalletsComponent], // ✅ porque es standalone
-      providers: [{ provide: Router, useValue: mockRouter }]
+      imports: [WalletsComponent],
+      providers: [{ provide: Router, useValue: mockRouter }],
     }).compileComponents();
 
     fixture = TestBed.createComponent(WalletsComponent);
@@ -48,12 +49,15 @@ describe('WalletsComponent', () => {
     expect(component.totalBalance).toBe(total);
   });
 
-  it('debería agregar una nueva cuenta con saveAccount()', () => {
-    const newAccount = { name: 'Nueva Cuenta', type: 'cash' as 'cash', initialBalance: 5000 };
-    const initialLength = component.wallets.length;
-    component.saveAccount(newAccount);
-    expect(component.wallets.length).toBe(initialLength + 1);
-    expect(component.wallets[0].name).toBe('Nueva Cuenta');
+  it('debería almacenar el tipo override y recargar al guardar una cuenta', () => {
+    const loadDataSpy = spyOn<any>(component, 'loadData');
+    const setOverrideSpy = spyOn<any>(component, 'setWalletTypeOverride').and.callThrough();
+    component.showAddAccountModal = true;
+    const wallet = { id: '123', balance: 0, nombre: 'Test', isDefault: false } as Billetera;
+    component.handleAccountSaved({ wallet, type: 'digital', mode: 'create', payload: {} });
+    expect(component.showAddAccountModal).toBeFalse();
+    expect(setOverrideSpy).toHaveBeenCalledWith('123', 'digital');
+    expect(loadDataSpy).toHaveBeenCalled();
   });
 
   it('debería establecer una billetera como predeterminada con setAsDefault()', () => {

@@ -15,6 +15,20 @@ import { OperacionService } from '../../services/operacion.service';
 import { Operacion } from '../../../models/operacion.model';
 import { MatSelectModule } from '@angular/material/select';
 
+const formatLocalDate = (date: Date): string => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
+const toLocalISOString = (dateString: string): string => {
+  const [year, month, day] = dateString.split('-').map(Number);
+  // Construir la fecha directamente en UTC al mediodía para evitar corrimientos por huso horario
+  const utcDate = new Date(Date.UTC(year, (month || 1) - 1, day || 1, 12, 0, 0));
+  return utcDate.toISOString();
+};
+
 @Component({
   selector: 'add-operation-modal',
   standalone: true,
@@ -33,7 +47,7 @@ export class TransactionBottomSheet implements OnInit {
   transactionType: 'income' | 'expense' = 'expense';
   amount: number | null = null;
   description: string = '';
-  date: string = new Date().toISOString().split('T')[0];
+  date: string = '';
   wallet: string = ''; // Almacena el NOMBRE de la billetera seleccionada
   category: string = ''; // Almacena el NOMBRE de la categoría seleccionada
 
@@ -44,6 +58,7 @@ export class TransactionBottomSheet implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
+    this.date = formatLocalDate(new Date());
     this.loadData();
   }
 
@@ -92,10 +107,9 @@ export class TransactionBottomSheet implements OnInit {
     const selectedCategory = this.categorias.find(c => c.nombre === this.category);
     let selectedWallet = this.billeteras.find(b => b.nombre === this.wallet);
 
-    if (!selectedWallet || !selectedCategory || this.amount == null || this.amount <= 0) {
-      console.error(
-        'Validación fallida: El monto debe ser > 0 y debe seleccionar billetera/categoría.'
-      );
+    if (!selectedCategory) {
+      console.error('❌ No se seleccionó una categoría válida');
+      alert('Debes seleccionar una categoría');
       return;
     }
 
@@ -118,12 +132,19 @@ export class TransactionBottomSheet implements OnInit {
     // 3. Construir el objeto para el backend (el servicio espera 'billetera' y 'categoria', no los del DTO)
     const operacionData: any = {
       monto: Math.abs(this.amount!),
+      billeteraId: selectedWallet ? selectedWallet.id : null,
       descripcion: this.description,
-      fecha: new Date(this.date).toISOString(),
-      tipo: this.transactionType, // Send 'income' or 'expense' as backend expects
-      billetera: selectedWallet.id?.toString(), // Backend expects 'billetera'
-      categoria: selectedCategory.id, // Backend expects 'categoria'
+      fecha: toLocalISOString(this.date),
+      tipo: this.transactionType === 'income' ? 'income' : 'expense', // El servicio traduce income/expense a Ingreso/Egreso
+      categoriaId: selectedCategory.id, // El servicio espera 'categoria'
     };
+
+    // Agregar billetera solo si existe
+    if (selectedWallet && selectedWallet.id) {
+      operacionData.billetera = selectedWallet.id.toString(); // El servicio espera 'billetera'
+    }
+
+    console.log('Datos a enviar:', operacionData);
 
     // 3. Llamada al servicio
     this.operacionService.createOperacion(operacionData).subscribe({
@@ -158,18 +179,18 @@ export class TransactionBottomSheet implements OnInit {
   get isFormValid(): boolean {
     const hasAmount = this.amount !== null && this.amount > 0;
     const hasDescription = this.description.trim().length > 0;
-    const hasWallet = !!this.wallet;
     const hasCategory = !!this.category;
     const hasDate = !!this.date;
 
-    return hasAmount && hasDescription && hasWallet && hasCategory && hasDate;
+    // La billetera ya no es obligatoria
+    return hasAmount && hasDescription && hasCategory && hasDate;
   }
 
   private resetForm(): void {
     this.transactionType = 'expense';
     this.amount = null;
     this.description = '';
-    this.date = new Date().toISOString().split('T')[0];
+    this.date = formatLocalDate(new Date());
     this.wallet = '';
     this.category = '';
   }

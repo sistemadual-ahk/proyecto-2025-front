@@ -33,7 +33,7 @@ export class SavingGoalsComponent {
       fechaInicio: '2024-01-01',
       fechaEsperadaFinalizacion: '2024-12-31',
       estado: EstadoObjetivo.PENDIENTE,
-      operaciones: [],
+      operaciones: [] as Operacion[],
       color: 'var(--gastify-purple)',
     },
     {
@@ -43,8 +43,8 @@ export class SavingGoalsComponent {
       montoObjetivo: 1200,
       fechaInicio: '2024-02-01',
       fechaEsperadaFinalizacion: '2024-08-31',
-      estado: EstadoObjetivo.PENDIENTE,
-      operaciones: [],
+      estado: EstadoObjetivo.COMPLETADO,
+      operaciones: [] as Operacion[],
       color: 'var(--gastify-green)',
     },
   ];
@@ -143,7 +143,11 @@ export class SavingGoalsComponent {
 
   // Método para calcular el progreso
   getProgress(goal: Objetivo): number {
-    return goal.montoObjetivo > 0 ? (goal.montoActual / goal.montoObjetivo) * 100 : 0;
+    if (goal.montoObjetivo <= 0 || goal.montoActual < 0) {
+      return 0;
+    }
+    const progress = (goal.montoActual / goal.montoObjetivo) * 100;
+    return Math.min(progress, 100);
   }
 
   // Método para alternar el estado del objetivo
