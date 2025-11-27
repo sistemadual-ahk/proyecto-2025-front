@@ -12,7 +12,7 @@ import {
   MatBottomSheetModule,
   MatBottomSheetRef,
 } from '@angular/material/bottom-sheet';
-import {MatButtonModule} from '@angular/material/button';
+import { MatButtonModule } from '@angular/material/button';
 import { TransactionBottomSheet } from '../../components/add-operation-modal/add-operation-modal.component';
 
 @Component({
@@ -56,19 +56,19 @@ export class HomeComponent implements OnInit, OnDestroy {
     private router: Router,
     private operacionesService: OperacionService,
     private billeteraService: BilleteraService
-  ) {}
+  ) { }
 
   get visibleCards() {
     if (this.cards.length === 0) return [];
     if (this.cards.length === 1) return [this.cards[0]];
-    
+
     if (this.cards.length === 2) {
       // Con 2 tarjetas, mostrar la actual y la siguiente en ciclo
       const current = this.currentIndex % 2;
       const next = (this.currentIndex + 1) % 2;
       return [this.cards[current], this.cards[next]];
     }
-    
+
     const prev = this.currentIndex === 0 ? this.cards.length - 1 : this.currentIndex - 1;
     const next = this.currentIndex === this.cards.length - 1 ? 0 : this.currentIndex + 1;
     return [
@@ -127,7 +127,7 @@ export class HomeComponent implements OnInit, OnDestroy {
             ingresoHistorico: billeteras.reduce((sum, b) => sum + (b.ingresoHistorico || 0), 0),
             gastoHistorico: billeteras.reduce((sum, b) => sum + (b.gastoHistorico || 0), 0)
           };
-          
+
           // Agregar billetera General al inicio (siempre, incluso si no hay otras)
           this.billeteras = [billeteraGeneral, ...billeteras];
           this.mapBilleterasToCards();
@@ -196,12 +196,12 @@ export class HomeComponent implements OnInit, OnDestroy {
       // Filtrar operaciones por la billetera específica
       // El backend puede devolver billetera como string (ID) o como objeto {id, nombre, ...}
       operacionesBilletera = this.operaciones.filter((op) => {
-        const billeteraId = typeof op.billetera === 'object' && op.billetera !== null 
+        const billeteraId = typeof op.billetera === 'object' && op.billetera !== null
           ? (op.billetera as any).id || (op.billetera as any)._id
           : op.billetera;
-        
-        return billeteraId === billeteraActual.id?.toString() || 
-               op.billeteraId === billeteraActual.id?.toString();
+
+        return billeteraId === billeteraActual.id?.toString() ||
+          op.billeteraId === billeteraActual.id?.toString();
       });
       console.log(`Operaciones para stats: ${operacionesBilletera.length}`);
     }
@@ -212,7 +212,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.income = ingresos.reduce((sum, g) => sum + g.monto, 0);
     this.expenses = egresos.reduce((sum, g) => sum + g.monto, 0);
     this.availableBalance = this.income - this.expenses;
-    
+
     console.log(`Ingresos: $${this.income}, Gastos: $${this.expenses}`);
   }
 
@@ -237,38 +237,40 @@ export class HomeComponent implements OnInit, OnDestroy {
       // Debug: Mostrar IDs de las operaciones
       console.log('Buscando operaciones con billetera ID:', billeteraActual.id);
       this.operaciones.forEach((op, index) => {
-        const billeteraId = typeof op.billetera === 'object' && op.billetera !== null 
+        const billeteraId = typeof op.billetera === 'object' && op.billetera !== null
           ? (op.billetera as any).id || (op.billetera as any)._id
           : op.billetera;
-        
+
         console.log(`  Operación ${index}:`, {
           descripcion: op.descripcion,
           billetera: op.billetera,
           billeteraIdExtraido: billeteraId,
           billeteraId: op.billeteraId,
-          coincide: billeteraId === billeteraActual.id?.toString() || 
-                    op.billeteraId === billeteraActual.id?.toString()
+          coincide: billeteraId === billeteraActual.id?.toString() ||
+            op.billeteraId === billeteraActual.id?.toString()
         });
       });
 
       // Filtrar operaciones por la billetera específica
       // El backend puede devolver billetera como string (ID) o como objeto {id, nombre, ...}
       operacionesBilletera = this.operaciones.filter((op) => {
-        const billeteraId = typeof op.billetera === 'object' && op.billetera !== null 
+        const billeteraId = typeof op.billetera === 'object' && op.billetera !== null
           ? (op.billetera as any).id || (op.billetera as any)._id
           : op.billetera;
-        
-        return billeteraId === billeteraActual.id?.toString() || 
-               op.billeteraId === billeteraActual.id?.toString();
+
+        return billeteraId === billeteraActual.id?.toString() ||
+          op.billeteraId === billeteraActual.id?.toString();
       });
       console.log(`Operaciones filtradas: ${operacionesBilletera.length}`);
     }
 
     // Mostrar los últimos creados primero (sin mutar el arreglo original)
+
     const operacionesRecientes = operacionesBilletera
       .slice()
-      .reverse()
+      .sort((a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime()) // Orden descendente
       .slice(0, 3);
+
 
     console.log('Movimientos recientes a mostrar:', operacionesRecientes.length);
 
@@ -331,7 +333,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   isCurrentMonth(): boolean {
     const today = new Date();
     return this.currentViewDate.getFullYear() === today.getFullYear() &&
-           this.currentViewDate.getMonth() === today.getMonth();
+      this.currentViewDate.getMonth() === today.getMonth();
   }
 
   viewAllMovements() {
@@ -364,7 +366,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   onTouchEnd(event: any) {
     if (!this.isDragging || this.isAnimating || this.cards.length <= 1) return;
     this.isDragging = false;
-    
+
     const diff = this.touchCurrentX - this.touchStartX;
     const threshold = 50;
 
@@ -383,7 +385,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         this.updateBilleteraData();
       }, 300);
     }
-    
+
     this.touchStartX = 0;
     this.touchCurrentX = 0;
   }
@@ -396,12 +398,12 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   getCardTransform(index: number): string {
     const diff = this.isDragging ? this.touchCurrentX - this.touchStartX : 0;
-    
+
     // Si solo hay 1 tarjeta, centrarla siempre
     if (this.visibleCards.length === 1) {
       return `translateX(0) scale(1)`;
     }
-    
+
     // Si hay 2 tarjetas, mejorar la animación
     if (this.visibleCards.length === 2) {
       if (index === 0) {
@@ -412,7 +414,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         return `translateX(calc(100% + 20px + ${diff / 2}px)) scale(0.95)`;
       }
     }
-    
+
     // Si hay 3 o más tarjetas, comportamiento normal
     if (index === 0) {
       // Tarjeta previa
@@ -434,7 +436,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       backdropClass: 'bottom-sheet-backdrop',
       panelClass: 'custom-bottom-sheet-container'
     });
-    
+
     // Manejar el resultado cuando se cierra el bottom sheet
     bottomSheetRef.afterDismissed().subscribe(result => {
       if (result) {

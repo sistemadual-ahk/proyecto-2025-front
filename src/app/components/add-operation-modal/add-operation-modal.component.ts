@@ -48,8 +48,8 @@ export class TransactionBottomSheet implements OnInit {
   amount: number | null = null;
   description: string = '';
   date: string = '';
-  wallet: string = ''; // Almacena el NOMBRE de la billetera seleccionada
-  category: string = ''; // Almacena el NOMBRE de la categoría seleccionada
+  wallet: Billetera | null = null; // Almacena el NOMBRE de la billetera seleccionada
+  category: Categoria | null = null; // Almacena el NOMBRE de la categoría seleccionada
 
   // --- DATOS CARGADOS DEL BACKEND ---
   categorias: Categoria[] = [];
@@ -104,8 +104,8 @@ export class TransactionBottomSheet implements OnInit {
     });
 
     // 1. Validar categoría (obligatoria)
-    const selectedCategory = this.categorias.find(c => c.nombre === this.category);
-    let selectedWallet = this.billeteras.find(b => b.nombre === this.wallet);
+    let selectedCategory = this.category;
+    let selectedWallet = this.wallet;
 
     if (!selectedCategory) {
       console.error('❌ No se seleccionó una categoría válida');
@@ -123,7 +123,7 @@ export class TransactionBottomSheet implements OnInit {
 
     if (!selectedWallet && this.billeteras.length > 0) {
       selectedWallet = this.billeteras[0];
-      console.log('⚠️ No se seleccionó billetera, usando la primera disponible:', selectedWallet.nombre);
+      console.log('⚠️ No se seleccionó billetera, usando la primera disponible:', selectedWallet);
     }
 
     console.log('Billetera seleccionada:', selectedWallet);
@@ -191,7 +191,7 @@ export class TransactionBottomSheet implements OnInit {
     this.amount = null;
     this.description = '';
     this.date = formatLocalDate(new Date());
-    this.wallet = '';
-    this.category = '';
+    this.wallet = null;
+    this.category = null;
   }
 }
