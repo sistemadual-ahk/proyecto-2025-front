@@ -86,11 +86,15 @@ export class UserComparisonComponent implements OnInit {
     this.loadProvincias();
   }
 
-  private loadUserData(): void {
-    const userData = this.userService.getUserData();
-    if (userData) {
+  
+private loadUserData(): void {
+  this.userService.getUserData().subscribe({
+    next: (userData) => {
+      if (!userData) return;
+
       this.currentUserData = userData;
       this.currentUserProfesion = userData.profesion || '';
+
       if (userData.ubicacion) {
         this.currentUserUbicacion = {
           provincia: userData.ubicacion.provincia || '',
@@ -98,8 +102,13 @@ export class UserComparisonComponent implements OnInit {
           localidad: userData.ubicacion.localidad || ''
         };
       }
+    },
+    error: (err) => {
+      console.error('Error al cargar datos del usuario', err);
     }
-  }
+  });
+}
+
 
   private loadProfesiones(): void {
     this.api.getAll<any>('/profesiones').subscribe({

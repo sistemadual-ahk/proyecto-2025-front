@@ -51,13 +51,20 @@ export class ActivityComponent implements OnInit, OnDestroy {
   }
   private allOperaciones: OperacionVista[] = [];
 
+
   private loadOperaciones(): void {
     this.subscription.add(
       this.operacionService.getAllOperaciones().subscribe({
         next: (op) => {
           const operacionesVista = op.map((operacion) => this.mapOperacionParaVista(operacion));
-          this.allOperaciones = operacionesVista;
-          this.groupedOperaciones = this.groupOperacionesByDate(operacionesVista);
+
+          // 🔽 Ordenar por fecha DESC antes de agrupar
+          const ordenadas = operacionesVista
+            .slice()
+            .sort((a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime());
+
+          this.allOperaciones = ordenadas; // útil si usás búsqueda
+          this.groupedOperaciones = this.groupOperacionesByDate(ordenadas);
         },
         error: (error) => {
           console.error('Error al cargar operaciones:', error);
@@ -65,6 +72,7 @@ export class ActivityComponent implements OnInit, OnDestroy {
       })
     );
   }
+
 
 
   onSearch(): void {
@@ -86,35 +94,33 @@ export class ActivityComponent implements OnInit, OnDestroy {
   }
 
 
+
   private groupOperacionesByDate(
     operaciones: OperacionVista[]
   ): { date: string; operaciones: OperacionVista[] }[] {
     const groups: { [key: string]: OperacionVista[] } = {};
 
+    // Agrupar por fecha "formateada" para header visual,
+    // pero conservar dentro del grupo el orden del array (ya está descendente)
     operaciones.forEach((op) => {
-      const dateKey = formatDate(op.fecha.toString());
-      if (!groups[dateKey]) {
-        groups[dateKey] = [];
-      }
+      const dateKey = formatDate(op.fecha.toString()); // ej: "Hoy", "Ayer" o "25 nov 2025"
+      if (!groups[dateKey]) groups[dateKey] = [];
       groups[dateKey].push(op);
     });
 
-    // Convertir a array y ordenar por fecha (más reciente primero)
+    // Convertir a array y ordenar grupos por fecha real desc:
+    // Tomamos el máximo timestamp de cada grupo para ordenarlos.
     return Object.keys(groups)
       .map((date) => ({
-        date: date,
+        date,
         operaciones: groups[date],
+        // timestamp máximo del grupo:
+        _maxTs: Math.max(...groups[date].map((g) => new Date(g.fecha).getTime())),
       }))
-      .sort((a, b) => {
-        const dateA = new Date(
-          operaciones.find((g) => formatDate(g.fecha.toString()) === a.date)?.fecha || ''
-        );
-        const dateB = new Date(
-          operaciones.find((g) => formatDate(g.fecha.toString()) === b.date)?.fecha || ''
-        );
-        return dateB.getTime() - dateA.getTime();
-      });
+      .sort((a, b) => b._maxTs - a._maxTs)
+      .map(({ date, operaciones }) => ({ date, operaciones }));
   }
+
 
   formatearFecha(dateString: string): string {
     return formatDate(dateString);

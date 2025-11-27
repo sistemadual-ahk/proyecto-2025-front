@@ -45,16 +45,16 @@ export class WalletsComponent implements OnInit {
   }[] = [];
   transferHistoryView:
     | {
-        id: string;
-        fromId: string;
-        toId: string;
-        from: string;
-        to: string;
-        amount: number;
-        currency: 'ARS' | 'USD';
-        date: string;
-        status: 'Completada' | 'Pendiente';
-      }[]
+      id: string;
+      fromId: string;
+      toId: string;
+      from: string;
+      to: string;
+      amount: number;
+      currency: 'ARS' | 'USD';
+      date: string;
+      status: 'Completada' | 'Pendiente';
+    }[]
     | [] = [];
   transferMode: 'from' | 'to' = 'from';
   transferForm = {
@@ -86,14 +86,14 @@ export class WalletsComponent implements OnInit {
     moneda: string;
     color: string;
   } = {
-    id: null,
-    nombre: '',
-    balance: null,
-    type: 'bank',
-    proveedor: '',
-    moneda: 'ARS',
-    color: this.defaultWalletColor,
-  };
+      id: null,
+      nombre: '',
+      balance: null,
+      type: 'bank',
+      proveedor: '',
+      moneda: 'ARS',
+      color: this.defaultWalletColor,
+    };
   walletTypeOptions = [
     { value: 'bank', label: 'Cuenta bancaria' },
     { value: 'digital', label: 'Billetera digital' },
@@ -126,7 +126,7 @@ export class WalletsComponent implements OnInit {
   get editProviders(): string[] {
     return this.providersByType[this.editWalletForm.type] || [];
   }
-  
+
   // Datos de las billeteras
   wallets = [
     {
@@ -173,8 +173,8 @@ export class WalletsComponent implements OnInit {
   ];
 
   constructor(
-  private router: Router,
-  private billeteraService: BilleteraService
+    private router: Router,
+    private billeteraService: BilleteraService
   ) { }
 
   // Método de inicialización
@@ -216,7 +216,7 @@ export class WalletsComponent implements OnInit {
       })
     )
   }
-  
+
   // Calcular total
   get totalBalance(): number {
     return this.wallets.reduce((total, wallet) => total + wallet.balance, 0);
@@ -620,17 +620,17 @@ export class WalletsComponent implements OnInit {
       console.log("Billetera eliminada: ", this.selectedWallet);
       console.log(this.selectedWallet.id);
       this.billeteraService.deleteBilletera(this.selectedWallet.id).subscribe({
-          next: (response) => {
-            console.log('Billetera eliminada exitosamente:', response);
-            this.loadData();
-            this.billeterasCargadas.splice(index, 1);
-            this.closeWalletPopup();  
-          },
-          error: (err) => {
-            // 3. Error: Mostrar un error en la consola
-            console.error('Error al eliminar billetera:', err);
-          }
-        });
+        next: (response) => {
+          console.log('Billetera eliminada exitosamente:', response);
+          this.loadData();
+          this.billeterasCargadas.splice(index, 1);
+          this.closeWalletPopup();
+        },
+        error: (err) => {
+          // 3. Error: Mostrar un error en la consola
+          console.error('Error al eliminar billetera:', err);
+        }
+      });
     }
   }
 
@@ -705,22 +705,22 @@ export class WalletsComponent implements OnInit {
     this.showTransferModal = false;
   }
 
+
   getFilteredTransferWallets(target: 'origin' | 'destination'): Billetera[] {
     const otherId =
       target === 'origin' ? this.transferForm.destinationId : this.transferForm.originId;
-    if (otherId) {
-      const otherWallet = this.billeteras.find((w) => this.getWalletId(w) === String(otherId));
-      const currency = otherWallet ? this.getWalletCurrencyValue(otherWallet) : null;
-      if (currency) {
-        return this.billeteras.filter(
-          (w) => this.getWalletCurrencyValue(w) === currency
-        );
-      }
-    }
-    return this.billeteras;
+
+    return this.billeteras.filter((w) => {
+      const sameCurrency = !otherId || this.getWalletCurrencyValue(w) === this.getWalletCurrencyValue(
+        this.billeteras.find((bw) => this.getWalletId(bw) === String(otherId)) || w
+      );
+      const notSameWallet = this.getWalletId(w) !== String(otherId);
+      return sameCurrency && notSameWallet;
+    });
   }
 
-     // Aquí podríamos llamar a un endpoint de transferencia si existiera
+
+  // Aquí podríamos llamar a un endpoint de transferencia si existiera
   submitTransfer() {
     const originId = this.transferForm.originId;
     const destinationId = this.transferForm.destinationId;
