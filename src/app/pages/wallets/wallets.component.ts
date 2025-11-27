@@ -288,7 +288,7 @@ export class WalletsComponent implements OnInit {
         return;
       }
       this.isSavingWallet = true;
-      this.billeteraService.patchBilletera(walletId, event.payload).subscribe({
+      this.billeteraService.updateBilletera(walletId, event.payload).subscribe({
         next: () => {
           this.isSavingWallet = false;
           console.log('Billetera actualizada');
@@ -577,7 +577,7 @@ export class WalletsComponent implements OnInit {
     };
 
     this.isSavingWallet = true;
-    this.billeteraService.patchBilletera(billeteraId, updateData).subscribe({
+    this.billeteraService.updateBilletera(billeteraId, updateData).subscribe({
       next: () => {
         this.isSavingWallet = false;
         this.setWalletTypeOverride(billeteraId, this.editWalletForm.type);
