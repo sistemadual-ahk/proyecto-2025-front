@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Objetivo, EstadoObjetivo } from '../../../models/objetivo.model';
 import { Operacion } from '../../../models/operacion.model';
+import { Categoria } from '../../../models/categoria.model';
+import { CategoriaService } from '../../services/categoria.service';
 
 @Component({
   selector: 'app-add-goal-modal',
@@ -31,6 +33,9 @@ export class AddGoalModalComponent implements OnInit {
   estado: EstadoObjetivo = EstadoObjetivo.PENDIENTE;
   operaciones: Operacion[] = [];
 
+  // Lista de categorías
+  categorias: Categoria[] = [];
+
   // Opciones de colores predefinidos
   colorOptions: string[] = [
     '#8B5CF6', // Púrpura
@@ -41,7 +46,28 @@ export class AddGoalModalComponent implements OnInit {
     '#EC4899', // Rosa
   ];
 
+  constructor(private categoriaService: CategoriaService) {}
+
+  get isFormValid(): boolean {
+    return !!this.titulo.trim() && 
+           !!this.montoObjetivo && 
+           this.montoObjetivo > 0 && 
+           !!this.fechaInicio && 
+           !!this.fechaEsperadaFinalizacion;
+  }
+
   ngOnInit() {
+    // Cargar categorías
+    this.categoriaService.getCategorias().subscribe({
+      next: (categorias) => {
+        this.categorias = categorias;
+      },
+      error: (error) => {
+        console.error('Error al cargar categorías:', error);
+        this.categorias = [];
+      }
+    });
+
     if (this.edit && this.objetivo) {
       // Cargar datos del objetivo existente
       this.titulo = this.objetivo.titulo;

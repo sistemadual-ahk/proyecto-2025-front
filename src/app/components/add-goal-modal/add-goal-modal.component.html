@@ -1,94 +1,155 @@
-<div class="modal-overlay" (click)="onClose()" role="dialog" aria-modal="true" [attr.aria-label]="edit ? 'Editar objetivo' : 'Nuevo objetivo'">
-  <div class="modal" (click)="$event.stopPropagation()">
-    <div class="modal-header">
-      <button class="icon-btn" (click)="onClose()" aria-label="Cerrar modal" type="button">
-        <i class="mdi mdi-close"></i>
-      </button>
-      <div class="modal-title">
-        <i class="mdi mdi-target"></i>
-        <span>{{ edit ? 'Editar objetivo' : 'Nuevo Objetivo' }}</span>
-      </div>
-      <div class="header-actions">
-        <button class="icon-btn danger" *ngIf="edit" (click)="onDelete()" aria-label="Eliminar objetivo" type="button">
-          <i class="mdi mdi-delete"></i>
-        </button>
-        <button class="icon-btn" (click)="onSave()" aria-label="Guardar objetivo" type="button">
-          <i class="mdi mdi-check"></i>
-        </button>
+<div class="modal-content-wrapper">
+<!-- Header del bottom sheet -->
+<div class="bottom-sheet-header">
+  <button class="close-btn" (click)="onClose()">
+    <i class="mdi mdi-close"></i>
+  </button>
+
+  <h2 class="bottom-sheet-title">
+    <i class="mdi mdi-target"></i>
+    {{ edit ? 'Editar Objetivo' : 'Nuevo Objetivo' }}
+  </h2>
+
+  <button
+    class="save-btn"
+    type="button"
+    (click)="onSave()"
+    [disabled]="!isFormValid"
+    [class.enabled]="isFormValid"
+  >
+    <i class="mdi mdi-check"></i>
+  </button>
+</div>
+
+<!-- Formulario -->
+<div class="transaction-form">
+  <!-- Título -->
+  <div class="form-group">
+    <label class="form-label">Título</label>
+    <input 
+      type="text" 
+      class="form-input" 
+      placeholder="Ej: Viaje a Brasil" 
+      [(ngModel)]="titulo" 
+    />
+  </div>
+
+  <!-- Monto Objetivo -->
+  <div class="form-group amount-group">
+    <label class="form-label">Monto Objetivo</label>
+    <input 
+      type="number" 
+      class="form-input" 
+      placeholder="0" 
+      [(ngModel)]="montoObjetivo"
+      min="0"
+      step="0.01"
+    />
+  </div>
+
+  <!-- Monto Actual (solo en edición) -->
+  <div class="form-group" *ngIf="edit">
+    <label class="form-label">Monto Actual</label>
+    <input 
+      type="number" 
+      class="form-input" 
+      placeholder="0" 
+      [(ngModel)]="montoActual" 
+      readonly 
+      style="background: rgba(255, 255, 255, 0.05); cursor: not-allowed;"
+    />
+  </div>
+
+  <!-- Categoría -->
+  <div class="form-group">
+    <label class="form-label">Categoría (opcional)</label>
+    <select 
+      class="form-input" 
+      [(ngModel)]="categoriaId"
+    >
+      <option value="">Sin categoría</option>
+      <option *ngFor="let categoria of categorias" [value]="categoria.id">
+        {{ categoria.nombre }}
+      </option>
+    </select>
+  </div>
+
+  <!-- Fechas -->
+  <div class="form-row">
+    <div class="form-group">
+      <label class="form-label">Fecha Inicio</label>
+      <div class="input-with-icon">
+        <input 
+          type="date" 
+          class="form-input" 
+          [(ngModel)]="fechaInicio" 
+        />
+        <i class="mdi mdi-calendar"></i>
       </div>
     </div>
-
-    <div class="form">
-      <!-- Título -->
-      <div class="field input">
-        <label>Título</label>
-        <input type="text" placeholder="Ej: Viaje a Brasil" [(ngModel)]="titulo" />
+    <div class="form-group">
+      <label class="form-label">Fecha Esperada</label>
+      <div class="input-with-icon">
+        <input 
+          type="date" 
+          class="form-input" 
+          [(ngModel)]="fechaEsperadaFinalizacion" 
+        />
+        <i class="mdi mdi-calendar"></i>
       </div>
+    </div>
+  </div>
 
-      <!-- Monto Objetivo -->
-      <div class="field pill">
-        <span class="prefix">Objetivo: $</span>
-        <input type="number" placeholder="0.0" [(ngModel)]="montoObjetivo" />
-      </div>
+  <!-- Fecha de finalización (solo si está completado) -->
+  <div class="form-group" *ngIf="isCompleted()">
+    <label class="form-label">Fecha de Finalización</label>
+    <div class="input-with-icon">
+      <input 
+        type="date" 
+        class="form-input" 
+        [(ngModel)]="fechaFin" 
+      />
+      <i class="mdi mdi-calendar"></i>
+    </div>
+  </div>
 
-      <!-- Monto Actual (solo en edición) -->
-      <div class="field pill" *ngIf="edit">
-        <span class="prefix">Actual: $</span>
-        <input type="number" placeholder="0.0" [(ngModel)]="montoActual" readonly />
-      </div>
+  <!-- Estado del objetivo (solo en edición) -->
+  <div class="form-group status-field" *ngIf="edit">
+    <div class="status-header">
+      <label class="form-label">Estado del objetivo</label>
+      <span class="status-text" [class.completed]="isCompleted()">
+        {{ isCompleted() ? '✓ Completado' : 'Pendiente' }}
+      </span>
+    </div>
+    <label class="switch">
+      <input 
+        type="checkbox" 
+        [checked]="isCompleted()" 
+        (change)="toggleEstado()"
+      />
+      <span class="slider"></span>
+    </label>
+  </div>
 
-      <!-- Fechas -->
-      <div class="row">
-        <div class="field date">
-          <label>Fecha Inicio</label>
-          <input type="date" [(ngModel)]="fechaInicio" />
-        </div>
-        <div class="field date">
-          <label>Fecha Esperada</label>
-          <input type="date" [(ngModel)]="fechaEsperadaFinalizacion" />
-        </div>
-      </div>
-
-      <!-- Fecha de finalización (solo si está completado) -->
-      <div class="field date" *ngIf="isCompleted()">
-        <label>Fecha de Finalización</label>
-        <input type="date" [(ngModel)]="fechaFin" />
-      </div>
-
-      <!-- Color -->
-      <div class="field color-field">
-        <label>Color</label>
-        <div class="color-options">
-          <button 
-            type="button"
-            class="color-option" 
-            *ngFor="let colorOption of colorOptions" 
-            [style.background-color]="colorOption"
-            [class.selected]="color === colorOption"
-            (click)="selectColor(colorOption)"
-            [attr.aria-label]="'Seleccionar color ' + colorOption">
-            <i class="mdi mdi-check" *ngIf="color === colorOption"></i>
-          </button>
-        </div>
-      </div>
-
-      <!-- Estado del objetivo (solo en edición) -->
-      <div class="field status-field" *ngIf="edit">
-        <div class="status-label-row">
-          <label>Estado del objetivo</label>
-          <span class="status-text" [class.completed]="isCompleted()">
-            {{ isCompleted() ? 'Completado' : 'Pendiente' }}
-          </span>
-        </div>
-        <label class="switch">
-          <input 
-            type="checkbox" 
-            [checked]="isCompleted()" 
-            (change)="toggleEstado()"
-          />
-          <span class="slider"></span>
-        </label>
-      </div>
+  <!-- Sección de progreso (solo en edición) -->
+  <div class="progress-section" *ngIf="edit">
+    <div class="progress-header">
+      <span class="progress-label">PROGRESO</span>
+      <span class="progress-percentage">{{ getProgress().toFixed(0) }}%</span>
+    </div>
+    <div class="progress-bar-container">
+      <div 
+        class="progress-bar" 
+        [style.width.%]="getProgress()"
+        [style.background-color]="color"
+      ></div>
+    </div>
+    <div class="progress-info">
+      <span class="progress-current">${{ montoActual.toFixed(2) }}</span>
+      <span class="progress-separator">de</span>
+      <span class="progress-target">${{ (montoObjetivo || 0).toFixed(2) }}</span>
+    </div>
+  </div>
 
       <!-- Sección de operaciones (solo en edición) -->
       <div class="operaciones-section" *ngIf="edit">
@@ -186,8 +247,15 @@
           <span>Haz clic en "Agregar" para registrar operaciones</span>
         </div>
       </div>
-    </div>
-  </div>
+
+  <!-- Botón de eliminar (solo en edición) -->
+  <button 
+    *ngIf="edit" 
+    type="button" 
+    class="delete-btn-bottom" 
+    (click)="onDelete()">
+    <i class="mdi mdi-delete"></i>
+    Eliminar Objetivo
+  </button>
 </div>
-
-
+</div>
