@@ -271,7 +271,6 @@ export class HomeComponent implements OnInit, OnDestroy {
       .sort((a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime()) // Orden descendente
       .slice(0, 3);
 
-
     console.log('Movimientos recientes a mostrar:', operacionesRecientes.length);
 
     this.recentMovements = operacionesRecientes.map((operacion) => {

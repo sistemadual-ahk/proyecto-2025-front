@@ -8,7 +8,7 @@
     <div class="search-section">
       <div class="search-bar">
         <i class="mdi mdi-magnify search-icon"></i>
-        <input type="text" placeholder="Buscar" class="search-input" />
+        <input type="text" placeholder="Buscar" class="search-input" [(ngModel)]="searchTerm" (input)="onSearch()"/>
       </div>
     </div>
 

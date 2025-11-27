@@ -1,4 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { SidebarComponent } from '../../components/sidebar/sidebar.component';
@@ -17,15 +18,16 @@ type OperacionVista = Operacion & {
 @Component({
   selector: 'app-activity',
   standalone: true,
-  imports: [CommonModule, RouterModule, SidebarComponent, PageTitleComponent],
+  imports: [CommonModule, RouterModule, FormsModule, SidebarComponent, PageTitleComponent],
   templateUrl: './activity.component.html',
   styleUrl: './activity.component.scss',
 })
+
 export class ActivityComponent implements OnInit, OnDestroy {
   constructor(
     private router: Router,
     private operacionService: OperacionService
-  ) {}
+  ) { }
 
   // Estado del menú
   isMenuOpen = false;
@@ -36,6 +38,10 @@ export class ActivityComponent implements OnInit, OnDestroy {
   // Operaciones agrupados
   groupedOperaciones: { date: string; operaciones: OperacionVista[] }[] = [];
 
+  //input  
+  searchTerm: string = '';
+
+
   ngOnInit(): void {
     this.loadOperaciones();
   }
@@ -43,13 +49,14 @@ export class ActivityComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
   }
+  private allOperaciones: OperacionVista[] = [];
 
   private loadOperaciones(): void {
-    // Cargar operaciones desde la API
     this.subscription.add(
       this.operacionService.getAllOperaciones().subscribe({
         next: (op) => {
           const operacionesVista = op.map((operacion) => this.mapOperacionParaVista(operacion));
+          this.allOperaciones = operacionesVista;
           this.groupedOperaciones = this.groupOperacionesByDate(operacionesVista);
         },
         error: (error) => {
@@ -58,6 +65,26 @@ export class ActivityComponent implements OnInit, OnDestroy {
       })
     );
   }
+
+
+  onSearch(): void {
+    const term = this.searchTerm.toLowerCase().trim();
+
+    if (!term) {
+      this.groupedOperaciones = this.groupOperacionesByDate(this.allOperaciones);
+      return;
+    }
+
+
+    const filtradas = this.allOperaciones.filter(op =>
+      (op.descripcion ?? '').toLowerCase().includes(term) ||
+      (op.categoriaNombre ?? '').toLowerCase().includes(term)
+    );
+
+
+    this.groupedOperaciones = this.groupOperacionesByDate(filtradas);
+  }
+
 
   private groupOperacionesByDate(
     operaciones: OperacionVista[]
