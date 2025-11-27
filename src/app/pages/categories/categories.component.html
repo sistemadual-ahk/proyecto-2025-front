@@ -1,0 +1,38 @@
+<div class="container">
+  <div class="main">
+    <app-page-title title="Categorias" (back)="goBack()"></app-page-title>
+    <div class="categories-container">
+    <div class="tabs" role="tablist">
+    <button class="tab left" [class.active]="activeTab === 'Ingreso'" (click)="setTab('Ingreso')" role="tab" [attr.aria-selected]="activeTab==='Ingreso'">Ingreso</button>
+    <button class="tab right" [class.active]="activeTab === 'Gasto'" (click)="setTab('Gasto')" role="tab" [attr.aria-selected]="activeTab==='Gasto'">Gasto</button>
+    </div>
+
+    <div class="grid">
+      <div class="item" *ngFor="let cat of categoriesToShow; let i = index" (click)="openEditCategory(i)" [class.default-category]="cat.isDefault">
+        <div class="icon" [ngStyle]="{ 'background-color': cat.color, color: cat.iconColor }">
+          <i class="mdi" [ngClass]="cat.icon"></i>
+        </div>
+        <div class="label">{{ cat.name }}</div>
+      </div>
+      <!-- Add new category tile -->
+      <div class="item add" (click)="openCreateCategory()">
+        <div class="icon add-icon">
+          <i class="mdi mdi-plus"></i>
+        </div>
+        <div class="label">Nueva Categoria</div>
+      </div>
+    </div>
+    <app-category-modal 
+      *ngIf="showCategoryModal" 
+      [title]="modalCategory.isDefault ? 'Categoría Predefinida' : (editMode ? 'Editar categoría' : 'Nueva categoría')" 
+      [edit]="editMode" 
+      [value]="modalCategory" 
+      [isReadOnly]="modalCategory.isDefault || false"
+      (close)="closeCategoryModal()" 
+      (save)="saveCategory($event)" 
+      (delete)="deleteCategory()">
+    </app-category-modal>
+  </div>
+</div>
+
+

@@ -3,18 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ApiService } from './api.service';
-
-// Interfaz básica asumida para la billetera
-export interface Billetera {
-  id?: number;
-  balance: number;
-  nombre: string;
-  proveedor: string;
-  tipo: 'bank' | 'digital' | 'cash';
-}
-
-// Tipo para CREAR una billetera (sin `id`)
-export type NewBilletera = Omit<Billetera, 'id'>;
+import { Billetera } from '../../models/billetera.model';
 
 // Interfaz para la RESPUESTA COMPLETA del API
 interface ApiResponse {
@@ -33,5 +22,17 @@ export class BilleteraService extends ApiService {
 
   createBilletera(billetera: Partial<Billetera>): Observable<Billetera> {
     return super.create<Billetera>('/billeteras', billetera);
+  }
+
+  deleteBilletera(billeteraId: string){
+    return super.delete('/billeteras', billeteraId);
+  }
+
+  updateBilletera(billeteraId: string, billetera: Partial<Billetera>): Observable<Billetera> {
+    return super.update<Billetera>('/billeteras', billeteraId, billetera);
+  }
+
+  patchBilletera(billeteraId: string, billetera: Partial<Billetera>): Observable<Billetera> {
+    return super.patch<Billetera>('/billeteras', billeteraId, billetera);
   }
 }

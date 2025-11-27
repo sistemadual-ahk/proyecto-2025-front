@@ -1,4 +1,4 @@
-<div class="container">
+﻿<div class="container">
   <!-- Main Content -->
   <div class="main">
     <!-- Date Navigation -->
@@ -7,7 +7,7 @@
         <i class="mdi mdi-chevron-left"></i>
       </button>
       <h2 class="current-month">{{ currentMonth }}</h2>
-      <button class="nav-btn" (click)="nextMonth()">
+      <button class="nav-btn" (click)="nextMonth()" [disabled]="isCurrentMonth()">
         <i class="mdi mdi-chevron-right"></i>
       </button>
     </div>
@@ -36,16 +36,28 @@
     </div>
 
     <!-- Payment Cards Stack -->
-    <div class="cards-stack" (click)="rotateCards()">
+    <div class="cards-stack" 
+         *ngIf="visibleCards.length > 0"
+         (touchstart)="onTouchStart($event)"
+         (touchmove)="onTouchMove($event)"
+         (touchend)="onTouchEnd($event)"
+         (mousedown)="onTouchStart($event)"
+         (mousemove)="onTouchMove($event)"
+         (mouseup)="onTouchEnd($event)"
+         (mouseleave)="onTouchEnd($event)">
       <div
         class="payment-card"
-        *ngFor="let card of cards; let i = index"
-        [ngStyle]="getCardStyle(i)"
+        *ngFor="let card of visibleCards; let i = index"
+        [class.active]="isActiveCard(i)"
+        [class.prev]="isPrevCard(i)"
+        [class.next]="isNextCard(i)"
         [style.background]="card.background"
+        [style.transform]="getCardTransform(i)"
       >
         <div class="card-header">
           <div class="card-logo">
-            <i class="mdi" [ngClass]="card.icon"></i>
+            <img *ngIf="card.isGeneral" src="assets/images/gastifyLogo.png" alt="Gastify" class="gastify-logo">
+            <i *ngIf="!card.isGeneral" class="mdi" [ngClass]="card.icon"></i>
           </div>
           <div class="card-type">{{ card.typeLabel }}</div>
         </div>
@@ -74,16 +86,12 @@
           <div class="movement-details">
             <h4 class="movement-category">
               {{ movement.description }}
-              <span
-                *ngIf="movement.subcategory && movement.subcategory !== movement.description"
-                class="movement-subcategory"
-              >
-                - {{ movement.subcategory }}
-              </span>
             </h4>
             <p class="movement-date">{{ movement.date }}</p>
           </div>
-          <div class="movement-amount" [class.income]="movement.type === 'income'">
+          <div class="movement-amount" 
+               [class.income]="movement.type === 'income' || movement.type === 'Ingreso'"
+               [class.expense]="movement.type === 'expense' || movement.type === 'Egreso'">
             {{ movement.amount > 0 ? '+' : '' }}${{ redondearAmount(movement.amount) }}
           </div>
         </div>
@@ -92,19 +100,27 @@
 
     <!-- Bottom Navigation -->
     <div class="bottom-nav">
-      <button class="bottom-nav-item" (click)="openGoals()">
-        <i class="mdi mdi-target"></i>
-        <span>Objetivos</span>
-      </button>
+      <div class="nav-action">
+        <button class="add-transaction-btn comparison-btn" (click)="openUserComparison()">
+          <i class="mdi mdi-account-group"></i>
+        </button>
+        <span class="nav-label">Comparar</span>
+      </div>
 
-      <button class="bottom-nav-item" (click)="openAnalysis()">
-        <i class="mdi mdi-chart-bar"></i>
-        <span>Análisis</span>
-      </button>
+      <div class="nav-action">
+        <button class="add-transaction-btn analysis-btn" (click)="openAnalysis()">
+          <i class="mdi mdi-finance"></i>
+        </button>
+        <span class="nav-label">Análisis</span>
+      </div>
 
-      <button class="add-transaction-btn" (click)="addTransaction()">
-        <i class="mdi mdi-plus"></i>
-      </button>
+      <div class="nav-action main-action">
+        <button class="add-transaction-btn" (click)="addTransaction()">
+          <i class="mdi mdi-plus"></i>
+        </button>
+        <span class="nav-label placeholder-label" aria-hidden="true">Agregar</span>
+      </div>
     </div>
   </div>
 </div>
+

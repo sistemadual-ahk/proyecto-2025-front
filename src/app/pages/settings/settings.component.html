@@ -1,0 +1,43 @@
+<div class="container">
+    <!-- Main Content -->
+    <div class="main">
+      <!-- Navigation and Title -->
+      <app-page-title title="Ajustes" (back)="goBack()"></app-page-title>
+
+      <!-- Settings List -->
+      <div class="list">
+        <button class="item" (click)="openProfile()">
+          <div class="left">
+            <i class="mdi mdi-account-circle icon"></i>
+            <span class="label">Perfil</span>
+          </div>
+          <i class="mdi mdi-chevron-right more"></i>
+        </button>
+
+        <button class="item" (click)="openSecurity()">
+          <div class="left">
+            <i class="mdi mdi-shield-lock icon"></i>
+            <span class="label">Seguridad</span>
+          </div>
+          <i class="mdi mdi-chevron-right more"></i>
+        </button>
+
+        <button class="item" (click)="openNotifications()">
+          <div class="left">
+            <i class="mdi mdi-bell-outline icon"></i>
+            <span class="label">Notificaciones</span>
+          </div>
+          <i class="mdi mdi-chevron-right more"></i>
+        </button>
+      </div>
+
+      <!-- Spacer -->
+      <div class="spacer"></div>
+
+      <!-- Logout Button -->
+      <div class="footer">
+        <button class="logout" (click)="logout()">
+          <i class="mdi mdi-logout"></i>
+          <span>Cerrar sesión</span>
+        </button>
+      </div>

@@ -1,9 +1,11 @@
 export interface Operacion {
   _id?: string;
-  tipo: 'Ingreso' | 'Egreso';
+  tipo: 'Ingreso' | 'Egreso' | 'income' | 'expense';
   monto: number;
-  billeteraId?: string;
-  categoriaId: string;
+  billetera?: string | { id?: string; _id?: string; nombre?: string }; // Puede ser ID o objeto completo
+  billeteraId?: string; // Alias para compatibilidad
+  categoria?: string | { id?: string; _id?: string; nombre?: string; icono?: string; color?: string }; // Puede ser ID o objeto completo con icono y color
+  categoriaId?: string; // Alias para compatibilidad
   descripcion?: string;
   fecha: string;
 }

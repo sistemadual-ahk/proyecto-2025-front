@@ -1,0 +1,193 @@
+<div class="modal-overlay" (click)="onClose()" role="dialog" aria-modal="true" [attr.aria-label]="edit ? 'Editar objetivo' : 'Nuevo objetivo'">
+  <div class="modal" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <button class="icon-btn" (click)="onClose()" aria-label="Cerrar modal" type="button">
+        <i class="mdi mdi-close"></i>
+      </button>
+      <div class="modal-title">
+        <i class="mdi mdi-target"></i>
+        <span>{{ edit ? 'Editar objetivo' : 'Nuevo Objetivo' }}</span>
+      </div>
+      <div class="header-actions">
+        <button class="icon-btn danger" *ngIf="edit" (click)="onDelete()" aria-label="Eliminar objetivo" type="button">
+          <i class="mdi mdi-delete"></i>
+        </button>
+        <button class="icon-btn" (click)="onSave()" aria-label="Guardar objetivo" type="button">
+          <i class="mdi mdi-check"></i>
+        </button>
+      </div>
+    </div>
+
+    <div class="form">
+      <!-- Título -->
+      <div class="field input">
+        <label>Título</label>
+        <input type="text" placeholder="Ej: Viaje a Brasil" [(ngModel)]="titulo" />
+      </div>
+
+      <!-- Monto Objetivo -->
+      <div class="field pill">
+        <span class="prefix">Objetivo: $</span>
+        <input type="number" placeholder="0.0" [(ngModel)]="montoObjetivo" />
+      </div>
+
+      <!-- Monto Actual (solo en edición) -->
+      <div class="field pill" *ngIf="edit">
+        <span class="prefix">Actual: $</span>
+        <input type="number" placeholder="0.0" [(ngModel)]="montoActual" readonly />
+      </div>
+
+      <!-- Fechas -->
+      <div class="row">
+        <div class="field date">
+          <label>Fecha Inicio</label>
+          <input type="date" [(ngModel)]="fechaInicio" />
+        </div>
+        <div class="field date">
+          <label>Fecha Esperada</label>
+          <input type="date" [(ngModel)]="fechaEsperadaFinalizacion" />
+        </div>
+      </div>
+
+      <!-- Fecha de finalización (solo si está completado) -->
+      <div class="field date" *ngIf="isCompleted()">
+        <label>Fecha de Finalización</label>
+        <input type="date" [(ngModel)]="fechaFin" />
+      </div>
+
+      <!-- Color -->
+      <div class="field color-field">
+        <label>Color</label>
+        <div class="color-options">
+          <button 
+            type="button"
+            class="color-option" 
+            *ngFor="let colorOption of colorOptions" 
+            [style.background-color]="colorOption"
+            [class.selected]="color === colorOption"
+            (click)="selectColor(colorOption)"
+            [attr.aria-label]="'Seleccionar color ' + colorOption">
+            <i class="mdi mdi-check" *ngIf="color === colorOption"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Estado del objetivo (solo en edición) -->
+      <div class="field status-field" *ngIf="edit">
+        <div class="status-label-row">
+          <label>Estado del objetivo</label>
+          <span class="status-text" [class.completed]="isCompleted()">
+            {{ isCompleted() ? 'Completado' : 'Pendiente' }}
+          </span>
+        </div>
+        <label class="switch">
+          <input 
+            type="checkbox" 
+            [checked]="isCompleted()" 
+            (change)="toggleEstado()"
+          />
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <!-- Sección de operaciones (solo en edición) -->
+      <div class="operaciones-section" *ngIf="edit">
+        <div class="operaciones-header">
+          <div class="header-left">
+            <i class="mdi mdi-cash-multiple"></i>
+            <span class="operaciones-label">Operaciones del objetivo</span>
+            <span class="operaciones-count">{{ operaciones.length }}</span>
+          </div>
+          <button type="button" class="add-operacion-btn" (click)="addOperacion()" aria-label="Agregar operación">
+            <i class="mdi mdi-plus"></i>
+            <span>Agregar</span>
+          </button>
+        </div>
+
+        <div class="operaciones-list" *ngIf="operaciones.length > 0">
+          <div 
+            class="operacion-item" 
+            *ngFor="let operacion of operaciones; let i = index"
+            [class.editing]="editingIndex === i"
+            (click)="startEditOperacion(i)"
+          >
+            <div 
+              class="operacion-icon" 
+              [class.ingreso]="isIngreso(operacion)"
+              [class.egreso]="!isIngreso(operacion)"
+            >
+              <i class="mdi" [ngClass]="isIngreso(operacion) ? 'mdi-arrow-down' : 'mdi-arrow-up'"></i>
+            </div>
+            
+            <div class="operacion-content" *ngIf="editingIndex !== i">
+              <div class="operacion-info">
+                <span class="operacion-desc">{{ operacion.descripcion || 'Sin descripción' }}</span>
+                <span class="operacion-date">{{ formatDate(operacion.fecha) }}</span>
+              </div>
+              <span class="operacion-amount" [class.ingreso]="isIngreso(operacion)" [class.egreso]="!isIngreso(operacion)">
+                {{ isIngreso(operacion) ? '+' : '-' }}${{ operacion.monto.toFixed(2) }}
+              </span>
+            </div>
+
+            <div class="operacion-edit-form" *ngIf="editingIndex === i" (click)="$event.stopPropagation()">
+              <div class="edit-row tipo-toggle-row">
+                <div class="tipo-toggle" (click)="toggleTipo(operacion)">
+                  <div class="toggle-option" [class.active]="operacion.tipo === 'Ingreso'">
+                    <i class="mdi mdi-arrow-down"></i>
+                    Ingreso
+                  </div>
+                  <div class="toggle-option" [class.active]="operacion.tipo === 'Egreso'">
+                    <i class="mdi mdi-arrow-up"></i>
+                    Egreso
+                  </div>
+                </div>
+              </div>
+              <div class="edit-row">
+                <input 
+                  type="text" 
+                  class="edit-desc-input" 
+                  [(ngModel)]="operacion.descripcion"
+                  placeholder="Descripción"
+                />
+              </div>
+              <div class="edit-row">
+                <input 
+                  type="date" 
+                  class="edit-date-input" 
+                  [(ngModel)]="operacion.fecha"
+                />
+                <div class="edit-monto">
+                  <span class="monto-prefix">$</span>
+                  <input 
+                    type="number" 
+                    class="edit-monto-input" 
+                    [(ngModel)]="operacion.monto"
+                    placeholder="0.00"
+                    min="0"
+                    step="0.01"
+                  />
+                </div>
+              </div>
+              <div class="edit-actions">
+                <button type="button" class="edit-save-btn" (click)="saveOperacion(); $event.stopPropagation()">
+                  <i class="mdi mdi-check"></i>
+                </button>
+                <button type="button" class="edit-delete-btn" (click)="deleteOperacion(i); $event.stopPropagation()">
+                  <i class="mdi mdi-delete"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="operaciones-empty" *ngIf="operaciones.length === 0">
+          <i class="mdi mdi-cash-plus"></i>
+          <p>No hay operaciones registradas</p>
+          <span>Haz clic en "Agregar" para registrar operaciones</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+

@@ -1,14 +1,5 @@
 <div class="modal-overlay" (click)="onClose()">
-  <!-- 
-    CRÍTICO: Cambiamos de [formGroup] a ngForm.
-    CRÍTICO: Cambiamos (ngSubmit)="saveTransaction()" a (ngSubmit)="onSave()".
-  -->
-  <form
-    class="modal-content"
-    #accountForm="ngForm"
-    (ngSubmit)="onSave()"
-    (click)="$event.stopPropagation()"
-  >
+  <form class="modal-content" #accountForm="ngForm" (ngSubmit)="onSave()" (click)="$event.stopPropagation()">
     <!-- Header del modal -->
     <div class="modal-header">
       <!-- CRÍTICO: Cambiamos (click)="closeModal()" a (click)="onClose()" -->
@@ -16,38 +7,29 @@
         <i class="mdi mdi-close"></i>
       </button>
 
-      <h2 class="modal-title">Nueva Billetera</h2>
+      <h2 class="modal-title">{{ mode === 'edit' ? 'Editar Billetera' : 'Nueva Billetera' }}</h2>
 
       <!-- El botón de guardar es de tipo submit para activar onSave() -->
-      <button class="save-btn" type="submit">
-        <i class="mdi mdi-check"></i>
+      <button
+        class="save-btn"
+        type="submit"
+        [class.ready]="accountForm.valid && !isSubmitting"
+        [disabled]="isSubmitting"
+      >
+        <i class="mdi" [ngClass]="isSubmitting ? 'mdi-loading mdi-spin' : 'mdi-check'"></i>
       </button>
     </div>
 
     <!-- Selección de Tipo de Billetera (Bank, Digital, Cash) -->
     <div class="transaction-toggle">
-      <button
-        class="toggle-btn bank-btn"
-        type="button"
-        [class.active]="type === 'bank'"
-        (click)="setType('bank')"
-      >
+      <button class="toggle-btn bank-btn" type="button" [class.active]="type === 'bank'" (click)="setType('bank')">
         <i class="mdi mdi-bank"></i> Banco
       </button>
-      <button
-        class="toggle-btn digital-btn"
-        type="button"
-        [class.active]="type === 'digital'"
-        (click)="setType('digital')"
-      >
+      <button class="toggle-btn digital-btn" type="button" [class.active]="type === 'digital'"
+        (click)="setType('digital')">
         <i class="mdi mdi-credit-card"></i> Digital
       </button>
-      <button
-        class="toggle-btn cash-btn"
-        type="button"
-        [class.active]="type === 'cash'"
-        (click)="setType('cash')"
-      >
+      <button class="toggle-btn cash-btn" type="button" [class.active]="type === 'cash'" (click)="setType('cash')">
         <i class="mdi mdi-cash-multiple"></i> Efectivo
       </button>
     </div>
@@ -57,25 +39,26 @@
       <!-- Campo de Nombre de la Billetera (Usando [(ngModel)]) -->
       <div class="form-group">
         <label class="form-label">Nombre de la Billetera</label>
-        <input
-          type="text"
-          class="form-input"
-          name="name"
-          [(ngModel)]="name"
-          required
-          placeholder="Ej: Cuenta de Ahorro"
-        />
+        <input type="text" class="form-input" name="name" [(ngModel)]="name" required
+          placeholder="Ej: Cuenta de Ahorro" />
       </div>
 
       <!-- Campo de Proveedor (Usando currentProviders y [(ngModel)]) -->
       <div class="form-group" *ngIf="type !== 'cash'">
         <label class="form-label">Proveedor / Banco</label>
         <div class="input-with-icon">
-          <select class="form-input" name="provider" [(ngModel)]="provider" required>
-            <option [ngValue]="''" disabled>Seleccionar proveedor</option>
-            <option *ngFor="let p of currentProviders" [ngValue]="p">{{ p }}</option>
-          </select>
-          <i class="mdi mdi-chevron-down"></i>
+          <mat-select
+            class="form-input"
+            name="provider"
+            [(ngModel)]="provider"
+            required
+            placeholder="Seleccionar proveedor"
+          >
+            <mat-option [value]="''" disabled>Seleccionar proveedor</mat-option>
+            <mat-option *ngFor="let p of currentProviders" [value]="p">
+              {{ p }}
+            </mat-option>
+          </mat-select>
         </div>
       </div>
 
@@ -89,11 +72,42 @@
             name="initialBalance"
             [(ngModel)]="initialBalance"
             required
-            placeholder="0.00"
+            placeholder="0"
             step="1"
             min="0"
           />
           <i class="mdi mdi-currency-usd"></i>
+        </div>
+      </div>
+
+      <!-- Campo de Moneda -->
+      <div class="form-group">
+        <label class="form-label">Moneda</label>
+        <mat-select
+          class="form-input"
+          name="currency"
+          [(ngModel)]="currency"
+          required
+          placeholder="Seleccionar moneda"
+        >
+          <mat-option value="ARS">ARS</mat-option>
+          <mat-option value="USD">USD</mat-option>
+        </mat-select>
+      </div>
+
+      <!-- Campo de Color de Tarjeta -->
+      <div class="form-group">
+        <label class="form-label">Color de Tarjeta</label>
+        <div class="color-options">
+          <div 
+            *ngFor="let colorOption of colorOptions" 
+            class="color-circle"
+            [style.background]="colorOption.gradient"
+            [class.selected]="cardColor === colorOption.gradient"
+            (click)="cardColor = colorOption.gradient"
+          >
+            <i *ngIf="cardColor === colorOption.gradient" class="mdi mdi-check"></i>
+          </div>
         </div>
       </div>
 

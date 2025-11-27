@@ -7,7 +7,7 @@
 
 .container {
   height: 100vh;
-  background: var(--gastify-dark);
+  background: linear-gradient(180deg, #0f1629 0%, #1a1f3a 50%, #0f1629 100%);
   font-family: 'Poppins', sans-serif;
   color: var(--gastify-light);
   position: relative;
@@ -18,10 +18,10 @@
 /* Main Content */
 .main {
   height: 100vh;
-  padding: 5px;
+  padding: 20px;
   padding-top: 80px;
   overflow-y: auto;
-  padding-bottom: 100px;
+  padding-bottom: 140px;
   -webkit-overflow-scrolling: touch;
 }
 
@@ -34,12 +34,15 @@
 
 .search-bar {
   position: relative;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
-  padding: 12px 16px;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 14px 18px;
   display: flex;
   align-items: center;
   gap: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
 }
 
 .search-icon {
@@ -93,19 +96,25 @@
   display: flex;
   align-items: center;
   gap: 16px;
-  padding: 16px 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  transition: all 0.3s var(--motion-ease);
+  padding: 16px;
+  margin-bottom: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
   cursor: pointer;
 
   &:hover {
-    background: rgba(255, 255, 255, 0.02);
-    margin: 0 -20px;
-    padding: 16px 20px;
+    background: rgba(255, 255, 255, 0.08);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+    border-color: rgba(255, 255, 255, 0.12);
   }
 
   &:last-child {
-    border-bottom: none;
+    margin-bottom: 0;
   }
 }
 
@@ -259,14 +268,57 @@
   /* sin estilos de sidebar/header en este scope */
 }
 
-@media (max-width: 360px) {
+@media (max-width: 768px) {
+  .main {
+    padding: 15px;
+    padding-top: 80px;
+    padding-bottom: 120px;
+  }
+
+  .search-section {
+    padding: 0 15px 14px;
+  }
+
+  .transactions-container {
+    padding: 0 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .main {
+    padding: 12px;
+    padding-top: 75px;
+    padding-bottom: 100px;
+  }
+
+  .search-bar {
+    padding: 12px 16px;
+  }
+
   .transaction-item {
-    gap: 10px;
+    padding: 14px;
+    gap: 12px;
   }
 
   .category-icon {
-    width: 36px;
-    height: 36px;
+    width: 44px;
+    height: 44px;
+  }
+
+  .category-icon i {
+    font-size: 18px;
+  }
+}
+
+@media (max-width: 360px) {
+  .transaction-item {
+    gap: 10px;
+    padding: 12px;
+  }
+
+  .category-icon {
+    width: 40px;
+    height: 40px;
   }
 
   .category-icon i {
@@ -280,6 +332,4 @@
   .transaction-amount {
     font-size: 14px;
   }
-
-  /* sin estilos de sidebar/header en este scope */
 }

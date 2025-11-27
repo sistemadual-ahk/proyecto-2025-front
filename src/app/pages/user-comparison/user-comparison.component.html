@@ -1,0 +1,293 @@
+<div class="container">
+  <!-- Main Content -->
+  <div class="main">
+    <!-- Navigation and Title -->
+    <app-page-title title="Comparación de Usuarios" (back)="goBack()"></app-page-title>
+
+    <!-- Criteria Selection -->
+    <div class="criteria-selection" *ngIf="showCriteriaSelection">
+      <div class="criteria-card">
+        <h2 class="criteria-title">Selecciona los criterios de comparación</h2>
+        <p class="criteria-subtitle">Elige con qué aspectos quieres compararte</p>
+        
+        <div class="criteria-list">
+          <!-- Sueldo - Checkbox simple -->
+          <label class="criterion-item" [class.selected]="comparisonCriteria.sueldo">
+            <input 
+              type="checkbox" 
+              [(ngModel)]="comparisonCriteria.sueldo"
+            />
+            <div class="criterion-content">
+              <i class="mdi mdi-cash"></i>
+              <span class="criterion-label">Sueldo</span>
+            </div>
+          </label>
+
+          <!-- Profesión - Con dropdown -->
+          <div class="criterion-wrapper">
+            <label class="criterion-item" [class.selected]="comparisonCriteria.profesion.selected">
+              <input 
+                type="checkbox" 
+                [(ngModel)]="comparisonCriteria.profesion.selected"
+                (ngModelChange)="onProfesionToggle($event)"
+              />
+              <div class="criterion-content">
+                <i class="mdi mdi-briefcase"></i>
+                <span class="criterion-label">Profesión</span>
+              </div>
+            </label>
+            
+            <div class="criterion-dropdown" *ngIf="showProfesionDropdown && comparisonCriteria.profesion.selected">
+              <mat-select 
+                class="profesion-select"
+                [(ngModel)]="comparisonCriteria.profesion.value"
+                (ngModelChange)="onProfesionSelect($event)"
+                placeholder="Selecciona una profesión"
+              >
+                <mat-option [value]="currentUserProfesion" *ngIf="currentUserProfesion">
+                  Mi misma profesión ({{ currentUserProfesion }})
+                </mat-option>
+                <mat-option 
+                  *ngFor="let prof of profesionOptions" 
+                  [value]="prof"
+                  [disabled]="prof === currentUserProfesion"
+                >
+                  {{ prof }}
+                </mat-option>
+              </mat-select>
+            </div>
+          </div>
+
+          <!-- Ubicación - Con dropdowns -->
+          <div class="criterion-wrapper">
+            <label class="criterion-item" [class.selected]="comparisonCriteria.ubicacion.selected">
+              <input 
+                type="checkbox" 
+                [(ngModel)]="comparisonCriteria.ubicacion.selected"
+                (ngModelChange)="onUbicacionToggle($event)"
+              />
+              <div class="criterion-content">
+                <i class="mdi mdi-map-marker"></i>
+                <span class="criterion-label">Ubicación</span>
+              </div>
+            </label>
+            
+            <div class="criterion-dropdown ubicacion-dropdown" *ngIf="showUbicacionDropdown && comparisonCriteria.ubicacion.selected">
+              <button 
+                class="use-my-location-btn" 
+                (click)="onUseMyLocation()"
+                [class.active]="comparisonCriteria.ubicacion.useMyLocation"
+                *ngIf="currentUserUbicacion"
+              >
+                <i class="mdi mdi-map-marker-check"></i>
+                Usar mi ubicación ({{ currentUserUbicacion.localidad }}, {{ currentUserUbicacion.provincia }})
+              </button>
+              
+              <div class="location-selectors" *ngIf="!comparisonCriteria.ubicacion.useMyLocation">
+                <mat-select 
+                  class="location-select"
+                  [(ngModel)]="comparisonCriteria.ubicacion.provincia"
+                  (ngModelChange)="onProvinciaChange($event)"
+                  placeholder="Selecciona provincia"
+                >
+                  <mat-option *ngFor="let p of provincias" [value]="p.nombre">
+                    {{ p.nombre }}
+                  </mat-option>
+                </mat-select>
+
+                <mat-select 
+                  class="location-select"
+                  [(ngModel)]="comparisonCriteria.ubicacion.municipio"
+                  (ngModelChange)="onMunicipioChange($event)"
+                  placeholder="Selecciona municipio"
+                  [disabled]="!comparisonCriteria.ubicacion.provincia"
+                >
+                  <mat-option *ngFor="let m of municipios" [value]="m.nombre">
+                    {{ m.nombre }}
+                  </mat-option>
+                </mat-select>
+
+                <mat-select 
+                  class="location-select"
+                  [(ngModel)]="comparisonCriteria.ubicacion.localidad"
+                  (ngModelChange)="onLocalidadChange($event)"
+                  placeholder="Selecciona localidad"
+                  [disabled]="!comparisonCriteria.ubicacion.municipio"
+                >
+                  <mat-option *ngFor="let l of localidades" [value]="l.nombre">
+                    {{ l.nombre }}
+                  </mat-option>
+                </mat-select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <button 
+          class="compare-btn" 
+          (click)="startComparison()"
+          [disabled]="!hasAtLeastOneCriterion() || !isProfesionValid() || !isUbicacionValid()"
+        >
+          Comparar
+        </button>
+      </div>
+    </div>
+
+    <!-- Loading State -->
+    <div class="loading-container" *ngIf="loading && !showCriteriaSelection">
+      <div class="loading-spinner">
+        <i class="mdi mdi-loading mdi-spin"></i>
+      </div>
+      <p>Cargando comparación...</p>
+    </div>
+
+    <!-- Comparison Content -->
+    <div class="comparison-content" *ngIf="!loading && !showCriteriaSelection && currentUser && comparedUser">
+      <div class="comparison-header">
+        <button class="reset-btn" (click)="resetComparison()">
+          <i class="mdi mdi-refresh"></i>
+          Nueva comparación
+        </button>
+      </div>
+      <!-- Comparison Cards -->
+      <div class="comparison-cards">
+        <!-- Current User Card -->
+        <div class="user-card current-user">
+          <div class="user-header">
+            <div class="user-icon">
+              <i class="mdi mdi-account"></i>
+            </div>
+            <h3 class="user-name">{{ currentUser.name }}</h3>
+          </div>
+
+          <!-- User Info -->
+          <div class="user-info-section">
+            <div class="info-item">
+              <span class="info-label">Sueldo</span>
+              <span class="info-value">${{ currentUser.sueldo | number }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Profesión</span>
+              <span class="info-value">{{ currentUser.profesion }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Estado Civil</span>
+              <span class="info-value">{{ currentUser.estadoCivil }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Ubicación</span>
+              <span class="info-value">
+                {{ currentUser.ubicacion.localidad }}, {{ currentUser.ubicacion.provincia }}
+              </span>
+            </div>
+          </div>
+
+          <!-- Categories Section -->
+          <div class="categories-section">
+            <h4 class="section-title">Gastos por Categoría</h4>
+            <div class="categories-list">
+              <div class="category-item" *ngFor="let categoria of currentUser.categorias">
+                <span class="category-name">{{ categoria.name }}</span>
+                <span class="category-amount">${{ categoria.total | number }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Statistics Section -->
+          <div class="statistics-section">
+            <div class="stat-item">
+              <i class="mdi mdi-cash-multiple"></i>
+              <div class="stat-content">
+                <span class="stat-label">Total Operaciones</span>
+                <span class="stat-value">{{ currentUser.totalOperaciones }}</span>
+              </div>
+            </div>
+            <div class="stat-item">
+              <i class="mdi mdi-calendar-start"></i>
+              <div class="stat-content">
+                <span class="stat-label">Primera Fecha</span>
+                <span class="stat-value">{{ formatDate(currentUser.primeraFecha) }}</span>
+              </div>
+            </div>
+            <div class="stat-item">
+              <i class="mdi mdi-calendar-end"></i>
+              <div class="stat-content">
+                <span class="stat-label">Última Fecha</span>
+                <span class="stat-value">{{ formatDate(currentUser.ultimaFecha) }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Compared User Card -->
+        <div class="user-card compared-user">
+          <div class="user-header">
+            <div class="user-icon">
+              <i class="mdi mdi-account"></i>
+            </div>
+            <h3 class="user-name">Usuario Comparado</h3>
+          </div>
+
+          <!-- User Info -->
+          <div class="user-info-section">
+            <div class="info-item">
+              <span class="info-label">Sueldo</span>
+              <span class="info-value">${{ comparedUser.sueldo | number }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Profesión</span>
+              <span class="info-value">{{ comparedUser.profesion }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Estado Civil</span>
+              <span class="info-value">{{ comparedUser.estadoCivil }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Ubicación</span>
+              <span class="info-value">
+                {{ comparedUser.ubicacion.localidad }}, {{ comparedUser.ubicacion.provincia }}
+              </span>
+            </div>
+          </div>
+
+          <!-- Categories Section -->
+          <div class="categories-section">
+            <h4 class="section-title">Gastos por Categoría</h4>
+            <div class="categories-list">
+              <div class="category-item" *ngFor="let categoria of comparedUser.categorias">
+                <span class="category-name">{{ categoria.name }}</span>
+                <span class="category-amount">${{ categoria.total | number }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Statistics Section -->
+          <div class="statistics-section">
+            <div class="stat-item">
+              <i class="mdi mdi-cash-multiple"></i>
+              <div class="stat-content">
+                <span class="stat-label">Total Operaciones</span>
+                <span class="stat-value">{{ comparedUser.totalOperaciones }}</span>
+              </div>
+            </div>
+            <div class="stat-item">
+              <i class="mdi mdi-calendar-start"></i>
+              <div class="stat-content">
+                <span class="stat-label">Primera Fecha</span>
+                <span class="stat-value">{{ formatDate(comparedUser.primeraFecha) }}</span>
+              </div>
+            </div>
+            <div class="stat-item">
+              <i class="mdi mdi-calendar-end"></i>
+              <div class="stat-content">
+                <span class="stat-label">Última Fecha</span>
+                <span class="stat-value">{{ formatDate(comparedUser.ultimaFecha) }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

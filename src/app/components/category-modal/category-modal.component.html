@@ -1,0 +1,138 @@
+<div class="modal-overlay" (click)="onClose()">
+  
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <!-- Manija visual del bottom sheet -->
+    <div class="bottom-sheet-handle"></div>
+    
+    <div class="modal-header">
+      <h2 class="modal-title">{{ title }}</h2>
+      
+      <div class="header-actions">
+        <button *ngIf="edit && canEdit()" class="delete-btn" (click)="onDelete()">
+          <i class="mdi mdi-trash-can-outline"></i>
+        </button>
+        <button *ngIf="canEdit()" class="save-btn" (click)="onSave()">
+          <i class="mdi mdi-check"></i>
+        </button>
+        <button class="close-btn" (click)="onClose()">
+          <i class="mdi mdi-close"></i>
+        </button>
+      </div>
+    </div>
+
+    <form class="form" (ngSubmit)="onSave()">
+      
+      <div class="form-group">
+        <label class="form-label">Nombre</label>
+        <input type="text" class="form-input" 
+               [ngModel]="temp.name" 
+               (ngModelChange)="updateName($event)"
+               name="name" 
+               placeholder="Ej: Supermercado" 
+               required 
+               [readonly]="!canEdit()" 
+               [class.readonly]="!canEdit()"
+               [disabled]="!canEdit()">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Descripción</label>
+        <input type="text" class="form-input" 
+               [ngModel]="temp.description"
+               (ngModelChange)="updateDescription($event)"
+               name="description" 
+               placeholder="Ej: Gastos de comida y hogar" 
+               [readonly]="!canEdit()" 
+               [class.readonly]="!canEdit()"
+               [disabled]="!canEdit()">
+      </div>
+
+      <!-- Mostrar advertencia si es solo lectura -->
+      <div *ngIf="!canEdit()" class="readonly-notice">
+        <i class="mdi mdi-lock-outline"></i>
+        <span>Esta es una categoría predefinida y no se puede modificar</span>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">
+          Ícono
+          <span *ngIf="showExtraIcons" class="extra-icons-indicator">
+            ({{ filteredIconOptions().length }} iconos disponibles)
+          </span>
+        </label>
+        <div class="icon-panel" [class.readonly]="!canEdit()" [class.expanded]="showExtraIcons">
+          <!-- Botón para contraer iconos adicionales si están expandidos -->
+          <div *ngIf="showExtraIcons && canEdit()" class="icon-section-header">
+            <button type="button" class="collapse-btn" (click)="toggleExtraIcons()">
+              <i class="mdi mdi-chevron-up"></i>
+              <span>Ocultar iconos adicionales</span>
+            </button>
+          </div>
+          
+          <div class="icon-grid">
+            <button type="button" 
+                    class="icon-cell" 
+                    *ngFor="let opt of filteredIconOptions()" 
+                    (click)="selectIcon(opt.class)" 
+                    [disabled]="!canEdit()"
+                    [class.disabled]="!canEdit()"
+                    [class.more-icons-btn]="isMoreIconsButton(opt.class)"
+                    [style.pointer-events]="!canEdit() ? 'none' : 'auto'">
+              <div class="icon-badge" 
+                   [class.selected]="opt.class === temp.icon"
+                   [class.special-button]="isMoreIconsButton(opt.class)">
+                <i class="mdi" [ngClass]="opt.class"></i>
+              </div>
+              <div class="icon-name">{{ opt.name }}</div>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="color-section">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Color de Fondo</label>
+            <div class="color-palette" [class.readonly]="!canEdit()">
+              <button type="button" class="color-swatch" 
+                      *ngFor="let c of popularBgColors" 
+                      [style.background]="c" 
+                      [class.selected]="c === temp.color" 
+                      (click)="canEdit() && selectBgColor(c)"
+                      [disabled]="!canEdit()"
+                      [class.disabled]="!canEdit()"
+                      [style.pointer-events]="!canEdit() ? 'none' : 'auto'"></button>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Color de Ícono</label>
+            <div class="color-palette" [class.readonly]="!canEdit()">
+              <button type="button" class="color-swatch" 
+                      *ngFor="let c of popularIconColors" 
+                      [style.background]="c" 
+                      [class.selected]="c === temp.iconColor" 
+                      (click)="canEdit() && selectIconColor(c)"
+                      [disabled]="!canEdit()"
+                      [class.disabled]="!canEdit()"
+                      [style.pointer-events]="!canEdit() ? 'none' : 'auto'"></button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="preview-group">
+        <label class="form-label">Vista Previa</label>
+        <div class="category-preview">
+          <div class="preview-icon" [ngStyle]="{ 'background-color': temp.color, 'color': temp.iconColor }">
+            <i class="mdi" [ngClass]="temp.icon || 'mdi-help-circle'"></i>
+          </div>
+          <div class="preview-text">
+            <div class="preview-name">{{ temp.name || 'Nombre de categoría' }}</div>
+            <div class="preview-desc">{{ temp.description || 'Descripción' }}</div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

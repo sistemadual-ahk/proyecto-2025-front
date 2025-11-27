@@ -1,0 +1,120 @@
+﻿<!-- Header del bottom sheet -->
+<div class="bottom-sheet-header">
+  <button class="close-btn" (click)="onClose()">
+    <i class="mdi mdi-close"></i>
+  </button>
+
+  <h2 class="bottom-sheet-title">Registrar Operacion</h2>
+
+  <button
+    class="save-btn"
+    type="button"
+    (click)="onSave()"
+    [disabled]="!isFormValid"
+    [class.enabled]="isFormValid"
+  >
+    <i class="mdi mdi-check"></i>
+  </button>
+</div>
+
+<!-- Toggle Ingreso/Gasto -->
+<div class="transaction-toggle">
+  <button
+    class="toggle-btn income-btn"
+    [class.active]="transactionType === 'income'"
+    (click)="toggleTransactionType('income')"
+  >
+    Ingreso
+  </button>
+  <button
+    class="toggle-btn expense-btn"
+    [class.active]="transactionType === 'expense'"
+    (click)="toggleTransactionType('expense')"
+  >
+    Gasto
+  </button>
+</div>
+
+<!-- Formulario -->
+<div class="transaction-form">
+  <!-- Campo de monto -->
+  <div class="form-group amount-group">
+    <input
+      type="number"
+      class="amount-input"
+      [(ngModel)]="amount"
+      placeholder="0"
+      min="0"
+    />
+    <button class="clear-amount" (click)="amount = null">
+      <i class="mdi mdi-close"></i>
+    </button>
+  </div>
+
+  <!-- Campo de descripción -->
+  <div class="form-group">
+    <input
+      type="text"
+      class="form-input"
+      [(ngModel)]="description"
+      [placeholder]="descriptionPlaceholder"
+    />
+  </div>
+
+  <!-- Fecha y Billetera -->
+  <div class="form-group">
+    <label class="form-label">Fecha</label>
+    <div class="input-with-icon">
+      <input
+        #dateInput
+        type="date"
+        class="form-input"
+        [(ngModel)]="date"
+      />
+      <i class="mdi mdi-calendar" (click)="openDatePicker(dateInput)"></i>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label class="form-label">Billetera <span style="opacity: 0.6; font-size: 12px;">(opcional)</span></label>
+    <div class="input-with-icon">
+      <mat-select
+        class="form-input"
+        [(ngModel)]="wallet"
+        name="wallet"
+        placeholder="Sin asignar"
+      >
+        <mat-option value="">Sin asignar</mat-option>
+        <mat-option *ngFor="let walletOption of billeteras" [value]="walletOption">
+          {{ walletOption.nombre }}
+        </mat-option>
+      </mat-select>
+      <i class="mdi mdi-wallet"></i>
+    </div>
+    <small class="form-hint" style="color: rgba(255, 255, 255, 0.5); margin-top: 4px; display: block; font-size: 11px;">
+      Si no seleccionas, se asignará automáticamente
+    </small>
+  </div>
+
+  <!-- Categorí­a -->
+  <div class="form-group">
+    <label class="form-label">Categoria</label>
+    <div class="input-with-icon">
+      <mat-select
+        class="form-input"
+        [(ngModel)]="category"
+        name="category"
+        placeholder="Seleccionar categorÃ­a"
+      >
+        <mat-option value="">Seleccionar categori­a</mat-option>
+        <mat-option *ngFor="let categoryOption of categorias" [value]="categoryOption">
+          {{ categoryOption.nombre }}
+        </mat-option>
+      </mat-select>
+      
+    </div>
+    <small class="form-hint" *ngIf="categorias.length === 0" style="color: #ff6b6b; margin-top: 4px; display: block;">
+      ⚠️ No hay categorías disponibles. Ve a Categorías y crea una primero.
+    </small>
+  </div>
+</div>

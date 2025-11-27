@@ -45,19 +45,6 @@
         <i class="mdi mdi-wallet"></i>
         <span>Billeteras</span>
       </a>
-      <a routerLink="/activity" class="sidebar-nav-item" (click)="closeMenu()">
-        <i class="mdi mdi-sync"></i>
-        <span>Actividad</span>
-      </a>
-      <a
-        routerLink="/analysis"
-        class="sidebar-nav-item"
-        style="cursor: pointer"
-        (click)="closeMenu()"
-      >
-        <i class="mdi mdi-chart-line"></i>
-        <span>Análisis</span>
-      </a>
       <a
         routerLink="/saving-goals"
         class="sidebar-nav-item"
@@ -72,7 +59,6 @@
         <span>Categorías</span>
       </a>
       <a
-        *ngIf="ajustesHabilitado"
         routerLink="/settings"
         class="sidebar-nav-item"
         (click)="closeMenu()"

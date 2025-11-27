@@ -47,4 +47,10 @@ export class ApiService {
       .delete<ApiResponse<any>>(`${this.API_BASE_URL}${route}/${id}`)
       .pipe(map((response) => response.data));
   }
+
+  patch<T>(route: string, id: string | number, data: Partial<T>): Observable<T> {
+    return this.http
+      .patch<ApiResponse<T>>(`${this.API_BASE_URL}${route}/${id}`, data)
+      .pipe(map((response) => response.data));
+  }
 }
