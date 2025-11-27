@@ -1,7 +1,6 @@
 import { OnInit, Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
 import {
   MatBottomSheet,
   MatBottomSheetModule,
@@ -10,7 +9,8 @@ import {
 import { MatButtonModule } from '@angular/material/button';
 import { BilleteraService } from '../../services/billetera.service';
 import { Billetera } from '../../../models/billetera.model';
-import { CategoriaService, Categoria } from '../../services/categoria.service';
+import { Categoria } from '../../../models/categoria.model';
+import { CategoriaService } from '../../services/categoria.service';
 import { OperacionService } from '../../services/operacion.service';
 import { Operacion } from '../../../models/operacion.model';
 import { MatSelectModule } from '@angular/material/select';
@@ -42,7 +42,6 @@ export class TransactionBottomSheet implements OnInit {
   private operacionService: OperacionService = inject(OperacionService);
   private billeteraService: BilleteraService = inject(BilleteraService);
   private categoriaService: CategoriaService = inject(CategoriaService);
-  private http: HttpClient = inject(HttpClient);
 
   // --- ESTADO DEL FORMULARIO ---
   transactionType: 'income' | 'expense' = 'expense';
@@ -54,11 +53,9 @@ export class TransactionBottomSheet implements OnInit {
 
   // --- DATOS CARGADOS DEL BACKEND ---
   categorias: Categoria[] = [];
-  billetera: Billetera[] = [];
-  nombresCategorias: string[] = [];
-  nombresBilleteras: string[] = [];
+  billeteras: Billetera[] = [];
 
-  constructor() {}
+  constructor() { }
 
   ngOnInit(): void {
     this.date = formatLocalDate(new Date());
@@ -68,19 +65,18 @@ export class TransactionBottomSheet implements OnInit {
   loadData(): void {
     // Carga de Categorías
     this.categoriaService.getCategorias().subscribe((data) => {
-      this.categorias = data;
-      this.nombresCategorias = data.map((cat) => cat.nombre);
-      console.log('Categorías cargadas:', this.categorias);
+      this.categorias = data.filter(categoria => categoria.type === this.transactionType);
+      console.log('Categorías filtradas:', this.categorias);
     });
+
 
     // Carga de Billeteras (filtrar la General id:0 ya que no existe en el backend)
     this.billeteraService.getBilleteras().subscribe(data => {
       // Filtrar billeteras reales (excluir cualquier billetera sin ID o con ID "0")
-      this.billetera = data.filter(bill => bill.id && bill.id !== '0');
-      this.nombresBilleteras = this.billetera.map(bill => bill.nombre);
-      console.log('Billeteras cargadas:', this.billetera);
-      
-      if (this.billetera.length === 0) {
+      this.billeteras = data.filter(bill => bill.id && bill.id !== '0');
+      console.log('Billeteras cargadas:', this.billeteras);
+
+      if (this.billeteras.length === 0) {
         console.warn('⚠️ No hay billeteras disponibles. Crea una primero.');
       }
     });
@@ -88,6 +84,7 @@ export class TransactionBottomSheet implements OnInit {
 
   toggleTransactionType(type: 'income' | 'expense'): void {
     this.transactionType = type;
+    this.loadData();
   }
 
   onClose(): void {
@@ -97,10 +94,10 @@ export class TransactionBottomSheet implements OnInit {
 
   onSave(): void {
     console.log('Intentando guardar operación...');
-    console.log('Formulario:', { 
-      amount: this.amount, 
-      description: this.description, 
-      wallet: this.wallet, 
+    console.log('Formulario:', {
+      amount: this.amount,
+      description: this.description,
+      wallet: this.wallet,
       category: this.category,
       date: this.date,
       type: this.transactionType
@@ -108,6 +105,7 @@ export class TransactionBottomSheet implements OnInit {
 
     // 1. Validar categoría (obligatoria)
     const selectedCategory = this.categorias.find(c => c.nombre === this.category);
+    let selectedWallet = this.billeteras.find(b => b.nombre === this.wallet);
 
     if (!selectedCategory) {
       console.error('❌ No se seleccionó una categoría válida');
@@ -122,10 +120,9 @@ export class TransactionBottomSheet implements OnInit {
     }
 
     // 2. Mapear billetera: si no se seleccionó, usar la primera disponible o null
-    let selectedWallet = this.billetera.find(b => b.nombre === this.wallet);
-    
-    if (!selectedWallet && this.billetera.length > 0) {
-      selectedWallet = this.billetera[0];
+
+    if (!selectedWallet && this.billeteras.length > 0) {
+      selectedWallet = this.billeteras[0];
       console.log('⚠️ No se seleccionó billetera, usando la primera disponible:', selectedWallet.nombre);
     }
 

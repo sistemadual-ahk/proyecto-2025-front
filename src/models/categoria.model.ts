@@ -1,15 +1,12 @@
+// 1. Interfaz para el objeto Categoría (ajustada a tu respuesta real)
 export interface Categoria {
-  id?: string;
-  _id?: string;
-
-  userId?: string;  
+  id: string;
   nombre: string;
-  descripcion?: string;
-  color?: string;
+  descripcion: string;
+  icono: string;
+  color: string;
+  isDefault: boolean;
   iconColor?: string;
-  icono?: string;
-  isDefault?: boolean;
-  type?: 'income' | 'expense';
-
- user?: any | null;
+  user: any | null; // Puedes definir una interfaz más estricta para 'user'
+  type: 'income'|  'expense';
 }

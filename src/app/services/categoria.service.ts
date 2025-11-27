@@ -5,18 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ApiService } from './api.service';
-
-export interface Categoria {
-  id: string;
-  nombre: string;
-  descripcion: string;
-  icono: string;
-  color: string;
-  iconColor: string;
-  isDefault: boolean;
-  type?: 'income' | 'expense';
-  user: any | null;
-}
+import { Categoria } from '../../models/categoria.model';
 
 interface ApiResponse {
   success: boolean;

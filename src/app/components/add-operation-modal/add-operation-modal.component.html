@@ -85,8 +85,8 @@
         placeholder="Sin asignar"
       >
         <mat-option value="">Sin asignar</mat-option>
-        <mat-option *ngFor="let walletOption of nombresBilleteras" [value]="walletOption">
-          {{ walletOption }}
+        <mat-option *ngFor="let walletOption of billeteras" [value]="walletOption">
+          {{ walletOption.nombre }}
         </mat-option>
       </mat-select>
       <i class="mdi mdi-wallet"></i>
@@ -107,13 +107,13 @@
         placeholder="Seleccionar categorÃ­a"
       >
         <mat-option value="">Seleccionar categori­a</mat-option>
-        <mat-option *ngFor="let categoryOption of nombresCategorias" [value]="categoryOption">
-          {{ categoryOption }}
+        <mat-option *ngFor="let categoryOption of categorias" [value]="categoryOption">
+          {{ categoryOption.nombre }}
         </mat-option>
       </mat-select>
       
     </div>
-    <small class="form-hint" *ngIf="nombresCategorias.length === 0" style="color: #ff6b6b; margin-top: 4px; display: block;">
+    <small class="form-hint" *ngIf="categorias.length === 0" style="color: #ff6b6b; margin-top: 4px; display: block;">
       ⚠️ No hay categorías disponibles. Ve a Categorías y crea una primero.
     </small>
   </div>

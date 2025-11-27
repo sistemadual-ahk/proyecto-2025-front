@@ -5,9 +5,9 @@ import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { AddAccountModalComponent } from '../../components/add-account-modal/add-account-modal.component';
 import { PageTitleComponent } from '../../components/page-title/page-title.component';
-import { BilleteraService} from '../../services/billetera.service';
-import { MatSelectModule } from '@angular/material/select';
+import { BilleteraService } from '../../services/billetera.service';
 import { Billetera } from '../../../models/billetera.model';
+import { MatSelectModule } from '@angular/material/select';
 type WalletType = 'bank' | 'digital' | 'cash';
 
 @Component({

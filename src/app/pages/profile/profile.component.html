@@ -68,15 +68,15 @@
           <mat-option *ngFor="let pr of profesionOptions" [value]="pr">{{ pr }}</mat-option>
         </mat-select>
       </div>
-
+      
       <div class="detail-card">
-        <span class="detail-label">Localidad</span>
-        <span class="detail-value" *ngIf="!isEditing">{{ usuario.localidad }}</span>
-        <mat-select class="detail-select" [(ngModel)]="usuario.localidad" *ngIf="isEditing">
-          <mat-option *ngFor="let l of localidades" [value]="l.nombre">{{ l.nombre }}</mat-option>
+        <span class="detail-label">Provincia</span>
+        <span class="detail-value" *ngIf="!isEditing">{{ usuario.provincia }}</span>
+        <mat-select class="detail-select" [(ngModel)]="usuario.provincia" (ngModelChange)="onProvinciaChange($event)" *ngIf="isEditing">
+          <mat-option *ngFor="let p of provincias" [value]="p.nombre">{{ p.nombre }}</mat-option>
         </mat-select>
       </div>
-
+      
       <div class="detail-card">
         <span class="detail-label">Municipio</span>
         <span class="detail-value" *ngIf="!isEditing">{{ usuario.municipio }}</span>
@@ -84,12 +84,12 @@
           <mat-option *ngFor="let m of municipios" [value]="m.nombre">{{ m.nombre }}</mat-option>
         </mat-select>
       </div>
-
+      
       <div class="detail-card">
-        <span class="detail-label">Provincia</span>
-        <span class="detail-value" *ngIf="!isEditing">{{ usuario.provincia }}</span>
-        <mat-select class="detail-select" [(ngModel)]="usuario.provincia" (ngModelChange)="onProvinciaChange($event)" *ngIf="isEditing">
-          <mat-option *ngFor="let p of provincias" [value]="p.nombre">{{ p.nombre }}</mat-option>
+        <span class="detail-label">Localidad</span>
+        <span class="detail-value" *ngIf="!isEditing">{{ usuario.localidad }}</span>
+        <mat-select class="detail-select" [(ngModel)]="usuario.localidad" *ngIf="isEditing">
+          <mat-option *ngFor="let l of localidades" [value]="l.nombre">{{ l.nombre }}</mat-option>
         </mat-select>
       </div>
     </div>
