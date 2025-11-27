@@ -64,7 +64,7 @@
 
 /* Total Balance Card */
 .total-balance-card {
-  background: rgba(255, 255, 255, 0.05);
+  background: #3B3B58;
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 20px;
@@ -99,7 +99,7 @@
   padding: 8px 12px;
   border-radius: 999px;
   border: 1px solid rgba(255, 255, 255, 0.15);
-  background: rgba(255, 255, 255, 0.06);
+  background: #3B3B58;
   color: var(--gastify-light);
   font-weight: 600;
   cursor: pointer;
@@ -115,6 +115,7 @@
 
 .currency-btn:hover {
   transform: translateY(-1px);
+  background: #45456b;
 }
 /* Action Buttons */
 .action-buttons {
@@ -126,7 +127,7 @@
 
 .action-btn {
   flex: 1;
-  background: rgba(255, 255, 255, 0.05);
+  background: #3B3B58;
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 16px;
@@ -142,7 +143,7 @@
 .action-btn:hover {
   transform: translateY(-3px);
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
-  background: rgba(255, 255, 255, 0.08);
+  background: #45456b;
   border-color: rgba(255, 255, 255, 0.12);
 }
 

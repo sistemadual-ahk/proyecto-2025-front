@@ -73,7 +73,7 @@
   margin-bottom: 40px;
 
   .goal-card {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+    background: #3B3B58;
     border-radius: 16px;
     padding: 18px;
     margin-bottom: 14px;
@@ -87,6 +87,7 @@
     &:hover {
       transform: translateY(-2px);
       box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+      background: #45456b;
       border-color: rgba(255, 255, 255, 0.18);
     }
 
@@ -96,7 +97,7 @@
 
     &.completed {
       opacity: 0.7;
-      background: rgba(255, 255, 255, 0.05);
+      background: #3B3B58;
       
       .goal-title {
         text-decoration: line-through;
