@@ -38,15 +38,25 @@
             </label>
             
             <div class="criterion-dropdown" *ngIf="showProfesionDropdown && comparisonCriteria.profesion.selected">
+                  <button
+                    class="use-my-location-btn"
+                    (click)="onUseMyProfession()"
+                    [class.active]="comparisonCriteria.profesion.useMyProfession"
+                    [disabled]="!currentUserProfesion"
+                    title="Usa tu profesión guardada"
+                    style="margin-bottom:12px;"
+                  >
+                    <i class="mdi mdi-briefcase-check"></i>
+                    <span *ngIf="currentUserProfesion">Usar mi profesión ({{ currentUserProfesion }})</span>
+                    <span *ngIf="!currentUserProfesion">Usar mi profesión (sin datos)</span>
+                  </button>
+
               <mat-select 
                 class="profesion-select"
                 [(ngModel)]="comparisonCriteria.profesion.value"
                 (ngModelChange)="onProfesionSelect($event)"
                 placeholder="Selecciona una profesión"
               >
-                <mat-option [value]="currentUserProfesion" *ngIf="currentUserProfesion">
-                  Mi misma profesión ({{ currentUserProfesion }})
-                </mat-option>
                 <mat-option 
                   *ngFor="let prof of profesionOptions" 
                   [value]="prof"
@@ -73,15 +83,17 @@
             </label>
             
             <div class="criterion-dropdown ubicacion-dropdown" *ngIf="showUbicacionDropdown && comparisonCriteria.ubicacion.selected">
-              <button 
-                class="use-my-location-btn" 
-                (click)="onUseMyLocation()"
-                [class.active]="comparisonCriteria.ubicacion.useMyLocation"
-                *ngIf="currentUserUbicacion"
-              >
-                <i class="mdi mdi-map-marker-check"></i>
-                Usar mi ubicación ({{ currentUserUbicacion.localidad }}, {{ currentUserUbicacion.provincia }})
-              </button>
+                <button 
+                  class="use-my-location-btn" 
+                  (click)="onUseMyLocation()"
+                  [class.active]="comparisonCriteria.ubicacion.useMyLocation"
+                  [disabled]="!currentUserUbicacion"
+                  title="Usa tu ubicación guardada"
+                >
+                  <i class="mdi mdi-map-marker-check"></i>
+                  <span *ngIf="currentUserUbicacion">Usar mi ubicación ({{ currentUserUbicacion.localidad }}, {{ currentUserUbicacion.provincia }})</span>
+                  <span *ngIf="!currentUserUbicacion">Usar mi ubicación (sin datos)</span>
+                </button>
               
               <div class="location-selectors" *ngIf="!comparisonCriteria.ubicacion.useMyLocation">
                 <mat-select 
@@ -175,10 +187,16 @@
               <span class="info-value">{{ currentUser.estadoCivil }}</span>
             </div>
             <div class="info-item">
-              <span class="info-label">Ubicación</span>
-              <span class="info-value">
-                {{ currentUser.ubicacion.localidad }}, {{ currentUser.ubicacion.provincia }}
-              </span>
+              <span class="info-label">Provincia</span>
+              <span class="info-value">{{ currentUser.ubicacion.provincia }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Municipio</span>
+              <span class="info-value">{{ currentUser.ubicacion.municipio }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Localidad</span>
+              <span class="info-value">{{ currentUser.ubicacion.localidad }}</span>
             </div>
           </div>
 
@@ -243,10 +261,16 @@
               <span class="info-value">{{ comparedUser.estadoCivil }}</span>
             </div>
             <div class="info-item">
-              <span class="info-label">Ubicación</span>
-              <span class="info-value">
-                {{ comparedUser.ubicacion.localidad }}, {{ comparedUser.ubicacion.provincia }}
-              </span>
+              <span class="info-label">Provincia</span>
+              <span class="info-value">{{ comparedUser.ubicacion.provincia }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Municipio</span>
+              <span class="info-value">{{ comparedUser.ubicacion.municipio }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Localidad</span>
+              <span class="info-value">{{ comparedUser.ubicacion.localidad }}</span>
             </div>
           </div>
 

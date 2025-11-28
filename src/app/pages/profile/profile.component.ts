@@ -14,7 +14,7 @@ import { UserDTO } from '../../../models/user.model';
   standalone: true,
   imports: [CommonModule, FormsModule, PageTitleComponent, MatSelectModule],
   templateUrl: './profile.component.html',
-  styleUrl: './profile.component.scss',
+  styleUrls: ['./profile.component.scss'],
 })
 export class ProfileComponent implements OnInit {
   usuario = {
@@ -208,7 +208,6 @@ export class ProfileComponent implements OnInit {
 
 
 
-
   saveChanges(): void {
     this.userService.getUserData().subscribe({
       next: (userData) => {
@@ -218,15 +217,36 @@ export class ProfileComponent implements OnInit {
         }
 
         const payload: Partial<UserDTO> = {
-          ...this.usuario
-        };
+          // Mapear campos locales a los esperados por UserDTO
+          telegramId: this.usuario?.telegramID ?? '',
+          ingreso_mensual: this.usuario.ingresoMensual,
+          sueldo: this.usuario.ingresoMensual,
+          situacion_laboral: this.usuario.situacionLaboral,
+          estadoCivil: this.usuario.estadoCivil,
+          profesion: this.usuario.profesion,
+          // Ubicación anidada según UserDTO
+          ubicacion: {
+            provincia: this.usuario.provincia,
+            municipio: this.usuario.municipio,
+            localidad: this.usuario.localidad,
+          }
+        } as Partial<UserDTO>;
+
+        console.debug('Profile: updating user', { id: userData.id, payload });
 
         this.userService.updateUser(userData.id, payload).subscribe({
           next: (updatedUser) => {
             console.log('Datos actualizados correctamente:', updatedUser);
+            // actualizar la UI local con lo guardado
+            this.isEditing = false;
+            this.originalUser = {};
           },
           error: (err) => {
             console.error('Error al actualizar datos', err);
+            // Mostrar más detalles si la respuesta contiene error del backend
+            if (err?.error) {
+              console.debug('Backend error payload:', err.error);
+            }
           }
         });
       },

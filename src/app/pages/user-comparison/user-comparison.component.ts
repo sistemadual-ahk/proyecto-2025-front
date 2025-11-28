@@ -47,7 +47,8 @@ export class UserComparisonComponent implements OnInit {
     sueldo: false,
     profesion: {
       selected: false,
-      value: '' // 'mi_profesion' o nombre de profesión específica
+      value: '', // 'mi_profesion' o nombre de profesión específica
+      useMyProfession: false
     },
     ubicacion: {
       selected: false,
@@ -102,6 +103,10 @@ private loadUserData(): void {
           localidad: userData.ubicacion.localidad || ''
         };
       }
+      console.debug('UserComparison: loaded userData', {
+        profesion: this.currentUserProfesion,
+        ubicacion: this.currentUserUbicacion
+      });
     },
     error: (err) => {
       console.error('Error al cargar datos del usuario', err);
@@ -173,53 +178,98 @@ private loadUserData(): void {
     });
   }
 
-  private loadComparisonData(): void {
-    // TODO: Conectar con el endpoint del backend
-    // Por ahora, datos de ejemplo para el diseño
-    setTimeout(() => {
-      this.currentUser = {
-        name: 'Usuario Actual',
-        sueldo: 780000,
-        profesion: 'Tecnología',
-        estadoCivil: 'Soltero',
-        ubicacion: {
-          provincia: 'Buenos Aires',
-          municipio: 'General San Martín',
-          localidad: 'Villa Ballester',
-        },
-        categorias: [
-          { name: 'Alimentación', total: 45000 },
-          { name: 'Transporte', total: 12000 },
-          { name: 'Entretenimiento', total: 15000 },
-          { name: 'Servicios', total: 18000 },
-        ],
-        totalOperaciones: 24,
-        primeraFecha: '2025-01-05',
-        ultimaFecha: '2025-01-28',
-      };
+  private loadComparisonData(payload?: any): void {
+    if (!payload) {
+      // fallback a datos de ejemplo para diseño
+      setTimeout(() => {
+        this.currentUser = {
+          name: 'Usuario Actual',
+          sueldo: 780000,
+          profesion: 'Tecnología',
+          estadoCivil: 'Soltero',
+          ubicacion: {
+            provincia: 'Buenos Aires',
+            municipio: 'General San Martín',
+            localidad: 'Villa Ballester',
+          },
+          categorias: [
+            { name: 'Alimentación', total: 45000 },
+            { name: 'Transporte', total: 12000 },
+            { name: 'Entretenimiento', total: 15000 },
+            { name: 'Servicios', total: 18000 },
+          ],
+          totalOperaciones: 24,
+          primeraFecha: '2025-01-05',
+          ultimaFecha: '2025-01-28',
+        };
 
-      this.comparedUser = {
-        sueldo: 650000,
-        profesion: 'Docente',
-        estadoCivil: 'Casado',
-        ubicacion: {
-          provincia: 'Buenos Aires',
-          municipio: 'San Isidro',
-          localidad: 'San Isidro',
-        },
-        categorias: [
-          { name: 'Alimentación', total: 52000 },
-          { name: 'Transporte', total: 15000 },
-          { name: 'Educación', total: 25000 },
-          { name: 'Servicios', total: 20000 },
-        ],
-        totalOperaciones: 18,
-        primeraFecha: '2025-01-03',
-        ultimaFecha: '2025-01-27',
-      };
+        this.comparedUser = {
+          sueldo: 650000,
+          profesion: 'Docente',
+          estadoCivil: 'Casado',
+          ubicacion: {
+            provincia: 'Buenos Aires',
+            municipio: 'San Isidro',
+            localidad: 'San Isidro',
+          },
+          categorias: [
+            { name: 'Alimentación', total: 52000 },
+            { name: 'Transporte', total: 15000 },
+            { name: 'Educación', total: 25000 },
+            { name: 'Servicios', total: 20000 },
+          ],
+          totalOperaciones: 18,
+          primeraFecha: '2025-01-03',
+          ultimaFecha: '2025-01-27',
+        };
 
-      this.loading = false;
-    }, 500);
+        this.loading = false;
+      }, 500);
+      return;
+    }
+
+    // Llamada al backend preparada: ruta sugerida '/users/compare'
+    this.api.create<any>('/users/compare', payload).subscribe({
+      next: (res) => {
+        // Se espera que el backend devuelva algo como { currentUser: {...}, comparedUser: {...} }
+        if (!res) {
+          this.loading = false;
+          return;
+        }
+
+        // Compatibilidad con varias formas de respuesta
+        if (res.currentUser && res.comparedUser) {
+          this.currentUser = res.currentUser;
+          this.comparedUser = res.comparedUser;
+        } else if (Array.isArray(res) && res.length >= 2) {
+          this.currentUser = res[0];
+          this.comparedUser = res[1];
+        } else {
+          // Si el backend devuelve un solo objeto con la comparativa
+          this.comparedUser = res;
+          // Mantener currentUser desde datos actuales si está disponible
+          if (!this.currentUser && this.currentUserData) {
+            this.currentUser = {
+              sueldo: this.currentUserData.sueldo || 0,
+              profesion: this.currentUserProfesion,
+              estadoCivil: this.currentUserData.estadoCivil || '',
+              ubicacion: this.currentUserUbicacion || { provincia: '', municipio: '', localidad: '' },
+              categorias: [],
+              totalOperaciones: 0,
+              primeraFecha: '',
+              ultimaFecha: ''
+            } as any;
+          }
+        }
+
+        this.loading = false;
+      },
+      error: (err) => {
+        console.error('Error al obtener comparación desde backend', err);
+        // Fallback a datos de ejemplo si falla la llamada
+        this.loadComparisonData();
+      }
+    });
   }
 
   goBack(): void {
@@ -244,6 +294,7 @@ private loadUserData(): void {
       this.showProfesionDropdown = this.comparisonCriteria.profesion.selected;
       if (!this.comparisonCriteria.profesion.selected) {
         this.comparisonCriteria.profesion.value = '';
+        this.comparisonCriteria.profesion.useMyProfession = false;
       }
     } else if (criterion === 'ubicacion') {
       this.comparisonCriteria.ubicacion.selected = !this.comparisonCriteria.ubicacion.selected;
@@ -264,6 +315,7 @@ private loadUserData(): void {
     this.showProfesionDropdown = value;
     if (!value) {
       this.comparisonCriteria.profesion.value = '';
+      this.comparisonCriteria.profesion.useMyProfession = false;
     }
   }
 
@@ -282,6 +334,7 @@ private loadUserData(): void {
 
   onProfesionSelect(value: string): void {
     this.comparisonCriteria.profesion.value = value;
+    this.comparisonCriteria.profesion.useMyProfession = false;
   }
 
   onUseMyLocation(): void {
@@ -296,6 +349,15 @@ private loadUserData(): void {
         this.setLocalidadesFromMunicipio(this.currentUserUbicacion.municipio);
       }
     }
+  }
+
+  onUseMyProfession(): void {
+    this.comparisonCriteria.profesion.useMyProfession = true;
+    if (this.currentUserProfesion) {
+      this.comparisonCriteria.profesion.value = this.currentUserProfesion;
+    }
+    this.showProfesionDropdown = true;
+    this.comparisonCriteria.profesion.selected = true;
   }
 
   onProvinciaChange(provinciaNombre: string): void {
@@ -360,7 +422,38 @@ private loadUserData(): void {
     
     this.showCriteriaSelection = false;
     this.loading = true;
-    this.loadComparisonData();
+    // Construir payload para backend
+    const payload: any = {
+      criterios: {
+        sueldo: this.comparisonCriteria.sueldo,
+        profesion: null,
+        ubicacion: null
+      }
+    };
+
+    if (this.comparisonCriteria.profesion.selected) {
+      if (this.comparisonCriteria.profesion.useMyProfession) {
+        payload.criterios.profesion = { useMyProfession: true, value: this.currentUserProfesion };
+      } else {
+        payload.criterios.profesion = { useMyProfession: false, value: this.comparisonCriteria.profesion.value };
+      }
+    }
+
+    if (this.comparisonCriteria.ubicacion.selected) {
+      if (this.comparisonCriteria.ubicacion.useMyLocation) {
+        payload.criterios.ubicacion = { useMyLocation: true, value: this.currentUserUbicacion };
+      } else {
+        payload.criterios.ubicacion = {
+          useMyLocation: false,
+          provincia: this.comparisonCriteria.ubicacion.provincia,
+          municipio: this.comparisonCriteria.ubicacion.municipio,
+          localidad: this.comparisonCriteria.ubicacion.localidad
+        };
+      }
+    }
+
+    // Intentamos llamar al backend para obtener la comparativa. Si falla, usamos datos de ejemplo.
+    this.loadComparisonData(payload);
   }
 
   resetComparison(): void {
@@ -375,7 +468,8 @@ private loadUserData(): void {
       sueldo: false,
       profesion: {
         selected: false,
-        value: ''
+        value: '',
+        useMyProfession: false
       },
       ubicacion: {
         selected: false,
