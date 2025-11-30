@@ -23,10 +23,27 @@ const formatLocalDate = (date: Date): string => {
 };
 
 const toLocalISOString = (dateString: string): string => {
+  // 1. Desglosar la fecha seleccionada en el input (ej: 2025-11-27)
   const [year, month, day] = dateString.split('-').map(Number);
-  // Construir la fecha directamente en UTC al mediodía para evitar corrimientos por huso horario
-  const utcDate = new Date(Date.UTC(year, (month || 1) - 1, day || 1, 12, 0, 0));
-  return utcDate.toISOString();
+  
+  // 2. Obtener la hora actual REAL del momento en que guardas
+  const now = new Date();
+
+  // 3. Crear una nueva fecha combinando:
+  //    - El AÑO, MES y DÍA seleccionados por el usuario.
+  //    - La HORA, MINUTOS y SEGUNDOS del sistema (ahora mismo).
+  //    Usamos el constructor local (sin UTC) para que tome tu zona horaria correctamente.
+  const mixedDate = new Date(
+    year, 
+    (month || 1) - 1, 
+    day || 1, 
+    now.getHours(), 
+    now.getMinutes(), 
+    now.getSeconds()
+  );
+
+  // 4. Devolver en ISO para el backend
+  return mixedDate.toISOString();
 };
 
 @Component({
