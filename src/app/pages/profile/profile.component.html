@@ -94,6 +94,17 @@
       </div>
     </div>
 
+    <div class="detail-card">
+        <span class="detail-label">Telegram ID</span>
+        <span class="detail-value" *ngIf="!isEditing">{{ usuario.telegramID | number }}</span>
+        <input
+          type="number"
+          class="detail-input"
+          [(ngModel)]="usuario.telegramID"
+          *ngIf="isEditing"
+        />
+      </div>
+
     <!-- Action Buttons -->
     <div class="action-buttons" *ngIf="isEditing">
       <button class="discard-btn" (click)="discardChanges()">Descartar cambios</button>

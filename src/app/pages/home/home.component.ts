@@ -216,82 +216,62 @@ export class HomeComponent implements OnInit, OnDestroy {
     console.log(`Ingresos: $${this.income}, Gastos: $${this.expenses}`);
   }
 
+
+
   private loadRecentMovements(): void {
-    // Obtener la billetera actual
     const billeteraActual = this.billeteras[this.currentIndex];
     if (!billeteraActual) {
       this.recentMovements = [];
       return;
     }
 
-    console.log('Cargando movimientos para billetera:', billeteraActual.nombre, 'ID:', billeteraActual.id);
-    console.log('Total operaciones disponibles:', this.operaciones.length);
-
     let operacionesBilletera: Operacion[];
-
-    // Si es la billetera General (id '0'), mostrar todas las operaciones
     if (billeteraActual.id === '0') {
       operacionesBilletera = this.operaciones;
-      console.log('Billetera General - Mostrando todas las operaciones');
     } else {
-      // Debug: Mostrar IDs de las operaciones
-      console.log('Buscando operaciones con billetera ID:', billeteraActual.id);
-      this.operaciones.forEach((op, index) => {
-        const billeteraId = typeof op.billetera === 'object' && op.billetera !== null
-          ? (op.billetera as any).id || (op.billetera as any)._id
-          : op.billetera;
-
-        console.log(`  Operación ${index}:`, {
-          descripcion: op.descripcion,
-          billetera: op.billetera,
-          billeteraIdExtraido: billeteraId,
-          billeteraId: op.billeteraId,
-          coincide: billeteraId === billeteraActual.id?.toString() ||
-            op.billeteraId === billeteraActual.id?.toString()
-        });
-      });
-
-      // Filtrar operaciones por la billetera específica
-      // El backend puede devolver billetera como string (ID) o como objeto {id, nombre, ...}
       operacionesBilletera = this.operaciones.filter((op) => {
-        const billeteraId = typeof op.billetera === 'object' && op.billetera !== null
-          ? (op.billetera as any).id || (op.billetera as any)._id
-          : op.billetera;
-
-        return billeteraId === billeteraActual.id?.toString() ||
-          op.billeteraId === billeteraActual.id?.toString();
+        const billeteraId =
+          typeof op.billetera === 'object' && op.billetera !== null
+            ? (op.billetera as any).id ?? (op.billetera as any)._id
+            : op.billetera;
+        return (
+          billeteraId === billeteraActual.id?.toString() ||
+          op.billeteraId === billeteraActual.id?.toString()
+        );
       });
-      console.log(`Operaciones filtradas: ${operacionesBilletera.length}`);
     }
 
-    // Mostrar los últimos creados primero (sin mutar el arreglo original)
-
+    // 🔽 ORDENAR POR FECHA DESCENDENTE (más nuevas primero)
     const operacionesRecientes = operacionesBilletera
       .slice()
-      .sort((a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime()) // Orden descendente
+      .sort((a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime())
       .slice(0, 3);
 
-    console.log('Movimientos recientes a mostrar:', operacionesRecientes.length);
-
     this.recentMovements = operacionesRecientes.map((operacion) => {
-      // Extraer información de la categorí­a si está como objeto
       let categoriaInfo: any = {};
       if (typeof operacion.categoria === 'object' && operacion.categoria !== null) {
         categoriaInfo = operacion.categoria;
       }
-
       return {
         id: operacion._id,
         type: operacion.tipo,
-        category: categoriaInfo.nombre || operacion.categoriaId || operacion.categoria || 'Sin categorí­a',
+        category:
+          categoriaInfo.nombre ??
+          operacion.categoriaId ??
+          operacion.categoria ??
+          'Sin categoría',
         description: operacion.descripcion,
-        icon: categoriaInfo.icono || 'mdi mdi-cash',
-        amount: operacion.tipo === 'Ingreso' || operacion.tipo === 'income' ? operacion.monto : -operacion.monto,
+        icon: categoriaInfo.icono ?? 'mdi mdi-cash',
+        amount:
+          operacion.tipo === 'Ingreso' || operacion.tipo === 'income'
+            ? operacion.monto
+            : -operacion.monto,
         date: this.formatDateForHome(operacion.fecha.toString()),
-        color: categoriaInfo.color || '#6b7280',
+        color: categoriaInfo.color ?? '#6b7280',
       };
     });
   }
+
 
   // Métodos para el menú
   toggleMenu() {

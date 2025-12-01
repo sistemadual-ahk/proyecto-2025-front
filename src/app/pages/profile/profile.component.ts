@@ -7,16 +7,18 @@ import { PageTitleComponent } from '../../components/page-title/page-title.compo
 import { AuthService } from '@auth0/auth0-angular';
 import { MatSelectModule } from '@angular/material/select';
 import { ApiService } from '../../services/api.service';
+import { UserDTO } from '../../../models/user.model';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
   imports: [CommonModule, FormsModule, PageTitleComponent, MatSelectModule],
   templateUrl: './profile.component.html',
-  styleUrl: './profile.component.scss',
+  styleUrls: ['./profile.component.scss'],
 })
 export class ProfileComponent implements OnInit {
   usuario = {
+    telegramID: '',
     ingresoMensual: 0,
     situacionLaboral: 'Freelance',
     estadoCivil: 'N/A',
@@ -58,47 +60,40 @@ export class ProfileComponent implements OnInit {
     this.loadProfesiones();
   }
 
+
   private loadUserData(): void {
-    const userData = this.userService.getUserData();
-    if (userData) {
-      // Cargar datos básicos del usuario primero (no dependen de provincias)
-      // El backend devuelve 'sueldo', pero también verificamos 'ingresoMensual' por compatibilidad
-      if (userData.sueldo !== undefined) {
-        this.usuario.ingresoMensual = userData.sueldo;
-      } else if (userData.ingresoMensual !== undefined) {
-        this.usuario.ingresoMensual = userData.ingresoMensual;
-      }
-      // Cargar situación laboral desde el backend
-      // Verificamos diferentes nombres por compatibilidad
-      if (userData.situacionLaboral !== undefined && userData.situacionLaboral !== null) {
-        this.usuario.situacionLaboral = userData.situacionLaboral;
-      } else if (userData.situacion_laboral !== undefined && userData.situacion_laboral !== null) {
-        this.usuario.situacionLaboral = userData.situacion_laboral;
-      }
-      if (userData.profesion) {
-        this.usuario.profesion = userData.profesion;
-      }
-      if (userData.estadoCivil) {
-        this.usuario.estadoCivil = userData.estadoCivil;
-      }
+    this.userService.getUserData().subscribe((userData) => {
+      if (userData) {
+        // Cargar datos básicos
+        this.usuario.ingresoMensual = userData.sueldo ?? userData.ingreso_mensual;
 
-      // Cargar datos de ubicación (dependen de que las provincias estén cargadas)
-      if (userData.ubicacion) {
-        this.usuario.provincia = userData.ubicacion.provincia || this.usuario.provincia;
-        this.usuario.municipio = userData.ubicacion.municipio || this.usuario.municipio;
-        this.usuario.localidad = userData.ubicacion.localidad || this.usuario.localidad;
+        this.usuario.situacionLaboral =
+          userData.situacion_laboral ?? userData.situacion_laboral ?? this.usuario.situacionLaboral;
 
-        // Cargar municipios y localidades según la provincia y municipio seleccionados
-        // Solo si las provincias ya están cargadas
-        if (this.usuario.provincia && this.provincias.length > 0) {
-          this.setMunicipiosFromProvincia(this.usuario.provincia);
-          if (this.usuario.municipio) {
-            this.setLocalidadesFromMunicipio(this.usuario.municipio);
+        if (userData.profesion) {
+          this.usuario.profesion = userData.profesion;
+        }
+        if (userData.estadoCivil) {
+          this.usuario.estadoCivil = userData.estadoCivil;
+        }
+
+        // Ubicación
+        if (userData.ubicacion) {
+          this.usuario.provincia = userData.ubicacion.provincia || this.usuario.provincia;
+          this.usuario.municipio = userData.ubicacion.municipio || this.usuario.municipio;
+          this.usuario.localidad = userData.ubicacion.localidad || this.usuario.localidad;
+
+          if (this.usuario.provincia && this.provincias.length > 0) {
+            this.setMunicipiosFromProvincia(this.usuario.provincia);
+            if (this.usuario.municipio) {
+              this.setLocalidadesFromMunicipio(this.usuario.municipio);
+            }
           }
         }
       }
-    }
+    });
   }
+
 
   private loadProvincias(): void {
     const cached = localStorage.getItem('provincias_cache');
@@ -167,7 +162,7 @@ export class ProfileComponent implements OnInit {
       next: (data) => {
         // Si el backend devuelve objetos con propiedad 'nombre', mapearlos a strings
         if (data && data.length > 0) {
-          this.profesionOptions = data.map((prof: any) => 
+          this.profesionOptions = data.map((prof: any) =>
             typeof prof === 'string' ? prof : prof.nombre || prof
           );
         } else {
@@ -211,41 +206,56 @@ export class ProfileComponent implements OnInit {
     this.originalUser = { ...this.usuario };
   }
 
+
+
   saveChanges(): void {
-    const userData = this.userService.getUserData();
-    if (!userData || !userData.id) {
-      console.error('No se pudo obtener el ID del usuario');
-      return;
-    }
+    this.userService.getUserData().subscribe({
+      next: (userData) => {
+        if (!userData || !userData.id) {
+          console.error('No se pudo obtener el ID del usuario');
+          return;
+        }
 
-    // Construir el objeto con los datos en el formato requerido
-    // El parámetro 'profesion' va sin tilde, pero el valor mantiene su formato original
-    const updateData = {
-      ubicacion: {
-        provincia: this.usuario.provincia,
-        municipio: this.usuario.municipio,
-        localidad: this.usuario.localidad,
-      },
-      sueldo: this.usuario.ingresoMensual,
-      estadoCivil: this.usuario.estadoCivil,
-      situacionLaboral: this.usuario.situacionLaboral,
-      profesion: this.usuario.profesion, // Valor original con mayúsculas y tildes
-    };
+        const payload: Partial<UserDTO> = {
+          // Mapear campos locales a los esperados por UserDTO
+          telegramId: this.usuario?.telegramID ?? '',
+          ingreso_mensual: this.usuario.ingresoMensual,
+          sueldo: this.usuario.ingresoMensual,
+          situacion_laboral: this.usuario.situacionLaboral,
+          estadoCivil: this.usuario.estadoCivil,
+          profesion: this.usuario.profesion,
+          // Ubicación anidada según UserDTO
+          ubicacion: {
+            provincia: this.usuario.provincia,
+            municipio: this.usuario.municipio,
+            localidad: this.usuario.localidad,
+          }
+        } as Partial<UserDTO>;
 
-    // Enviar la actualización al backend
-    this.userService.updateUser(userData.id, updateData).subscribe({
-      next: (response) => {
-        console.log('Usuario actualizado correctamente', response);
-        // Recargar los datos del usuario después de guardar para reflejar los cambios
-        this.loadUserData();
-        this.isEditing = false;
+        console.debug('Profile: updating user', { id: userData.id, payload });
+
+        this.userService.updateUser(userData.id, payload).subscribe({
+          next: (updatedUser) => {
+            console.log('Datos actualizados correctamente:', updatedUser);
+            // actualizar la UI local con lo guardado
+            this.isEditing = false;
+            this.originalUser = {};
+          },
+          error: (err) => {
+            console.error('Error al actualizar datos', err);
+            // Mostrar más detalles si la respuesta contiene error del backend
+            if (err?.error) {
+              console.debug('Backend error payload:', err.error);
+            }
+          }
+        });
       },
       error: (err) => {
-        console.error('Error al actualizar el usuario:', err);
-        // Opcional: mostrar un mensaje de error al usuario
-      },
+        console.error('Error al obtener datos del usuario', err);
+      }
     });
   }
+
 
   discardChanges(): void {
     // Restaurar los valores originales

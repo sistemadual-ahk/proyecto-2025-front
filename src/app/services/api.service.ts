@@ -18,6 +18,12 @@ export class ApiService {
 
   constructor(private http: HttpClient) {}
 
+  get<T>(route: string): Observable<T> {
+    return this.http
+      .get<ApiResponse<T>>(`${this.API_BASE_URL}${route}`)
+      .pipe(map((response) => response.data));
+  }
+
   getAll<T>(route: string): Observable<T[]> {
     return this.http
       .get<ApiResponse<T[]>>(`${this.API_BASE_URL}${route}`)

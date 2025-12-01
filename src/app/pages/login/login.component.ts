@@ -33,7 +33,7 @@ export class LoginComponent implements OnInit {
           const sub = user?.sub;
           console.log('Usuario autenticado:', user);
 
-          this.userService.createUser({ name: name, mail: mail, auth0Id: sub }).subscribe({
+          this.userService.createUser({ name: name, mail: mail, authId: sub }).subscribe({
             next: (response) => {
               this.router.navigate(['/home']);
             },
