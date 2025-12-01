@@ -154,3 +154,8 @@ Thumbs.db
 
 android
 ios
+
+capacitor.build.gradle
+capacitor.settings.gradle
+package-lock.json
+yarn.lock
