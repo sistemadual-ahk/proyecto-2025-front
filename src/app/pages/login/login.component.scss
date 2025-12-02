@@ -1,11 +1,13 @@
+@import '../../styles/variables';
+
 .login-container {
   min-height: 100vh;
-  background: linear-gradient(180deg, #0f1629 0%, #1a1f3a 50%, #0f1629 100%);
+  background: $gradient-main;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 20px;
-  font-family: 'Poppins', sans-serif;
+  font-family: $font-family-base;
 }
 
 .login-content {

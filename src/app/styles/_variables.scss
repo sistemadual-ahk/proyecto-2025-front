@@ -1,0 +1,11 @@
+@import 'colors';
+
+// Variables CSS (Custom Properties)
+:root {
+  --gastify-dark: #{$color-background};
+  --gastify-green: #{$color-primary};
+  --gastify-purple: #{$color-secondary};
+  --gastify-blue: #{$color-surface};
+  --gastify-light: #{$color-text};
+}
+

@@ -18,35 +18,13 @@
 @import 'ng-zorro-antd/switch/style/index.min.css';
 @import 'ng-zorro-antd/select/style/index.min.css';
 
-// Variables CSS para la paleta de colores de Ga$tify
-:root {
-  --gastify-dark: #0f152c; // Fondo principal
-  --gastify-green: #3dcd99; // Verde principal
-  --gastify-purple: #3b3b58; // Púrpura secundario
-  --gastify-blue: #15233c; // Azul oscuro
-  --gastify-light: #ffffff; // Blanco
-}
-
-// Estilos globales
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-body {
-  font-family: 'Poppins', sans-serif;
-  background-color: var(--gastify-dark);
-  color: var(--gastify-light);
-  line-height: 1.6;
-}
-
-// Estilos para botones globales
-button {
-  font-family: 'Poppins', sans-serif;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
+// Importar parciales de estilos
+@import './app/styles/variables';
+@import './app/styles/mixins';
+@import './app/styles/reset';
+@import './app/styles/typography';
+@import './app/styles/animations';
+@import './app/styles/overrides';
 
 // Estilos para inputs globales
 input {
@@ -204,93 +182,4 @@ a,
 // Personalizar el backdrop
 .bottom-sheet-backdrop {
   background: rgba(0, 0, 0, 0.6) !important;
-}
-
-/* --- Mat-select global styles (unificar dropdowns en toda la app) --- */
-.detail-select.mat-mdc-select,
-.profesion-select.mat-mdc-select,
-.location-select.mat-mdc-select,
-.mat-mdc-select {
-  display: flex;
-  align-items: center;
-  padding: 0 16px;
-  background: #1a1f3a;
-}
-
-.mat-mdc-select .mat-mdc-select-trigger {
-  width: 100%;
-  min-height: auto;
-  padding: 0;
-}
-
-.mat-mdc-select .mat-mdc-select-value,
-.mat-mdc-select .mat-mdc-select-value-text {
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 14px;
-}
-
-.mat-mdc-select .mat-mdc-select-placeholder {
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 14px;
-  font-weight: 400;
-}
-
-.mat-mdc-select .mat-mdc-select-arrow {
-  color: rgba(255, 255, 255, 0.7);
-}
-
-.mat-mdc-select-panel {
-  background: #1a1f3a;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 14px;
-  margin-top: 8px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
-}
-
-.mat-mdc-option {
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 14px;
-  min-height: 48px;
-  padding: 0 16px;
-}
-
-.mat-mdc-option:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: #fff;
-}
-
-.mat-mdc-option.mdc-list-item--selected {
-  background: rgba(61, 205, 153, 0.2);
-  color: #fff;
-}
-
-/* End mat-select global styles */
-
-/* Stronger fallbacks to avoid visual glitches when navigating between routes */
-.cdk-overlay-container .mat-mdc-select-panel {
-  background: #1a1f3a !important;
-  border: 1px solid rgba(255, 255, 255, 0.12) !important;
-  border-radius: 14px !important;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.28) !important;
-  z-index: 10050 !important;
-}
-
-.cdk-overlay-container .mat-mdc-option,
-.cdk-overlay-container .mat-mdc-option .mdc-list-item__primary-text,
-.cdk-overlay-container .mat-mdc-option .mat-mdc-option-text {
-  color: rgba(255,255,255,0.92) !important;
-}
-
-/* Ensure options are visible and have proper spacing */
-.cdk-overlay-container .mat-mdc-option {
-  min-height: 48px !important;
-  padding: 0 16px !important;
-  display: flex !important;
-  align-items: center !important;
-}
-
-/* If another library injects white backgrounds, this rule should win */
-.cdk-overlay-container .mat-mdc-select-panel[style],
-.cdk-overlay-container .mat-mdc-select-panel {
-  background-color: #1a1f3a !important;
 }

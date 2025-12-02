@@ -1,8 +1,10 @@
+@import '../../styles/variables';
+
 .saving-goals-container {
   min-height: 100vh;
-  background: linear-gradient(180deg, #0f1629 0%, #1a1f3a 50%, #0f1629 100%);
-  color: white;
-  font-family: 'Poppins', sans-serif;
+  background: $gradient-main;
+  color: $color-text;
+  font-family: $font-family-base;
   position: relative;
   overflow-x: hidden;
   overflow-y: auto;
@@ -20,7 +22,7 @@
   font-weight: 500;
 
   .time {
-    color: #ffffff;
+    color: $color-text;
   }
 
   .status-icons {
@@ -29,7 +31,7 @@
 
     i {
       font-size: 12px;
-      color: #ffffff;
+      color: $color-text;
     }
   }
 }
@@ -73,7 +75,7 @@
   margin-bottom: 40px;
 
   .goal-card {
-    background: #3B3B58;
+    background: $color-secondary;
     border-radius: 16px;
     padding: 18px;
     margin-bottom: 14px;
@@ -97,7 +99,7 @@
 
     &.completed {
       opacity: 0.7;
-      background: #3B3B58;
+      background: $color-secondary;
       
       .goal-title {
         text-decoration: line-through;
@@ -304,7 +306,7 @@
           }
 
           .current-amount {
-            color: #3dcd99;
+            color: $color-primary;
             font-weight: 700;
             text-shadow: 0 1px 3px rgba(61, 205, 153, 0.5);
           }

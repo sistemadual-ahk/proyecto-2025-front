@@ -1,3 +1,5 @@
+@import '../../styles/colors';
+
 :root {
   --motion-fade-duration: 250ms;
   --motion-slide-duration: 300ms;
@@ -16,7 +18,7 @@
 }
 
 .modal-content {
-  background: var(--gastify-blue);
+  background: $color-surface;
   width: 100%;
   max-width: 380px;
   border-radius: 24px 24px 0 0;
@@ -58,7 +60,7 @@
 
 .close-btn,
 .save-btn {
-  background: var(--gastify-purple);
+  background: $color-secondary;
   border: 1px solid rgba(255, 255, 255, 0.12);
   font-size: 20px;
   color: #fff;
@@ -81,7 +83,7 @@
 }
 
 .save-btn.ready {
-  background: var(--gastify-green);
+  background: $color-primary;
   border-color: transparent;
   color: var(--gastify-dark);
 }
@@ -113,7 +115,8 @@
   font-size: 13px;
   font-weight: 500;
   color: rgba(255, 255, 255, 0.75);
-  margin: 6px 0px 0px;
+  margin-bottom: 6px;
+  display: block;
 }
 
 .form-input {
@@ -122,7 +125,7 @@
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 14px;
   font-size: 14px;
-  background: var(--gastify-blue);
+  background: #1a1f3a;
   transition: all 0.3s ease;
   color: #fff;
   width: 100%;
@@ -134,8 +137,8 @@
 
 .form-input:focus {
   outline: none;
-  border-color: var(--gastify-green);
-  background: var(--gastify-purple);
+  border-color: $color-primary;
+  background: $color-secondary;
   box-shadow: 0 0 0 3px rgba(61, 205, 153, 0.25);
 }
 
@@ -207,12 +210,13 @@ select.form-input option[disabled] {
 /* Toggle de tipo de billetera (banco/digital/efectivo) */
 .transaction-toggle {
   display: flex;
-  background: var(--gastify-purple);
+  background: $color-secondary;
   border-radius: 20px;
   padding: 6px;
   margin-bottom: 20px;
   gap: 6px;
   border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.24);
 }
 
 .toggle-btn {

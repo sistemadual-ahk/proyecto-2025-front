@@ -1,3 +1,5 @@
+@import '../../styles/colors';
+
 /* Estilos base */
 * {
     margin: 0;
@@ -14,8 +16,8 @@
   
 .container {
     min-height: 100vh;
-    background: linear-gradient(180deg, #0f1629 0%, #1a1f3a 50%, #0f1629 100%);
-    font-family: 'Poppins', sans-serif;
+    background: $gradient-main;
+    font-family: $font-family-base;
     color: var(--gastify-light);
     position: relative;
     overflow-x: hidden;
@@ -40,7 +42,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: #3B3B58;
+  background: $color-secondary;
   color: var(--gastify-light);
   border: none;
   border-radius: 14px;

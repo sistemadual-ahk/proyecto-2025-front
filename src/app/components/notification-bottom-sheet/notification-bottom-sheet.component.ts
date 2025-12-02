@@ -44,7 +44,7 @@ export class NotificationBottomSheet implements OnInit {
       titulo: 'Acóntaste un objetivo',
       mensaje: 'Hace 1 semana',
       fecha: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
-      icono: 'mdi-target',
+      icono: 'mdi-piggy-bank',
       visualizada: true
     }
   ];

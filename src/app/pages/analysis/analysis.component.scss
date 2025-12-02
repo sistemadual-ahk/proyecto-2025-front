@@ -1,9 +1,11 @@
+@import '../../styles/variables';
+
 /*
   Layout base
 */
 .container {
   height: 100vh;
-  background: linear-gradient(180deg, #0f1629 0%, #1a1f3a 50%, #0f1629 100%);
+  background: $gradient-main;
   color: var(--gastify-light);
   position: relative;
   overflow-x: hidden;
@@ -62,7 +64,7 @@
 }
 
 .tab.active {
-  background: linear-gradient(135deg, #3dcd99, #14b8a6);
+  background: $gradient-primary;
   color: #fff;
   font-weight: 600;
   box-shadow: 0 4px 12px rgba(61, 205, 153, 0.3);

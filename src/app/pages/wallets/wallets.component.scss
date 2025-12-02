@@ -1,3 +1,5 @@
+@import '../../styles/variables';
+
 /* Estilos base */
 * {
   margin: 0;
@@ -9,8 +11,8 @@
 
 .container {
   min-height: 100vh;
-  background: linear-gradient(180deg, #0f1629 0%, #1a1f3a 50%, #0f1629 100%);
-  font-family: 'Poppins', sans-serif;
+  background: $gradient-main;
+  font-family: $font-family-base;
   color: var(--gastify-light);
   position: relative;
   overflow-x: hidden;
@@ -64,7 +66,7 @@
 
 /* Total Balance Card */
 .total-balance-card {
-  background: #3B3B58;
+  background: $color-secondary;
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 20px;
@@ -99,7 +101,7 @@
   padding: 8px 12px;
   border-radius: 999px;
   border: 1px solid rgba(255, 255, 255, 0.15);
-  background: #3B3B58;
+  background: $color-secondary;
   color: var(--gastify-light);
   font-weight: 600;
   cursor: pointer;
@@ -127,7 +129,7 @@
 
 .action-btn {
   flex: 1;
-  background: #3B3B58;
+  background: $color-secondary;
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 16px;

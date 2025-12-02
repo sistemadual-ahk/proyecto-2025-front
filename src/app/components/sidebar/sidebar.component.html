@@ -32,12 +32,13 @@
         <i class="mdi mdi-account"></i>
         <span>Perfil</span>
       </a>
-      <a routerLink="/home" class="sidebar-nav-item" (click)="closeMenu()">
+      <a routerLink="/home" routerLinkActive="active" class="sidebar-nav-item" (click)="closeMenu()">
         <i class="mdi mdi-home"></i>
         <span>Inicio</span>
       </a>
       <a
         routerLink="/wallets"
+        routerLinkActive="active"
         class="sidebar-nav-item"
         style="cursor: pointer"
         (click)="closeMenu()"
@@ -47,19 +48,21 @@
       </a>
       <a
         routerLink="/saving-goals"
+        routerLinkActive="active"
         class="sidebar-nav-item"
         style="cursor: pointer"
         (click)="closeMenu()"
       >
-        <i class="mdi mdi-target"></i>
+        <i class="mdi mdi-piggy-bank"></i>
         <span>Objetivos</span>
       </a>
-      <a routerLink="/categories" class="sidebar-nav-item" (click)="closeMenu()">
-        <i class="mdi mdi-dots-horizontal"></i>
+      <a routerLink="/categories" routerLinkActive="active" class="sidebar-nav-item" (click)="closeMenu()">
+        <i class="mdi mdi-tag"></i>
         <span>Categorías</span>
       </a>
       <a
         routerLink="/settings"
+        routerLinkActive="active"
         class="sidebar-nav-item"
         (click)="closeMenu()"
       >

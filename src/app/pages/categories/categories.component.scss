@@ -1,7 +1,9 @@
+@import '../../styles/variables';
+
 .container {
   min-height: 100vh;
-  background: linear-gradient(180deg, #0f1629 0%, #1a1f3a 50%, #0f1629 100%);
-  font-family: 'Poppins', sans-serif;
+  background: $gradient-main;
+  font-family: $font-family-base;
   color: var(--gastify-light);
   position: relative;
   overflow-x: hidden;
@@ -48,7 +50,7 @@
 }
 
 .tab.active {
-  color: #ffffff;
+  color: $color-text;
   background: linear-gradient(135deg, #22c55e, #16a34a);
   border: 1px solid rgba(34, 197, 94, 0.3);
   box-shadow: 0 6px 20px rgba(34, 197, 94, 0.4);
@@ -56,7 +58,7 @@
 
 .tab.right.active {
   background: linear-gradient(135deg, #ef4444, #dc2626);
-  color: #ffffff;
+  color: $color-text;
   border: 1px solid rgba(239, 68, 68, 0.3);
   box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4);
 }
@@ -116,7 +118,7 @@
 }
 
 .item.add .icon.add-icon {
-  background: linear-gradient(135deg, #3dcd99, #14b8a6);
+  background: $gradient-primary;
   color: white;
   box-shadow: 0 4px 16px rgba(61, 205, 153, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.1);
 }

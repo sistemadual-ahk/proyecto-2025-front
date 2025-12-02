@@ -1,0 +1,85 @@
+// Sobrescritura de estilos de librerías (Angular Material, NG-ZORRO, etc.)
+@import 'colors';
+
+// --- Angular Material Select (Dropdown) ---
+
+// Contenedor del panel desplegable
+.cdk-overlay-pane {
+  .mat-mdc-select-panel {
+    background-color: #1a1f3a !important; // Usando un tono ligeramente más claro que el surface para contraste
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 16px !important;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5) !important;
+    padding: 6px !important;
+    max-height: 300px !important;
+    
+    // Scrollbar personalizado
+    &::-webkit-scrollbar {
+      width: 4px;
+    }
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    &::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 2px;
+      
+      &:hover {
+        background: rgba(255, 255, 255, 0.3);
+      }
+    }
+  }
+}
+
+// Opciones individuales
+.mat-mdc-option {
+  color: rgba(255, 255, 255, 0.7) !important;
+  font-family: 'Poppins', sans-serif !important;
+  font-size: 14px !important;
+  min-height: 40px !important;
+  line-height: 40px !important;
+  margin-bottom: 2px !important;
+  border-radius: 10px !important;
+  transition: all 0.2s ease;
+  padding: 0 12px !important;
+
+  // Estado Hover
+  &:hover:not(.mdc-list-item--disabled) {
+    background-color: rgba(255, 255, 255, 0.08) !important;
+    color: #fff !important;
+    transform: translateX(4px);
+  }
+
+  // Estado Seleccionado
+  &.mdc-list-item--selected:not(.mdc-list-item--disabled) {
+    background-color: $color-secondary !important;
+    color: $color-primary !important;
+    font-weight: 600 !important;
+    
+    .mdc-list-item__primary-text {
+      color: $color-primary !important;
+    }
+
+    // Indicador visual de selección (opcional)
+    &::after {
+      content: '✓';
+      position: absolute;
+      right: 12px;
+      color: $color-primary;
+      font-weight: bold;
+    }
+  }
+
+  // Estado Focus (navegación por teclado)
+  &.mat-mdc-option-active {
+    background-color: rgba(255, 255, 255, 0.05) !important;
+  }
+}
+
+// Ajuste para el texto dentro de la opción
+.mdc-list-item__primary-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 13px !important;
+}

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, Output, OnInit, HostBinding } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Objetivo, EstadoObjetivo } from '../../../models/objetivo.model';
@@ -20,6 +20,8 @@ export class AddGoalModalComponent implements OnInit {
   @Output() close = new EventEmitter<void>();
   @Output() save = new EventEmitter<Objetivo>();
   @Output() delete = new EventEmitter<void>();
+
+  @HostBinding('class.closing') isClosing = false;
 
   // Campos del formulario
   montoObjetivo: number | null = null;
@@ -90,7 +92,10 @@ export class AddGoalModalComponent implements OnInit {
   }
 
   onClose() {
-    this.close.emit();
+    this.isClosing = true;
+    setTimeout(() => {
+      this.close.emit();
+    }, 300);
   }
 
   onSave() {

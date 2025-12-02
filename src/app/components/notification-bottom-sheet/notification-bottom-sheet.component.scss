@@ -1,3 +1,5 @@
+@import '../../styles/colors';
+
 // Ocultar las líneas/manijas de arrastre del bottom sheet
 ::ng-deep .mat-bottom-sheet-container {
   &::before,
@@ -14,7 +16,7 @@
 
 :host {
   display: block;
-  background: var(--gastify-blue);
+  background: $color-surface;
   border-radius: 24px 24px 0 0;
   padding: 24px 20px calc(20px + env(safe-area-inset-bottom, 0));
   max-height: calc(100vh - 100px);
@@ -37,19 +39,21 @@
 }
 
 // Header del bottom sheet
+@import '../../styles/variables';
+
 .bottom-sheet-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-bottom: 16px;
-  margin-bottom: 16px;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.12);
 }
 
 .bottom-sheet-title {
   font-size: 20px;
   font-weight: 600;
-  color: #fff;
+  color: $color-text;
   margin: 0;
   flex: 1;
 }
@@ -58,7 +62,7 @@
   background: var(--gastify-purple);
   border: 1px solid rgba(255, 255, 255, 0.12);
   font-size: 20px;
-  color: #fff;
+  color: $color-text;
   cursor: pointer;
   border-radius: 50%;
   transition: all 0.3s ease;
@@ -90,7 +94,7 @@
   background: var(--gastify-purple);
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 12px;
-  color: #fff;
+  color: $color-text;
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
