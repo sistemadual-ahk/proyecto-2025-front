@@ -63,15 +63,16 @@
   <!-- Categoría -->
   <div class="form-group">
     <label class="form-label">Categoría (opcional)</label>
-    <select 
-      class="form-input" 
+    <mat-select
+      class="detail-select"
       [(ngModel)]="categoriaId"
+      placeholder="Sin categoría"
     >
-      <option value="">Sin categoría</option>
-      <option *ngFor="let categoria of categorias" [value]="categoria.id">
+      <mat-option value="">Sin categoría</mat-option>
+      <mat-option *ngFor="let categoria of categorias" [value]="categoria.id">
         {{ categoria.nombre }}
-      </option>
-    </select>
+      </mat-option>
+    </mat-select>
   </div>
 
   <!-- Fechas -->

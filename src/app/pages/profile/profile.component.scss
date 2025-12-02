@@ -221,63 +221,7 @@
   }
 }
 
-// Estilos para mat-select (Material Angular) - igual que la imagen
-::ng-deep .detail-select.mat-mdc-select {
-  display: flex;
-  align-items: center;
-  padding: 0 16px;
-  background: #1a1f3a;
-
-  .mat-mdc-select-trigger {
-    width: 100%;
-    min-height: auto;
-    padding: 0;
-  }
-  
-  .mat-mdc-select-value,
-  .mat-mdc-select-value-text {
-    color: rgba(255, 255, 255, 0.7);
-    font-size: 14px;
-  }
-
-  // Placeholder cuando no hay valor seleccionado
-  .mat-mdc-select-placeholder {
-    color: rgba(255, 255, 255, 0.7);
-    font-size: 14px;
-    font-weight: 400;
-  }
-
-  .mat-mdc-select-arrow {
-    color: rgba(255, 255, 255, 0.7);
-  }
-}
-
-::ng-deep {
-  .mat-mdc-select-panel {
-    background: #1a1f3a;
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: 14px;
-    margin-top: 8px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
-  }
-
-  .mat-mdc-option {
-    color: rgba(255, 255, 255, 0.7);
-    font-size: 14px;
-    min-height: 48px;
-    padding: 0 16px;
-    
-    &:hover {
-      background: rgba(255, 255, 255, 0.1);
-      color: #fff;
-    }
-
-    &.mdc-list-item--selected {
-      background: rgba(61, 205, 153, 0.2);
-      color: #fff;
-    }
-  }
-}
+// Mat-select styles moved to global `src/styles.scss` to keep dropdowns consistent.
 
 .action-buttons {
   padding: 0;

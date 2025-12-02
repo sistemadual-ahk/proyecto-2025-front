@@ -5,11 +5,12 @@ import { Objetivo, EstadoObjetivo } from '../../../models/objetivo.model';
 import { Operacion } from '../../../models/operacion.model';
 import { Categoria } from '../../../models/categoria.model';
 import { CategoriaService } from '../../services/categoria.service';
+import { MatSelectModule } from '@angular/material/select';
 
 @Component({
   selector: 'app-add-goal-modal',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, MatSelectModule],
   templateUrl: './add-goal-modal.component.html',
   styleUrl: './add-goal-modal.component.scss',
 })
