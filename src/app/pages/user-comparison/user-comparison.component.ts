@@ -25,8 +25,8 @@ interface UserComparisonData {
   };
   categorias: CategoryData[];
   totalOperaciones: number;
-  primeraFecha: string;
-  ultimaFecha: string;
+  primeraFecha: string | null;
+  ultimaFecha: string | null;
 }
 
 @Component({
@@ -180,76 +180,51 @@ private loadUserData(): void {
 
   private loadComparisonData(payload?: any): void {
     if (!payload) {
-      // fallback a datos de ejemplo para diseño
-      setTimeout(() => {
-        this.currentUser = {
-          name: 'Usuario Actual',
-          sueldo: 780000,
-          profesion: 'Tecnología',
-          estadoCivil: 'Soltero',
-          ubicacion: {
-            provincia: 'Buenos Aires',
-            municipio: 'General San Martín',
-            localidad: 'Villa Ballester',
-          },
-          categorias: [
-            { name: 'Alimentación', total: 45000 },
-            { name: 'Transporte', total: 12000 },
-            { name: 'Entretenimiento', total: 15000 },
-            { name: 'Servicios', total: 18000 },
-          ],
-          totalOperaciones: 24,
-          primeraFecha: '2025-01-05',
-          ultimaFecha: '2025-01-28',
-        };
-
-        this.comparedUser = {
-          sueldo: 650000,
-          profesion: 'Docente',
-          estadoCivil: 'Casado',
-          ubicacion: {
-            provincia: 'Buenos Aires',
-            municipio: 'San Isidro',
-            localidad: 'San Isidro',
-          },
-          categorias: [
-            { name: 'Alimentación', total: 52000 },
-            { name: 'Transporte', total: 15000 },
-            { name: 'Educación', total: 25000 },
-            { name: 'Servicios', total: 20000 },
-          ],
-          totalOperaciones: 18,
-          primeraFecha: '2025-01-03',
-          ultimaFecha: '2025-01-27',
-        };
-
-        this.loading = false;
-      }, 500);
+      // No se recibió payload — no intentamos usar datos hardcodeados.
+      console.warn('No se proporcionó payload para la comparación.');
+      this.loading = false;
       return;
     }
 
-    // Llamada al backend preparada: ruta sugerida '/users/compare'
-    this.api.create<any>('/users/compare', payload).subscribe({
+    // Helper para mapear usuario backend a la interfaz local
+    const mapBackendUser = (u: any): UserComparisonData => ({
+      name: u.name || u.nombre || '',
+      sueldo: u.sueldo ?? 0,
+      profesion: u.profesion || '',
+      estadoCivil: u.estadoCivil || u.estado_civil || '',
+      ubicacion: {
+        provincia: u.ubicacion?.provincia || '',
+        municipio: u.ubicacion?.municipio || '',
+        localidad: u.ubicacion?.localidad || '',
+      },
+      categorias: Array.isArray(u.categorias)
+        ? u.categorias.map((c: any) => ({ name: c.nombre || c.name || '', total: c.montoTotal ?? c.total ?? 0 }))
+        : [],
+      totalOperaciones: u.totalOperaciones ?? u.total_operaciones ?? 0,
+      primeraFecha: u.primeraFechaMes ?? u.primeraFecha ?? null,
+      ultimaFecha: u.ultimaFechaMes ?? u.ultimaFecha ?? null,
+    } as UserComparisonData);
+
+    // Endpoint backend: /usuarios/comparar (API base takes care of /api prefix)
+    // Use GET and send criteria as a JSON-encoded query param
+    // Ignorar criterios por ahora: siempre llamar GET /usuarios/comparar sin query params
+    // Use the exact route registered in the backend router: "/comparar/"
+    this.api.get<any>('/usuarios/comparar/').subscribe({
       next: (res) => {
-        // Se espera que el backend devuelva algo como { currentUser: {...}, comparedUser: {...} }
+        // ApiService ya devuelve response.data, se espera { usuarios: [ ... ] }
         if (!res) {
           this.loading = false;
           return;
         }
 
-        // Compatibilidad con varias formas de respuesta
-        if (res.currentUser && res.comparedUser) {
-          this.currentUser = res.currentUser;
-          this.comparedUser = res.comparedUser;
-        } else if (Array.isArray(res) && res.length >= 2) {
-          this.currentUser = res[0];
-          this.comparedUser = res[1];
-        } else {
-          // Si el backend devuelve un solo objeto con la comparativa
-          this.comparedUser = res;
-          // Mantener currentUser desde datos actuales si está disponible
-          if (!this.currentUser && this.currentUserData) {
-            this.currentUser = {
+        const usuarios = res.usuarios || (Array.isArray(res) ? res : null);
+
+        if (Array.isArray(usuarios) && usuarios.length >= 1) {
+          this.currentUser = mapBackendUser(usuarios[0]);
+          if (usuarios.length >= 2) {
+            this.comparedUser = mapBackendUser(usuarios[1]);
+          } else if (this.currentUserData) {
+            this.comparedUser = {
               sueldo: this.currentUserData.sueldo || 0,
               profesion: this.currentUserProfesion,
               estadoCivil: this.currentUserData.estadoCivil || '',
@@ -260,14 +235,35 @@ private loadUserData(): void {
               ultimaFecha: ''
             } as any;
           }
+        } else if (Array.isArray(res) && res.length >= 2) {
+          this.currentUser = mapBackendUser(res[0]);
+          this.comparedUser = mapBackendUser(res[1]);
+        } else {
+          // Forma inesperada: intentar mapear el objeto recibido
+          try {
+            this.comparedUser = mapBackendUser(res);
+            if (!this.currentUser && this.currentUserData) {
+              this.currentUser = {
+                sueldo: this.currentUserData.sueldo || 0,
+                profesion: this.currentUserProfesion,
+                estadoCivil: this.currentUserData.estadoCivil || '',
+                ubicacion: this.currentUserUbicacion || { provincia: '', municipio: '', localidad: '' },
+                categorias: [],
+                totalOperaciones: 0,
+                primeraFecha: '',
+                ultimaFecha: ''
+              } as any;
+            }
+          } catch (e) {
+            console.error('Respuesta inesperada del backend para comparación', res);
+          }
         }
 
         this.loading = false;
       },
       error: (err) => {
         console.error('Error al obtener comparación desde backend', err);
-        // Fallback a datos de ejemplo si falla la llamada
-        this.loadComparisonData();
+        this.loading = false;
       }
     });
   }
@@ -276,7 +272,7 @@ private loadUserData(): void {
     this.router.navigate(['/home']);
   }
 
-  formatDate(dateString: string): string {
+  formatDate(dateString: string | null): string {
     if (!dateString) return 'N/A';
     const date = new Date(dateString);
     return date.toLocaleDateString('es-AR', {
