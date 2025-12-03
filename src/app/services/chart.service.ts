@@ -1,11 +1,47 @@
 import { Injectable } from '@angular/core';
+import { HttpParams } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { ApiService } from './api.service';
+
+export interface AnalysisData {
+  monthlyData: number[];
+  monthlyCategories: string[];
+  categoryData: number[];
+  categoryLabels: string[];
+  donutData: number[];
+  donutLabels: string[];
+  incomeData: number[];
+  expensesData: number[];
+  periodCategories: string[];
+}
+
+export type AnalysisPeriod = 'weekly' | 'monthly' | 'annual';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ChartService {
 
-  constructor() { }
+  // Se inyecta ApiService en lugar de HttpClient
+  constructor(private apiService: ApiService) { }
+
+  private apiUrl = '/operaciones/analisis';
+
+  getAnalysisData(period: AnalysisPeriod, date: Date): Observable<AnalysisData> {
+    const fechaStr = date.toISOString().split('T')[0];
+
+    // Construimos los parámetros igual que antes para asegurar la codificación correcta
+    const params = new HttpParams()
+      .set('periodo', period)
+      .set('fecha', fechaStr);
+
+    // Como ApiService.get(route) no acepta un objeto de opciones,
+    // concatenamos los parámetros a la URL.
+    const routeWithParams = `${this.apiUrl}?${params.toString()}`;
+
+    // ApiService ya se encarga de desenvolver la respuesta (response.data)
+    return this.apiService.get<AnalysisData>(routeWithParams);
+  }
 
   // Configuración base para gráficos con tema oscuro
   getBaseChartOptions() {
