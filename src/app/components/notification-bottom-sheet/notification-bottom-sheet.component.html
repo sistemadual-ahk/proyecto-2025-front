@@ -1,17 +1,16 @@
 <!-- Header del bottom sheet -->
 <div class="bottom-sheet-header">
-  <h2 class="bottom-sheet-title">Notificaciones</h2>
-  
   <button class="close-btn" (click)="onClose()">
     <i class="mdi mdi-close"></i>
   </button>
-</div>
 
-<!-- Botón marcar todas como leídas -->
-<div class="actions-section">
-  <button class="mark-all-btn" (click)="marcarTodasComoVisualizadas()">
+  <h2 class="bottom-sheet-title">
+    <i class="mdi mdi-bell"></i>
+    Notificaciones
+  </h2>
+  
+  <button class="action-btn" (click)="marcarTodasComoVisualizadas()" title="Marcar todas como leídas">
     <i class="mdi mdi-check-all"></i>
-    Marcar todas como leídas
   </button>
 </div>
 

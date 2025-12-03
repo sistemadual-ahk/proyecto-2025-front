@@ -156,6 +156,8 @@ export class CategoryModalComponent implements OnInit {
     '#FCA5A5', '#A3E635', '#22D3EE', '#F3F4F6'
   ];
 
+  public closing = false;
+
   ngOnInit() {
     console.log('CategoryModalComponent initialized with value:', this.value);
     this.temp = { ...this.value };
@@ -175,7 +177,10 @@ export class CategoryModalComponent implements OnInit {
   }
 
   onClose() { 
-    this.close.emit(); 
+    this.closing = true;
+    setTimeout(() => {
+      this.close.emit(); 
+    }, 300);
   }
   
   onSave() { 

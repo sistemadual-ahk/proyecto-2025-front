@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { HeaderComponent } from '../../components/header/header.component';
@@ -7,6 +7,8 @@ import { PageTitleComponent } from '../../components/page-title/page-title.compo
 import { AddGoalModalComponent } from '../../components/add-goal-modal/add-goal-modal.component';
 import { Objetivo, EstadoObjetivo } from '../../../models/objetivo.model';
 import { Operacion } from '../../../models/operacion.model';
+import { CategoriaService } from '../../services/categoria.service';
+import { Categoria } from '../../../models/categoria.model';
 
 @Component({
   selector: 'app-saving-goals',
@@ -15,13 +17,17 @@ import { Operacion } from '../../../models/operacion.model';
   templateUrl: './saving-goals.component.html',
   styleUrl: './saving-goals.component.scss',
 })
-export class SavingGoalsComponent {
+export class SavingGoalsComponent implements OnInit {
+  private categoriaService = inject(CategoriaService);
+  
   // Estado del menú
   isMenuOpen = false;
   showAddGoal = false;
   isEditMode = false;
   selectedGoalId?: string;
   selectedGoal?: Objetivo;
+  
+  categorias: Categoria[] = [];
 
   // Datos de los objetivos de ahorro
   savingGoals: Objetivo[] = [
@@ -73,6 +79,17 @@ export class SavingGoalsComponent {
   ];
 
   constructor(private router: Router) {}
+
+  ngOnInit() {
+    this.categoriaService.getCategorias().subscribe(cats => {
+      this.categorias = cats;
+    });
+  }
+
+  getCategory(id?: string): Categoria | undefined {
+    if (!id) return undefined;
+    return this.categorias.find(c => c.id === id);
+  }
 
   // Métodos de navegación
   goBack() {

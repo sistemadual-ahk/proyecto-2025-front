@@ -16,6 +16,7 @@
 
 :host {
   display: block;
+  font-family: 'Poppins', sans-serif;
   background: $color-surface;
   border-radius: 24px 24px 0 0;
   padding: 24px 20px calc(20px + env(safe-area-inset-bottom, 0));
@@ -138,32 +139,32 @@
 .toggle-btn {
   flex: 1;
   min-height: 40px;
-  padding: 0 18px;
+  padding: 0 16px;
   border: none;
   border-radius: 16px;
+  font-family: 'Poppins', sans-serif;
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.3s ease;
   background-color: transparent;
   color: var(--gastify-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  i { font-size: 18px; }
 
   &.active {
-    color: white;
-    font-weight: 600;
+    color: #fff;
 
-    &.income-btn {
-      background: var(--gastify-green);
-    }
-
-    &.expense-btn {
-      background: #ef4444;
-    }
+    &.income-btn { background: var(--gastify-green); }
+    &.expense-btn { background: #ef4444; }
   }
 
   &:not(.active):hover {
     background: rgba(255, 255, 255, 0.08);
-    color: #fff;
   }
 }
 
@@ -171,12 +172,13 @@
 .transaction-form {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 20px;
 }
 
 .form-group {
   display: flex;
   flex-direction: column;
+  gap: 8px;
 }
 
 .form-row {
@@ -192,7 +194,7 @@
   font-size: 13px;
   font-weight: 500;
   color: rgba(255, 255, 255, 0.75);
-  margin-bottom: 6px;
+  margin: 0;
   display: block;
 }
 
@@ -203,28 +205,29 @@
   border-radius: 14px;
   font-size: 14px;
   background: #1a1f3a;
-  transition: all 0.3s ease;
   color: #fff;
+  transition: all 0.2s ease;
+  outline: none;
   width: 100%;
+  box-sizing: border-box;
   appearance: none;
-  -webkit-appearance: none; /* Para Chrome, Safari, Edge */
-  -moz-appearance: none;    /* Para Firefox */
+  -webkit-appearance: none;
+  -moz-appearance: none;
 
   &:focus {
-    outline: none;
     border-color: $color-primary;
     background: $color-secondary;
-    box-shadow: var(--ring-green);
+    box-shadow: 0 0 0 3px rgba(61, 205, 153, 0.15);
   }
 
   &::placeholder {
-    color: rgba(255, 255, 255, 0.45);
-    font-weight: 400;
+    color: rgba(255, 255, 255, 0.4);
   }
 
-  &:hover {
-    border-color: rgba(255, 255, 255, 0.2);
-    background: rgba(59, 59, 88, 0.85);
+  &[readonly] {
+    background: rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 0.5);
+    cursor: not-allowed;
   }
 }
 
@@ -360,7 +363,7 @@
     display: none;
   }
 
-  i {
+  > i {
     position: absolute;
     right: 12px;
     top: 50%;
@@ -372,7 +375,7 @@
     transition: all 0.3s ease;
   }
 
-  &:focus-within i {
+  &:focus-within > i {
     color: var(--gastify-green);
   }
 }
@@ -491,6 +494,47 @@
   * {
     animation: none !important;
     transition: none !important;
+  }
+}
+
+// Estilos para las opciones de categoría con icono
+.category-option-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.category-icon-preview {
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  
+  i {
+    font-size: 18px;
+  }
+}
+
+.category-name {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.wallet-icon-preview {
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  i {
+    color: white;
+    font-size: 18px;
   }
 }
 

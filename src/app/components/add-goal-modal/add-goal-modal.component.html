@@ -68,9 +68,23 @@
       [(ngModel)]="categoriaId"
       placeholder="Sin categoría"
     >
+      <mat-select-trigger>
+        <div class="category-option-row" *ngIf="getSelectedCategory() as selectedCat">
+          <div class="category-icon-preview" [style.background-color]="selectedCat.color">
+            <i class="mdi" [ngClass]="selectedCat.icono" [style.color]="selectedCat.iconColor || '#fff'"></i>
+          </div>
+          <span class="category-name">{{ selectedCat.nombre }}</span>
+        </div>
+        <span *ngIf="!getSelectedCategory()">Sin categoría</span>
+      </mat-select-trigger>
       <mat-option value="">Sin categoría</mat-option>
       <mat-option *ngFor="let categoria of categorias" [value]="categoria.id">
-        {{ categoria.nombre }}
+        <div class="category-option-row">
+          <div class="category-icon-preview" [style.background-color]="categoria.color">
+            <i class="mdi" [ngClass]="categoria.icono" [style.color]="categoria.iconColor || '#fff'"></i>
+          </div>
+          <span class="category-name">{{ categoria.nombre }}</span>
+        </div>
       </mat-option>
     </mat-select>
   </div>
@@ -116,20 +130,20 @@
 
   <!-- Estado del objetivo (solo en edición) -->
   <div class="form-group status-field" *ngIf="edit">
-    <div class="status-header">
-      <label class="form-label">Estado del objetivo</label>
+    <label class="form-label">Estado del objetivo</label>
+    <div class="status-controls">
       <span class="status-text" [class.completed]="isCompleted()">
         {{ isCompleted() ? '✓ Completado' : 'Pendiente' }}
       </span>
+      <label class="switch">
+        <input 
+          type="checkbox" 
+          [checked]="isCompleted()" 
+          (change)="toggleEstado()"
+        />
+        <span class="slider"></span>
+      </label>
     </div>
-    <label class="switch">
-      <input 
-        type="checkbox" 
-        [checked]="isCompleted()" 
-        (change)="toggleEstado()"
-      />
-      <span class="slider"></span>
-    </label>
   </div>
 
   <!-- Sección de progreso (solo en edición) -->

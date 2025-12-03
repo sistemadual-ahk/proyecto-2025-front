@@ -77,6 +77,7 @@
     @media (max-width: 480px) {
       padding: 12px 10px calc(10px + env(safe-area-inset-bottom, 20px));
     }
+    font-family: 'Poppins', sans-serif;
   }
 }
 
@@ -205,16 +206,16 @@
 .transaction-form {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 20px;
   padding-bottom: 20px;
   
   @media (max-width: 768px) {
-    gap: 10px;
+    gap: 16px;
     padding-bottom: 16px;
   }
   
   @media (max-width: 480px) {
-    gap: 8px;
+    gap: 12px;
     padding-bottom: 12px;
   }
 }
@@ -222,6 +223,7 @@
 .form-group {
   display: flex;
   flex-direction: column;
+  gap: 8px;
 }
 
 .form-row {
@@ -245,7 +247,7 @@
   font-size: 13px;
   font-weight: 500;
   color: rgba(255, 255, 255, 0.75);
-  margin-bottom: 6px;
+  margin: 0;
   display: block;
   
   @media (max-width: 768px) {
@@ -362,7 +364,7 @@ select.form-input {
   display: flex;
   align-items: center;
 
-  i {
+  > i {
     position: absolute;
     right: 16px;
     font-size: 20px;
@@ -464,29 +466,35 @@ select.form-input {
 // Estado field con switch
 .status-field {
   display: flex;
+  flex-direction: row; // Asegurar dirección fila
   align-items: center;
   justify-content: space-between;
-  padding: 16px;
+  padding: 12px 16px;
   background: rgba(255, 255, 255, 0.03);
   border-radius: 14px;
   border: 1px solid rgba(255, 255, 255, 0.08);
   transition: all 0.3s ease;
+  min-height: 56px;
+  width: 100%; // Asegurar ancho completo
 
   &:hover {
     background: rgba(255, 255, 255, 0.05);
     border-color: rgba(255, 255, 255, 0.12);
   }
 
-  .status-header {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
+  .form-label {
+    margin-bottom: 0;
+    font-size: 14px;
+    color: #fff;
+    font-weight: 500;
+    flex: 1; // Ocupar espacio disponible
+  }
 
-    .form-label {
-      margin-bottom: 0;
-      font-size: 14px;
-      color: #fff;
-    }
+  .status-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-left: auto; // Empujar a la derecha
 
     .status-text {
       font-size: 13px;
@@ -495,57 +503,62 @@ select.form-input {
       display: flex;
       align-items: center;
       gap: 6px;
+      background: rgba(255, 255, 255, 0.05);
+      padding: 6px 10px;
+      border-radius: 8px;
+      transition: all 0.3s ease;
 
       &.completed {
         color: $color-primary;
+        background: rgba(61, 205, 153, 0.1);
         font-weight: 600;
       }
     }
-  }
 
-  .switch {
-    position: relative;
-    display: inline-block;
-    width: 52px;
-    height: 28px;
-    flex-shrink: 0;
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 52px;
+      height: 24px;
+      flex-shrink: 0;
 
-    input {
-      opacity: 0;
-      width: 0;
-      height: 0;
+      input {
+        opacity: 0;
+        width: 0;
+        height: 0;
 
-      &:checked + .slider {
-        background-color: $color-primary;
+        &:checked + .slider {
+          background-color: $color-primary;
+        }
+
+        &:checked + .slider:before {
+          transform: translateX(28px);
+        }
       }
 
-      &:checked + .slider:before {
-        transform: translateX(24px);
-      }
-    }
-
-    .slider {
-      position: absolute;
-      cursor: pointer;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background-color: rgba(255, 255, 255, 0.15);
-      transition: 0.3s;
-      border-radius: 34px;
-
-      &:before {
+      .slider {
         position: absolute;
-        content: "";
-        height: 22px;
-        width: 22px;
-        left: 3px;
-        bottom: 3px;
-        background-color: white;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(255, 255, 255, 0.15);
         transition: 0.3s;
-        border-radius: 50%;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        border-radius: 34px;
+
+        &:before {
+          position: absolute;
+          content: "";
+          height: 18px;
+          width: 18px;
+          left: 3px;
+          bottom: 3px;
+          background-color: white;
+          transition: 0.3s;
+          border-radius: 50%;
+          box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
       }
     }
   }
@@ -644,16 +657,18 @@ select.form-input {
 
 // Sección de operaciones
 .operaciones-section {
-  margin-top: 8px;
-  padding-top: 16px;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  padding: 16px;
+  margin-top: 12px;
   
   @media (max-width: 768px) {
-    padding-top: 12px;
+    padding: 14px;
   }
   
   @media (max-width: 480px) {
-    padding-top: 10px;
+    padding: 12px;
   }
 }
 
@@ -662,10 +677,6 @@ select.form-input {
   align-items: center;
   justify-content: space-between;
   margin-bottom: 16px;
-  background: rgba(255, 255, 255, 0.03);
-  padding: 12px 16px;
-  border-radius: 14px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
   
   @media (max-width: 480px) {
     flex-wrap: wrap;
@@ -1036,4 +1047,29 @@ select.form-input {
       font-size: 14px;
     }
   }
+}
+
+// Estilos para las opciones de categoría con icono
+.category-option-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.category-icon-preview {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  i {
+    font-size: 16px;
+  }
+}
+
+.category-name {
+  font-size: 14px;
+  font-weight: 500;
 }

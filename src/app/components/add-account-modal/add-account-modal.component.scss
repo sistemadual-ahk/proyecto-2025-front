@@ -29,6 +29,7 @@
   overflow-y: auto;
   overflow-x: hidden;
   border: 1px solid rgba(255, 255, 255, 0.08);
+  font-family: 'Poppins', sans-serif;
 }
 
 @keyframes fadeIn {
@@ -52,10 +53,11 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 16px;
-  padding-bottom: 8px;
-  min-height: 40px;
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+  min-height: 10px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  position: relative;
 }
 
 .close-btn,
@@ -63,9 +65,8 @@
   background: $color-secondary;
   border: 1px solid rgba(255, 255, 255, 0.12);
   font-size: 20px;
-  color: #fff;
+  color: $color-text;
   cursor: pointer;
-  padding: 8px;
   border-radius: 50%;
   transition: all 0.3s ease;
   width: 40px;
@@ -73,19 +74,24 @@
   display: flex;
   align-items: center;
   justify-content: center;
-}
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.24);
 
-.close-btn:hover,
-.save-btn:hover {
-  background: rgba(59, 59, 88, 0.85);
-  color: white;
-  transform: scale(1.03);
+  &:hover {
+    background: rgba(59, 59, 88, 0.85);
+    color: white;
+    transform: scale(1.1);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
 }
 
 .save-btn.ready {
   background: $color-primary;
-  border-color: transparent;
-  color: var(--gastify-dark);
+  border-color: $color-primary;
+  box-shadow: 0 0 0 3px rgba(61, 205, 153, 0.25);
+  color: #0f172a;
 }
 
 .save-btn.ready:hover {
@@ -95,27 +101,29 @@
 .modal-title {
   font-size: 18px;
   font-weight: 600;
-  color: #fff;
+  color: $color-text;
   margin: 0;
+  text-align: center;
+  flex: 1;
 }
 
-.form {
+.account-form {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 20px;
 }
 
 .form-group {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px;
 }
 
 .form-label {
   font-size: 13px;
   font-weight: 500;
   color: rgba(255, 255, 255, 0.75);
-  margin-bottom: 6px;
+  margin: 0;
   display: block;
 }
 
@@ -126,24 +134,25 @@
   border-radius: 14px;
   font-size: 14px;
   background: #1a1f3a;
-  transition: all 0.3s ease;
   color: #fff;
-  width: 100%;
-  appearance: none;
-  -webkit-appearance: none; /* Chrome, Safari, Edge */
-  -moz-appearance: none;    /* Firefox */
-  background-image: none;   /* Oculta flecha/estilos por defecto en algunos navegadores */
-}
-
-.form-input:focus {
+  transition: all 0.2s ease;
   outline: none;
-  border-color: $color-primary;
-  background: $color-secondary;
-  box-shadow: 0 0 0 3px rgba(61, 205, 153, 0.25);
-}
+  width: 100%;
+  box-sizing: border-box;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: none;
 
-.form-input::placeholder {
-  color: rgba(255, 255, 255, 0.45);
+  &:focus {
+    border-color: $color-primary;
+    background: $color-secondary;
+    box-shadow: 0 0 0 3px rgba(61, 205, 153, 0.15);
+  }
+
+  &::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+  }
 }
 
 // Mat-select con el mismo look que el resto de inputs
@@ -179,7 +188,7 @@
 .input-with-icon .form-input {
   padding-right: 20px;
 }
-.input-with-icon i {
+.input-with-icon > i {
   position: absolute;
   right: 0;
   top: 50%;
@@ -189,7 +198,7 @@
   pointer-events: none; /* Solo indicador visual en este modal */
 }
 
-.input-with-icon:focus-within i {
+.input-with-icon:focus-within > i {
   color: var(--gastify-green);
 }
 

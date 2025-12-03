@@ -1,10 +1,14 @@
-<div class="modal-overlay" (click)="onClose()">
+<div class="modal-overlay" [class.closing]="closing" (click)="onClose()">
   
-  <div class="modal-content" (click)="$event.stopPropagation()">
+  <div class="modal-content" [class.closing]="closing" (click)="$event.stopPropagation()">
     <!-- Manija visual del bottom sheet -->
     <div class="bottom-sheet-handle"></div>
     
     <div class="modal-header">
+      <button class="close-btn" (click)="onClose()">
+        <i class="mdi mdi-close"></i>
+      </button>
+
       <h2 class="modal-title">{{ title }}</h2>
       
       <div class="header-actions">
@@ -13,9 +17,6 @@
         </button>
         <button *ngIf="canEdit()" class="save-btn" (click)="onSave()">
           <i class="mdi mdi-check"></i>
-        </button>
-        <button class="close-btn" (click)="onClose()">
-          <i class="mdi mdi-close"></i>
         </button>
       </div>
     </div>

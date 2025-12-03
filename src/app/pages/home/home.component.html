@@ -79,6 +79,10 @@
       </div>
 
       <div class="movements-list">
+        <div class="empty-state" *ngIf="recentMovements.length === 0">
+          <i class="mdi mdi-text-box-remove-outline"></i>
+          <p>No hay movimientos recientes</p>
+        </div>
         <div class="movement-item" *ngFor="let movement of recentMovements">
           <div class="movement-icon" [style.background-color]="movement.color">
             <i [class]="movement.icon"></i>

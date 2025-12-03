@@ -51,6 +51,10 @@ export class AddGoalModalComponent implements OnInit {
 
   constructor(private categoriaService: CategoriaService) {}
 
+  getSelectedCategory(): Categoria | undefined {
+    return this.categorias.find(c => c.id === this.categoriaId);
+  }
+
   get isFormValid(): boolean {
     return !!this.titulo.trim() && 
            !!this.montoObjetivo && 

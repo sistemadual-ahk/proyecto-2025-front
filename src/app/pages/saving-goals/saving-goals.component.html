@@ -7,6 +7,9 @@
     <div class="goal-card" *ngFor="let goal of savingGoals" [class.completed]="isCompleted(goal)">
       <div class="goal-card-header">
         <div class="goal-header-left">
+          <div class="category-icon-small" *ngIf="getCategory(goal.categoriaId) as cat" [style.background-color]="cat.color" [title]="cat.nombre">
+            <i class="mdi" [ngClass]="cat.icono" [style.color]="cat.iconColor || '#fff'"></i>
+          </div>
           <h3 class="goal-title">{{ goal.titulo }}</h3>
           <span class="goal-status-badge" [class.completed]="isCompleted(goal)">
             {{ isCompleted(goal) ? 'Completado' : 'Pendiente' }}
@@ -27,7 +30,7 @@
           <div
             class="progress-fill"
             [style.width.%]="getProgress(goal)"
-            [style.background-color]="goal.color"
+            [style.background-color]="getCategory(goal.categoriaId)?.color || goal.color"
           ></div>
         </div>
       </div>

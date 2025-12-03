@@ -16,6 +16,7 @@
 
 :host {
   display: block;
+  font-family: 'Poppins', sans-serif;
   background: $color-surface;
   border-radius: 24px 24px 0 0;
   padding: 24px 20px calc(20px + env(safe-area-inset-bottom, 0));
@@ -45,21 +46,34 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 20px;
-  padding-bottom: 15px;
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+  min-height: 10px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  position: relative;
 }
 
 .bottom-sheet-title {
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 600;
   color: $color-text;
   margin: 0;
+  text-align: center;
   flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  i {
+    font-size: 20px;
+    color: #fff;
+  }
 }
 
-.close-btn {
-  background: var(--gastify-purple);
+.close-btn,
+.action-btn {
+  background: $color-secondary;
   border: 1px solid rgba(255, 255, 255, 0.12);
   font-size: 20px;
   color: $color-text;
@@ -75,7 +89,8 @@
 
   &:hover {
     background: rgba(59, 59, 88, 0.85);
-    transform: scale(1.05);
+    color: white;
+    transform: scale(1.1);
   }
 
   &:active {
@@ -83,39 +98,12 @@
   }
 }
 
-// Sección de acciones
-.actions-section {
-  margin-bottom: 16px;
-}
-
-.mark-all-btn {
-  width: 100%;
-  padding: 12px 16px;
-  background: var(--gastify-purple);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 12px;
-  color: $color-text;
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  transition: all 0.3s ease;
-
-  i {
-    font-size: 18px;
-  }
-
+.action-btn {
+  color: #fff;
+  
   &:hover {
-    background: rgba(59, 59, 88, 0.85);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-  }
-
-  &:active {
-    transform: translateY(0);
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
   }
 }
 
