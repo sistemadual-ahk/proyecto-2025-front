@@ -155,3 +155,5 @@ Thumbs.db
 android
 ios
 
+src/environments/environment.development.ts
+src/environments/environment.ts

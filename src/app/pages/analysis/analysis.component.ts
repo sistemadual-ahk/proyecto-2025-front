@@ -7,6 +7,20 @@ import { PageTitleComponent } from '../../components/page-title/page-title.compo
 import { NgApexchartsModule } from 'ng-apexcharts';
 import { ChartService } from '../../services/chart.service';
 
+export interface AnalysisData {
+    monthlyData: number[]; 
+    monthlyCategories: string[]; 
+    categoryData: number[]; 
+    categoryLabels: string[]; 
+    donutData: number[]; 
+    donutLabels: string[]; 
+    incomeData: number[]; 
+    expensesData: number[]; 
+    periodCategories: string[]; 
+}
+
+export type AnalysisPeriod = 'weekly' | 'monthly' | 'annual';
+
 @Component({
   selector: 'app-analysis',
   standalone: true,
@@ -102,16 +116,47 @@ export class AnalysisComponent implements OnInit {
   }
 
   private updateChartsData() {
-    const data = this.getDataByPeriod(this.selectedPeriod);
-    
-    // Actualizar gráficos
-    this.monthlyChartOptions = this.chartService.getMonthlyExpensesChart(data.monthlyData, data.monthlyCategories);
-    this.categoryChartOptions = this.chartService.getCategoryChart(data.categoryData, data.categoryLabels);
-    this.donutChartOptions = this.chartService.getDonutChart(data.donutData, data.donutLabels);
-    this.incomeVsExpensesOptions = this.chartService.getIncomeVsExpensesChart(data.incomeData, data.expensesData, data.periodCategories);
+    this.chartService.getAnalysisData(this.selectedPeriod, this.selectedDate)
+      .subscribe({
+        next: (data: AnalysisData) => {
+          // 2. Asignar la data REAL del backend a las opciones de los gráficos
+          
+          // Gráfico 1: Mensual/Egresos a lo largo del tiempo
+          this.monthlyChartOptions = this.chartService.getMonthlyExpensesChart(
+            data.monthlyData, 
+            data.monthlyCategories
+          );
+          
+          // Gráfico 2 & 3: Egresos por Categoría (Barras y Dona)
+          this.categoryChartOptions = this.chartService.getCategoryChart(
+            data.categoryData, 
+            data.categoryLabels
+          );
+          this.donutChartOptions = this.chartService.getDonutChart(
+            data.donutData, 
+            data.donutLabels
+          );
+          
+          // Gráfico 4: Ingresos vs Egresos
+          this.incomeVsExpensesOptions = this.chartService.getIncomeVsExpensesChart(
+            data.incomeData, 
+            data.expensesData, 
+            data.periodCategories
+          );
+        },
+        error: (error) => {
+          // Manejo de errores (ej: mostrar notificación al usuario)
+          console.error('Error al cargar datos del análisis:', error);
+        }
+      });
   }
 
-  private getDataByPeriod(period: 'weekly' | 'monthly' | 'annual'): {
+  goBack() {
+    this.router.navigate(['/home']);
+  }
+}
+
+  /* private getDataByPeriod(period: 'weekly' | 'monthly' | 'annual'): {
     monthlyData: number[];
     monthlyCategories: string[];
     categoryData: number[];
@@ -172,9 +217,4 @@ export class AnalysisComponent implements OnInit {
       default:
         return this.getDataByPeriod('monthly');
     }
-  }
-
-  goBack() {
-    this.router.navigate(['/home']);
-  }
-}
+  }*/
