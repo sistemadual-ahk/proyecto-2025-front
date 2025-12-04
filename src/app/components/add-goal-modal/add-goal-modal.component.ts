@@ -1,4 +1,13 @@
-import { Component, EventEmitter, Input, Output, OnInit, HostBinding } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  OnInit,
+  OnChanges,
+  SimpleChanges,
+  HostBinding,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Objetivo, EstadoObjetivo } from '../../../models/objetivo.model';
@@ -14,7 +23,7 @@ import { MatSelectModule } from '@angular/material/select';
   templateUrl: './add-goal-modal.component.html',
   styleUrl: './add-goal-modal.component.scss',
 })
-export class AddGoalModalComponent implements OnInit {
+export class AddGoalModalComponent implements OnInit, OnChanges {
   @Input() edit: boolean = false;
   @Input() objetivo?: Objetivo;
   @Output() close = new EventEmitter<void>();
@@ -51,58 +60,106 @@ export class AddGoalModalComponent implements OnInit {
 
   constructor(private categoriaService: CategoriaService) {}
 
-  getSelectedCategory(): Categoria | undefined {
-    return this.categorias.find(c => c.id === this.categoriaId);
-  }
-
+  // ✅ validación simple del form (ahora categoría es obligatoria)
   get isFormValid(): boolean {
-    return !!this.titulo.trim() && 
-           !!this.montoObjetivo && 
-           this.montoObjetivo > 0 && 
-           !!this.fechaInicio && 
-           !!this.fechaEsperadaFinalizacion;
+    return (
+      !!this.titulo.trim() &&
+      !!this.montoObjetivo &&
+      this.montoObjetivo > 0 &&
+      !!this.fechaInicio &&
+      !!this.fechaEsperadaFinalizacion &&
+      !!this.categoriaId
+    );
   }
 
-  ngOnInit() {
-    // Cargar categorías
+  // ===================== CICLO DE VIDA =====================
+
+  ngOnInit(): void {
     this.categoriaService.getCategorias().subscribe({
       next: (categorias) => {
         this.categorias = categorias;
+
+        if (this.edit && this.objetivo) {
+          this.patchFromObjetivo(this.objetivo);
+        }
       },
       error: (error) => {
         console.error('Error al cargar categorías:', error);
         this.categorias = [];
-      }
+      },
     });
 
     if (this.edit && this.objetivo) {
-      // Cargar datos del objetivo existente
-      this.titulo = this.objetivo.titulo;
-      this.montoObjetivo = this.objetivo.montoObjetivo;
-      this.montoActual = this.objetivo.montoActual;
-      this.categoriaId = this.objetivo.categoriaId || '';
-      this.billeteraId = this.objetivo.billeteraId || '';
-      this.color = this.objetivo.color || this.colorOptions[0];
-      this.fechaInicio = this.objetivo.fechaInicio;
-      this.fechaEsperadaFinalizacion = this.objetivo.fechaEsperadaFinalizacion;
-      this.fechaFin = this.objetivo.fechaFin;
-      this.estado = this.objetivo.estado;
-      this.operaciones = this.objetivo.operaciones || [];
+      this.patchFromObjetivo(this.objetivo);
     } else {
-      // Establecer fecha de inicio como hoy y color por defecto para nuevos objetivos
       this.fechaInicio = new Date().toISOString().split('T')[0];
       this.color = this.colorOptions[0];
     }
   }
 
-  onClose() {
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['objetivo'] && this.edit && this.objetivo) {
+      this.patchFromObjetivo(this.objetivo);
+    }
+  }
+
+  // ===================== HELPERS DE MAPEOS =====================
+
+  private normalizeDate(value: any): string {
+    if (!value) return '';
+    if (typeof value === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(value)) {
+      return value;
+    }
+    const d = new Date(value);
+    if (Number.isNaN(d.getTime())) return '';
+    return d.toISOString().split('T')[0];
+  }
+
+  private patchFromObjetivo(obj: Objetivo): void {
+    const anyObj: any = obj;
+
+    this.titulo = obj.titulo;
+    this.montoObjetivo = obj.montoObjetivo;
+    this.montoActual = obj.montoActual;
+
+    this.categoriaId =
+      (obj as any).categoriaId ||
+      anyObj.categoriaId ||
+      anyObj.categoria?._id ||
+      anyObj.categoria?.id ||
+      '';
+
+    this.billeteraId =
+      (obj as any).billeteraId ||
+      anyObj.billeteraId ||
+      anyObj.billetera?._id ||
+      anyObj.billetera?.id ||
+      '';
+
+    this.color = (obj as any).color || this.colorOptions[0];
+
+    this.fechaInicio = this.normalizeDate(obj.fechaInicio as any);
+    this.fechaEsperadaFinalizacion = this.normalizeDate(
+      obj.fechaEsperadaFinalizacion as any
+    );
+    this.fechaFin = obj.fechaFin
+      ? this.normalizeDate(obj.fechaFin as any)
+      : undefined;
+
+    this.estado = obj.estado;
+    this.operaciones = obj.operaciones ? [...obj.operaciones] : [];
+  }
+
+  // ===================== ACCIONES PRINCIPALES =====================
+
+  onClose(): void {
     this.isClosing = true;
     setTimeout(() => {
       this.close.emit();
     }, 300);
   }
 
-  onSave() {
+  onSave(): void {
     const objetoToSave: Objetivo = {
       id: this.objetivo?.id,
       titulo: this.titulo,
@@ -121,17 +178,18 @@ export class AddGoalModalComponent implements OnInit {
     this.save.emit(objetoToSave);
   }
 
-  onDelete() {
+  onDelete(): void {
     this.delete.emit();
   }
 
-  // Métodos para manejar el estado
-  toggleEstado() {
-    this.estado = this.estado === EstadoObjetivo.COMPLETADO 
-      ? EstadoObjetivo.PENDIENTE 
-      : EstadoObjetivo.COMPLETADO;
-    
-    // Si se marca como completado, establecer fecha de fin
+  // ===================== ESTADO / FECHAS =====================
+
+  toggleEstado(): void {
+    this.estado =
+      this.estado === EstadoObjetivo.COMPLETADO
+        ? EstadoObjetivo.PENDIENTE
+        : EstadoObjetivo.COMPLETADO;
+
     if (this.estado === EstadoObjetivo.COMPLETADO && !this.fechaFin) {
       this.fechaFin = new Date().toISOString().split('T')[0];
     } else if (this.estado === EstadoObjetivo.PENDIENTE) {
@@ -143,17 +201,23 @@ export class AddGoalModalComponent implements OnInit {
     return this.estado === EstadoObjetivo.COMPLETADO;
   }
 
-  // Método para seleccionar color
-  selectColor(selectedColor: string) {
+  selectColor(selectedColor: string): void {
     this.color = selectedColor;
   }
 
-  // Métodos para operaciones
+  // ===================== OPERACIONES LOCALES =====================
+
+  private buildDefaultDescripcion(tipo: Operacion['tipo']): string {
+    const base = this.titulo?.trim() || 'Objetivo';
+    const sufijo =
+      tipo === 'Ingreso' || tipo === 'income' ? 'Ingreso' : 'Egreso';
+    return `${base} ${sufijo}`;
+  }
+
   getRecentOperations(): Operacion[] {
     if (!this.operaciones || this.operaciones.length === 0) {
       return [];
     }
-    // Ordenar por fecha descendente y tomar las últimas 5
     return [...this.operaciones]
       .sort((a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime())
       .slice(0, 5);
@@ -165,20 +229,31 @@ export class AddGoalModalComponent implements OnInit {
     const yesterday = new Date(today);
     yesterday.setDate(yesterday.getDate() - 1);
 
-    // Resetear horas para comparación
-    const dateOnly = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-    const todayOnly = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-    const yesterdayOnly = new Date(yesterday.getFullYear(), yesterday.getMonth(), yesterday.getDate());
+    const dateOnly = new Date(
+      date.getFullYear(),
+      date.getMonth(),
+      date.getDate()
+    );
+    const todayOnly = new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate()
+    );
+    const yesterdayOnly = new Date(
+      yesterday.getFullYear(),
+      yesterday.getMonth(),
+      yesterday.getDate()
+    );
 
     if (dateOnly.getTime() === todayOnly.getTime()) {
       return 'Hoy';
     } else if (dateOnly.getTime() === yesterdayOnly.getTime()) {
       return 'Ayer';
     } else {
-      return date.toLocaleDateString('es-AR', { 
-        day: '2-digit', 
-        month: 'short', 
-        year: 'numeric' 
+      return date.toLocaleDateString('es-AR', {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric',
       });
     }
   }
@@ -187,65 +262,84 @@ export class AddGoalModalComponent implements OnInit {
     return this.isCompleted() ? 'Completado' : 'Pendiente';
   }
 
-  // Método para calcular el progreso
   getProgress(): number {
     if (!this.montoObjetivo || this.montoObjetivo === 0) return 0;
     return Math.min((this.montoActual / this.montoObjetivo) * 100, 100);
   }
 
-  // Control de edición
+  // --- edición de operaciones ---
+
   editingIndex: number | null = null;
 
-  // Método para agregar nueva operación
-  addOperacion() {
+  addOperacion(): void {
+    const defaultTipo: Operacion['tipo'] = 'Egreso';
+
     const newOperacion: Operacion = {
-      tipo: 'Ingreso',
+      tipo: defaultTipo,
       monto: 0,
-      descripcion: '',
+      descripcion: this.buildDefaultDescripcion(defaultTipo),
       fecha: new Date().toISOString().split('T')[0],
     };
     this.operaciones.push(newOperacion);
     this.editingIndex = this.operaciones.length - 1;
   }
 
-  // Método para toggle del tipo de operación
-  toggleTipo(operacion: Operacion) {
-    operacion.tipo = operacion.tipo === 'Ingreso' ? 'Egreso' : 'Ingreso';
+  toggleTipo(operacion: Operacion): void {
+    const oldTipo = operacion.tipo;
+    const newTipo: Operacion['tipo'] =
+      oldTipo === 'Ingreso' || oldTipo === 'income' ? 'Egreso' : 'Ingreso';
+
+    const autoIngreso = this.buildDefaultDescripcion('Ingreso');
+    const autoEgreso = this.buildDefaultDescripcion('Egreso');
+
+    const desc = operacion.descripcion || '';
+
+    // Solo pisamos la descripción si era la automática o estaba vacía
+    if (!desc || desc === autoIngreso || desc === autoEgreso) {
+      operacion.descripcion = this.buildDefaultDescripcion(newTipo);
+    }
+
+    operacion.tipo = newTipo;
   }
 
-  // Método para iniciar edición de operación
-  startEditOperacion(index: number) {
+  startEditOperacion(index: number): void {
     this.editingIndex = index;
   }
 
-  // Método para guardar operación
-  saveOperacion() {
+  saveOperacion(): void {
     this.updateMontoActual();
     this.editingIndex = null;
   }
 
-  // Método para eliminar operación
-  deleteOperacion(index: number) {
+  deleteOperacion(index: number): void {
     this.operaciones.splice(index, 1);
     this.editingIndex = null;
     this.updateMontoActual();
   }
 
-  // Método para actualizar el monto actual basado en las operaciones
-  updateMontoActual() {
+  // Egreso  => suma al objetivo
+  // Ingreso => resta al objetivo
+  updateMontoActual(): void {
     this.montoActual = this.operaciones.reduce((total, op) => {
-      if (op.tipo === 'Ingreso' || op.tipo === 'income') {
-        return total + (op.monto || 0);
+      const monto = op.monto || 0;
+      if (op.tipo === 'Egreso' || op.tipo === 'expense') {
+        return total + monto;
       } else {
-        return total - (op.monto || 0);
+        return total - monto;
       }
     }, 0);
   }
 
-  // Método para verificar si es ingreso
   isIngreso(operacion: Operacion): boolean {
-    return operacion.tipo === 'Ingreso' || operacion.tipo === 'income';
+    return operacion.tipo === 'Egreso' || operacion.tipo === 'expense';
+  }
+
+  // ===================== CATEGORÍA =====================
+
+  getSelectedCategory(): Categoria | undefined {
+    if (!this.categoriaId) return undefined;
+    return this.categorias.find(
+      (c) => c.id === this.categoriaId || (c as any)._id === this.categoriaId
+    );
   }
 }
-
-

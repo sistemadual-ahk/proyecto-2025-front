@@ -1,59 +1,53 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+
 import { HeaderComponent } from '../../components/header/header.component';
 import { SidebarComponent } from '../../components/sidebar/sidebar.component';
 import { PageTitleComponent } from '../../components/page-title/page-title.component';
 import { AddGoalModalComponent } from '../../components/add-goal-modal/add-goal-modal.component';
+
 import { Objetivo, EstadoObjetivo } from '../../../models/objetivo.model';
 import { Operacion } from '../../../models/operacion.model';
-import { CategoriaService } from '../../services/categoria.service';
+import { ObjetivoService } from '../../services/objetivo.service';
 import { Categoria } from '../../../models/categoria.model';
+import { CategoriaService } from '../../services/categoria.service';
+import { Billetera } from '../../../models/billetera.model';
+import { BilleteraService } from '../../services/billetera.service';
+import { OperacionService } from '../../services/operacion.service';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-saving-goals',
   standalone: true,
-  imports: [CommonModule, HeaderComponent, SidebarComponent, PageTitleComponent, AddGoalModalComponent],
+  imports: [
+    CommonModule,
+    HeaderComponent,
+    SidebarComponent,
+    PageTitleComponent,
+    AddGoalModalComponent,
+  ],
   templateUrl: './saving-goals.component.html',
   styleUrl: './saving-goals.component.scss',
 })
 export class SavingGoalsComponent implements OnInit {
-  private categoriaService = inject(CategoriaService);
-  
   // Estado del menú
   isMenuOpen = false;
   showAddGoal = false;
   isEditMode = false;
   selectedGoalId?: string;
   selectedGoal?: Objetivo;
-  
+
+  // Datos reales
+  savingGoals: Objetivo[] = [];
+
+  // Categorías para icono/color
   categorias: Categoria[] = [];
 
-  // Datos de los objetivos de ahorro
-  savingGoals: Objetivo[] = [
-    {
-      id: '1',
-      titulo: 'Viaje a Brasil',
-      montoActual: 1200,
-      montoObjetivo: 3000,
-      fechaInicio: '2024-01-01',
-      fechaEsperadaFinalizacion: '2024-12-31',
-      estado: EstadoObjetivo.PENDIENTE,
-      operaciones: [] as Operacion[],
-      color: 'var(--gastify-purple)',
-    },
-    {
-      id: '2',
-      titulo: 'Comprar guitarra',
-      montoActual: 750,
-      montoObjetivo: 1200,
-      fechaInicio: '2024-02-01',
-      fechaEsperadaFinalizacion: '2024-08-31',
-      estado: EstadoObjetivo.COMPLETADO,
-      operaciones: [] as Operacion[],
-      color: 'var(--gastify-green)',
-    },
-  ];
+  // Estado de carga / error simple
+  isLoading = false;
+  loadError?: string;
+  defaultWalletId?: string;
 
   // Tips de ahorro
   savingTips = [
@@ -68,30 +62,132 @@ export class SavingGoalsComponent implements OnInit {
       id: 2,
       icon: 'mdi-thought-bubble',
       title: 'Reduce las compras impulsivas',
-      description: "Considera una 'espera de 48 horas' antes de adquirir objetos no esenciales",
+      description:
+        "Considera una 'espera de 48 horas' antes de adquirir objetos no esenciales",
     },
     {
       id: 3,
       icon: 'mdi-help-circle',
       title: 'Desafía tus gastos',
-      description: '¿Puedes encontrar una alternativa más barata para ciertos servicios?',
+      description:
+        '¿Puedes encontrar una alternativa más barata para ciertos servicios?',
     },
   ];
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private objetivoService: ObjetivoService,
+    private categoriaService: CategoriaService,
+    private billeteraService: BilleteraService,
+    private operacionService: OperacionService
+  ) {}
 
-  ngOnInit() {
-    this.categoriaService.getCategorias().subscribe(cats => {
-      this.categorias = cats;
+  ngOnInit(): void {
+    this.loadDefaultWallet();
+    this.loadGoals();
+    this.loadCategorias();
+  }
+
+  // ----------------- Helpers internos -----------------
+
+  private normalizeObjetivoFromApi(raw: any): Objetivo {
+    return {
+      ...raw,
+      id: raw.id || raw._id,
+      categoriaId:
+        raw.categoriaId ||
+        raw.categoria?._id ||
+        raw.categoria?.id ||
+        undefined,
+      billeteraId:
+        raw.billeteraId ||
+        raw.billetera?._id ||
+        raw.billetera?.id ||
+        undefined,
+    } as Objetivo;
+  }
+
+  private normalizeOperacionFromApi(raw: any): Operacion {
+    const fechaStr =
+      typeof raw.fecha === 'string'
+        ? raw.fecha.split('T')[0]
+        : new Date(raw.fecha).toISOString().split('T')[0];
+
+    return {
+      ...raw,
+      id: raw.id || raw._id,
+      _id: raw._id,
+      fecha: fechaStr,
+      categoriaId:
+        raw.categoriaId ||
+        raw.categoria?._id ||
+        raw.categoria?.id ||
+        undefined,
+      billeteraId:
+        raw.billeteraId ||
+        raw.billetera?._id ||
+        raw.billetera?.id ||
+        undefined,
+    } as Operacion;
+  }
+
+  // ----------------- Carga de datos -----------------
+
+  private loadDefaultWallet(): void {
+    this.billeteraService.getBilleteras().subscribe({
+      next: (billeteras: Billetera[]) => {
+        const def = billeteras.find((b) => (b as any).isDefault);
+        if (def) {
+          this.defaultWalletId = def.id;
+        } else {
+          console.warn('No se encontró billetera default para el usuario');
+        }
+      },
+      error: (err) => {
+        console.error('Error al cargar billeteras', err);
+      },
     });
   }
 
-  getCategory(id?: string): Categoria | undefined {
-    if (!id) return undefined;
-    return this.categorias.find(c => c.id === id);
+  private loadGoals(): void {
+    this.isLoading = true;
+    this.loadError = undefined;
+
+    this.objetivoService.getObjetivos().subscribe({
+      next: (objetivos) => {
+        this.savingGoals = (objetivos || []).map((o) =>
+          this.normalizeObjetivoFromApi(o)
+        );
+        this.isLoading = false;
+      },
+      error: (err) => {
+        console.error('Error al cargar objetivos', err);
+        this.loadError = 'No se pudieron cargar los objetivos.';
+        this.isLoading = false;
+      },
+    });
   }
 
-  // Métodos de navegación
+  private loadCategorias(): void {
+    this.categoriaService.getCategorias().subscribe({
+      next: (categorias) => {
+        this.categorias = categorias || [];
+      },
+      error: (err) => {
+        console.error('Error al cargar categorías', err);
+        this.categorias = [];
+      },
+    });
+  }
+
+  // Helper para el template
+  getCategory(categoriaId?: string): Categoria | undefined {
+    if (!categoriaId) return undefined;
+    return this.categorias.find((c) => c.id === categoriaId);
+  }
+
+  // ----------------- Navegación -----------------
+
   goBack() {
     this.router.navigate(['/home']);
   }
@@ -104,7 +200,8 @@ export class SavingGoalsComponent implements OnInit {
     this.isMenuOpen = false;
   }
 
-  // Métodos para objetivos
+  // ----------------- Objetivos -----------------
+
   addNewGoal() {
     this.isEditMode = false;
     this.selectedGoal = undefined;
@@ -114,23 +211,48 @@ export class SavingGoalsComponent implements OnInit {
   onCloseAddGoal() {
     this.showAddGoal = false;
     this.selectedGoal = undefined;
+    this.loadGoals();
   }
 
-  // Desplegable por objetivo
   toggleGoalMenu(goalId: string) {
     this.selectedGoalId = this.selectedGoalId === goalId ? undefined : goalId;
   }
 
   editGoal(goalId: string) {
     this.isEditMode = true;
-    this.selectedGoal = this.savingGoals.find(g => g.id === goalId);
     this.showAddGoal = true;
     this.selectedGoalId = undefined;
+    this.selectedGoal = undefined;
+
+    this.objetivoService.getObjetivoById(goalId).subscribe({
+      next: (resp) => {
+        const raw = (resp as any).data ?? resp;
+
+        const objetivo = this.normalizeObjetivoFromApi(raw);
+        const opsRaw: any[] = raw.operaciones || [];
+
+        objetivo.operaciones = opsRaw.map((op) =>
+          this.normalizeOperacionFromApi(op)
+        );
+
+        this.selectedGoal = objetivo;
+      },
+      error: (err) => {
+        console.error('Error al obtener objetivo con operaciones', err);
+      },
+    });
   }
 
   deleteGoal(goalId: string) {
-    this.savingGoals = this.savingGoals.filter(g => g.id !== goalId);
-    this.selectedGoalId = undefined;
+    this.objetivoService.deleteObjetivo(goalId).subscribe({
+      next: () => {
+        this.savingGoals = this.savingGoals.filter((g) => g.id !== goalId);
+        this.selectedGoalId = undefined;
+      },
+      error: (err) => {
+        console.error('Error al eliminar objetivo', err);
+      },
+    });
   }
 
   onDeleteGoal() {
@@ -140,54 +262,188 @@ export class SavingGoalsComponent implements OnInit {
     this.onCloseAddGoal();
   }
 
+  // ----------------- GUARDAR OBJETIVO + OPERACIONES -----------------
+
   onSaveGoal(goal: Objetivo) {
     if (this.isEditMode && this.selectedGoal?.id) {
-      // Actualizar objetivo existente
-      const index = this.savingGoals.findIndex(g => g.id === this.selectedGoal!.id);
-      if (index !== -1) {
-        this.savingGoals[index] = { ...goal, id: this.selectedGoal.id };
-      }
-    } else {
-      // Crear nuevo objetivo
-      const newGoal: Objetivo = {
-        ...goal,
-        id: Date.now().toString(),
+      const payload: any = {
+        titulo: goal.titulo,
+        montoObjetivo: goal.montoObjetivo,
+        categoriaId: goal.categoriaId,
+        billeteraId: goal.billeteraId,
+        fechaInicio: goal.fechaInicio,
+        fechaEsperadaFinalizacion: goal.fechaEsperadaFinalizacion,
+        fechaFin: goal.fechaFin,
+        estado: goal.estado,
       };
-      this.savingGoals.push(newGoal);
+
+      this.objetivoService
+        .updateObjetivo(this.selectedGoal.id, payload)
+        .subscribe({
+          next: (updated) => {
+            const objetivoActualizado = this.normalizeObjetivoFromApi(
+              (updated as any).data ?? updated
+            );
+
+            this.syncOperacionesForObjetivo(
+              objetivoActualizado,
+              goal.operaciones || []
+            );
+
+            const index = this.savingGoals.findIndex(
+              (g) => g.id === this.selectedGoal!.id
+            );
+            if (index !== -1) {
+              this.savingGoals[index] = objetivoActualizado;
+            }
+            this.onCloseAddGoal();
+          },
+          error: (err) => {
+            console.error('Error al actualizar objetivo', err);
+          },
+        });
+    } else {
+      const billeteraId = goal.billeteraId || this.defaultWalletId;
+
+      if (!billeteraId) {
+        console.error(
+          'No hay billeteraId para crear objetivo (ni seleccionada ni default)'
+        );
+        return;
+      }
+
+      if (!goal.categoriaId) {
+        console.error('Debe seleccionar una categoría para el objetivo');
+        return;
+      }
+
+      const payload: any = {
+        titulo: goal.titulo,
+        montoObjetivo: goal.montoObjetivo,
+        billeteraId,
+        categoriaId: goal.categoriaId,
+        fechaInicio: goal.fechaInicio,
+        fechaEsperadaFinalizacion: goal.fechaEsperadaFinalizacion,
+        fechaFin: goal.fechaFin,
+      };
+
+      this.objetivoService.createObjetivo(payload).subscribe({
+        next: (created) => {
+          const objetivoCreado = this.normalizeObjetivoFromApi(
+            (created as any).data ?? created
+          );
+
+          this.syncOperacionesForObjetivo(
+            objetivoCreado,
+            goal.operaciones || []
+          );
+
+          this.savingGoals.push(objetivoCreado);
+          this.onCloseAddGoal();
+        },
+        error: (err) => {
+          console.error('Error al crear objetivo', err);
+        },
+      });
     }
-    this.onCloseAddGoal();
   }
 
-  // Método para calcular el progreso
+  /**
+   * Crea en el back las operaciones del modal asociadas a un objetivo.
+   * Usa la categoriaId del objetivo si la operación no trae categoriaId.
+   * No mandamos fecha: el back usa new Date() (hoy).
+   * Al terminar, refrescamos el objetivo desde el back para actualizar
+   * el porcentaje y montoActual sin recargar toda la página.
+   */
+  private syncOperacionesForObjetivo(
+    objetivo: Objetivo,
+    operaciones: Operacion[]
+  ): void {
+    if (!objetivo.id) return;
+    if (!operaciones || operaciones.length === 0) return;
+
+    const createOps$ = [];
+
+    for (const op of operaciones) {
+      // Si ya existe en back, no la recreamos
+      if (op._id || (op as any).id) continue;
+
+      const categoriaId = op.categoriaId || objetivo.categoriaId;
+
+      if (!categoriaId) {
+        console.warn(
+          'No se puede crear operación del objetivo porque no tiene categoriaId ni la del objetivo',
+          op
+        );
+        continue;
+      }
+
+      const payload: Partial<Operacion> = {
+        monto: op.monto,
+        tipo: op.tipo,
+        descripcion: op.descripcion,
+        categoriaId,
+        objetivo: objetivo.id,
+      };
+
+      createOps$.push(this.operacionService.createOperacion(payload));
+    }
+
+    if (createOps$.length === 0) return;
+
+    forkJoin(createOps$).subscribe({
+      next: () => {
+        // Una vez creadas todas las operaciones, traemos el objetivo actualizado
+        this.objetivoService.getObjetivoById(objetivo.id!).subscribe({
+          next: (resp) => {
+            const rawObj = (resp as any).data ?? resp;
+            const objetivoActualizado = this.normalizeObjetivoFromApi(rawObj);
+
+            const idx = this.savingGoals.findIndex(
+              (g) => g.id === objetivoActualizado.id
+            );
+
+            if (idx !== -1) {
+              this.savingGoals[idx] = objetivoActualizado;
+            } else {
+              this.savingGoals.push(objetivoActualizado);
+            }
+
+            if (
+              this.selectedGoal &&
+              this.selectedGoal.id === objetivoActualizado.id
+            ) {
+              this.selectedGoal = objetivoActualizado;
+            }
+          },
+          error: (err) => {
+            console.error(
+              'Error al refrescar objetivo tras crear operaciones',
+              err
+            );
+          },
+        });
+      },
+      error: (err) => {
+        console.error('Error al crear operaciones asociadas al objetivo', err);
+      },
+    });
+  }
+
+  // ----------------- Helpers de UI -----------------
+
   getProgress(goal: Objetivo): number {
-    if (goal.montoObjetivo <= 0 || goal.montoActual < 0) {
+    if (goal.montoObjetivo <= 0) {
       return 0;
     }
     const progress = (goal.montoActual / goal.montoObjetivo) * 100;
-    return Math.min(progress, 100);
+    return Math.min(Math.max(progress, 0), 100);
   }
 
-  // Método para alternar el estado del objetivo
-  toggleGoalStatus(goal: Objetivo, event: Event) {
-    event.stopPropagation();
-    goal.estado = goal.estado === EstadoObjetivo.COMPLETADO 
-      ? EstadoObjetivo.PENDIENTE 
-      : EstadoObjetivo.COMPLETADO;
-    
-    // Si se marca como completado, establecer fecha de fin
-    if (goal.estado === EstadoObjetivo.COMPLETADO && !goal.fechaFin) {
-      goal.fechaFin = new Date().toISOString().split('T')[0];
-    } else if (goal.estado === EstadoObjetivo.PENDIENTE) {
-      goal.fechaFin = undefined;
-    }
-  }
-
-  // Método para verificar si está completado
   isCompleted(goal: Objetivo): boolean {
     return goal.estado === EstadoObjetivo.COMPLETADO;
   }
 
-  // Métodos para tips
   viewTip(tipId: number) {
     console.log('Ver tip:', tipId);
   }

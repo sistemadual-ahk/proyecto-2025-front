@@ -2,7 +2,8 @@ import { Operacion } from './operacion.model';
 
 export enum EstadoObjetivo {
   PENDIENTE = 'PENDIENTE',
-  COMPLETADO = 'COMPLETADO'
+  COMPLETADO = 'COMPLETADO',
+  CANCELADO = 'CANCELADO',
 }
 
 export interface Objetivo {
