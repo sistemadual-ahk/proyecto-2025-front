@@ -1,0 +1,160 @@
+<div class="modal-container" (click)="onClose()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <!-- Header -->
+    <div class="modal-header">
+      <button class="close-btn" (click)="onClose()" type="button">
+        <i class="mdi mdi-close"></i>
+      </button>
+      <h2 class="modal-title">Editar Operación</h2>
+      <button
+        class="save-btn"
+        [class.ready]="!isSaving"
+        [disabled]="isSaving"
+        (click)="onSave()"
+        type="button"
+      >
+        <i class="mdi" [ngClass]="isSaving ? 'mdi-loading mdi-spin' : 'mdi-check'"></i>
+      </button>
+    </div>
+
+    <!-- Toggle Ingreso/Gasto -->
+    <div class="transaction-toggle">
+      <button
+        class="toggle-btn income-btn"
+        type="button"
+        [class.active]="transactionType === 'income'"
+        (click)="toggleTransactionType('income')"
+      >
+        <i class="mdi mdi-arrow-up-bold"></i> Ingreso
+      </button>
+      <button
+        class="toggle-btn expense-btn"
+        type="button"
+        [class.active]="transactionType === 'expense'"
+        (click)="toggleTransactionType('expense')"
+      >
+        <i class="mdi mdi-arrow-down-bold"></i> Gasto
+      </button>
+    </div>
+
+    <!-- Formulario -->
+    <div class="form-content">
+      <!-- Monto -->
+      <div class="form-group amount-group">
+        <label class="form-label">Monto</label>
+        <div class="input-with-icon">
+          <input
+            type="number"
+            class="form-input"
+            [(ngModel)]="amount"
+            name="amount"
+            placeholder="0"
+            step="0.01"
+            min="0"
+          />
+          <i class="mdi mdi-currency-usd"></i>
+        </div>
+      </div>
+
+      <!-- Descripción -->
+      <div class="form-group">
+        <label class="form-label">Descripción</label>
+        <div class="input-with-icon">
+          <input
+            type="text"
+            class="form-input"
+            [(ngModel)]="description"
+            name="description"
+            placeholder="Ej: Compra supermercado"
+          />
+          <i class="mdi mdi-text"></i>
+        </div>
+      </div>
+
+      <!-- Fecha -->
+      <div class="form-group">
+        <label class="form-label">Fecha</label>
+        <div class="input-with-icon date-input-wrapper">
+          <input
+            type="date"
+            class="form-input date-input"
+            [(ngModel)]="date"
+            name="date"
+          />
+          <i class="mdi mdi-calendar input-icon"></i>
+        </div>
+      </div>
+
+      <!-- Billetera -->
+      <div class="form-group">
+        <label class="form-label">Billetera</label>
+        <mat-select
+          class="form-input"
+          [(ngModel)]="wallet"
+          name="wallet"
+          placeholder="Seleccionar billetera"
+        >
+          <mat-select-trigger>
+            <div class="category-option-row" *ngIf="wallet">
+              <div class="wallet-icon-preview" [style.background]="wallet.color || '#4caf50'">
+                <i [class]="wallet.icon || 'mdi mdi-wallet'"></i>
+              </div>
+              <span class="category-name">{{ wallet.nombre }}</span>
+            </div>
+            <span *ngIf="!wallet">Seleccionar billetera</span>
+          </mat-select-trigger>
+          <mat-option *ngFor="let walletOption of billeteras" [value]="walletOption">
+            <div class="category-option-row">
+              <div class="wallet-icon-preview" [style.background]="walletOption.color || '#4caf50'">
+                <i [class]="walletOption.icon || 'mdi mdi-wallet'"></i>
+              </div>
+              <span class="category-name">{{ walletOption.nombre }}</span>
+            </div>
+          </mat-option>
+        </mat-select>
+      </div>
+
+      <!-- Categoría -->
+      <div class="form-group">
+        <label class="form-label">Categoría</label>
+        <mat-select
+          class="form-input"
+          [(ngModel)]="category"
+          name="category"
+          placeholder="Seleccionar categoría"
+        >
+          <mat-select-trigger>
+            <div class="category-option-row" *ngIf="category">
+              <div class="category-icon-preview" [style.background-color]="category.color">
+                <i class="mdi" [ngClass]="category.icono" [style.color]="category.iconColor || '#fff'"></i>
+              </div>
+              <span class="category-name">{{ category.nombre }}</span>
+            </div>
+            <span *ngIf="!category">Seleccionar categoría</span>
+          </mat-select-trigger>
+          <mat-option *ngFor="let categoryOption of categorias" [value]="categoryOption">
+            <div class="category-option-row">
+              <div class="category-icon-preview" [style.background-color]="categoryOption.color">
+                <i class="mdi" [ngClass]="categoryOption.icono" [style.color]="categoryOption.iconColor || '#fff'"></i>
+              </div>
+              <span class="category-name">{{ categoryOption.nombre }}</span>
+            </div>
+          </mat-option>
+        </mat-select>
+      </div>
+    </div>
+
+    <!-- Botón de eliminar -->
+    <div class="delete-section">
+      <button
+        class="delete-btn"
+        [disabled]="isDeleting"
+        (click)="onDelete()"
+        type="button"
+      >
+        <i class="mdi" [ngClass]="isDeleting ? 'mdi-loading mdi-spin' : 'mdi-delete'"></i>
+        {{ isDeleting ? 'Eliminando...' : 'Eliminar operación' }}
+      </button>
+    </div>
+  </div>
+</div>

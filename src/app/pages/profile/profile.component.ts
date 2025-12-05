@@ -35,8 +35,8 @@ export class ProfileComponent implements OnInit {
   municipios: any[] = [];
   localidades: any[] = [];
   profesionOptions: string[] = [];
-  situacionLaboralOptions: string[] = ['Freelance', 'Empleado', 'Empresario', 'Desempleado', 'Estudiante'];
-  estadoCivilOptions: string[] = ['Casado', 'Soltero', 'N/A'];
+  situacionLaboralOptions: string[] = ['Desempleado', 'Empleado', 'Empresario', 'Estudiante', 'Freelance'];
+  estadoCivilOptions: string[] = ['Casado', 'N/A', 'Soltero'];
 
   // municipios now come from selected provincia -> this.municipios
 
@@ -99,7 +99,9 @@ export class ProfileComponent implements OnInit {
     const cached = localStorage.getItem('provincias_cache');
     if (cached) {
       try {
-        this.provincias = JSON.parse(cached);
+        this.provincias = JSON.parse(cached).sort((a: any, b: any) => 
+          (a.nombre || '').localeCompare(b.nombre || '')
+        );
         // Cargar datos del usuario después de cargar provincias desde cache
         this.loadUserData();
       } catch {
@@ -109,7 +111,9 @@ export class ProfileComponent implements OnInit {
 
     this.api.getAll<any>('/provincias/all').subscribe({
       next: (data) => {
-        this.provincias = data ?? [];
+        this.provincias = (data ?? []).sort((a: any, b: any) => 
+          (a.nombre || '').localeCompare(b.nombre || '')
+        );
         try {
           localStorage.setItem('provincias_cache', JSON.stringify(this.provincias));
         } catch { /* ignore quota errors */ }
@@ -149,12 +153,16 @@ export class ProfileComponent implements OnInit {
 
   private setMunicipiosFromProvincia(provinciaNombre: string): void {
     const provincia = this.provincias.find((p) => p?.nombre === provinciaNombre);
-    this.municipios = provincia?.municipios ?? [];
+    this.municipios = (provincia?.municipios ?? []).sort((a: any, b: any) => 
+      (a.nombre || '').localeCompare(b.nombre || '')
+    );
   }
 
   private setLocalidadesFromMunicipio(municipioNombre: string): void {
     const municipio = this.municipios.find((m) => m?.nombre === municipioNombre);
-    this.localidades = municipio?.localidades ?? [];
+    this.localidades = (municipio?.localidades ?? []).sort((a: any, b: any) => 
+      (a.nombre || '').localeCompare(b.nombre || '')
+    );
   }
 
   private loadProfesiones(): void {
@@ -162,22 +170,24 @@ export class ProfileComponent implements OnInit {
       next: (data) => {
         // Si el backend devuelve objetos con propiedad 'nombre', mapearlos a strings
         if (data && data.length > 0) {
-          this.profesionOptions = data.map((prof: any) =>
-            typeof prof === 'string' ? prof : prof.nombre || prof
-          );
+          this.profesionOptions = data
+            .map((prof: any) =>
+              typeof prof === 'string' ? prof : prof.nombre || prof
+            )
+            .sort((a: string, b: string) => a.localeCompare(b));
         } else {
           // Fallback a valores por defecto si el backend no devuelve datos
           this.profesionOptions = [
-            'Tecnología',
-            'Docente',
-            'Salud',
-            'Administración',
-            'Ventas',
-            'Construcción',
-            'Industria',
             'Abogacía',
+            'Administración',
+            'Construcción',
             'Diseño',
+            'Docente',
+            'Industria',
             'Otro',
+            'Salud',
+            'Tecnología',
+            'Ventas',
           ];
         }
       },
@@ -185,16 +195,16 @@ export class ProfileComponent implements OnInit {
         console.error('Error cargando profesiones', err);
         // Fallback a valores por defecto en caso de error
         this.profesionOptions = [
-          'Tecnología',
-          'Docente',
-          'Salud',
-          'Administración',
-          'Ventas',
-          'Construcción',
-          'Industria',
           'Abogacía',
+          'Administración',
+          'Construcción',
           'Diseño',
+          'Docente',
+          'Industria',
           'Otro',
+          'Salud',
+          'Tecnología',
+          'Ventas',
         ];
       },
     });

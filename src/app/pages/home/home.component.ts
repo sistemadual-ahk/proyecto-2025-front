@@ -252,6 +252,16 @@ export class HomeComponent implements OnInit, OnDestroy {
       if (typeof operacion.categoria === 'object' && operacion.categoria !== null) {
         categoriaInfo = operacion.categoria;
       }
+      
+      // Normalizar el icono para asegurar que tenga el formato correcto
+      const normalizeIcon = (icon?: string): string => {
+        if (!icon) return 'mdi mdi-cash';
+        const trimmed = icon.trim();
+        if (trimmed.startsWith('mdi mdi-')) return trimmed;
+        if (trimmed.startsWith('mdi-')) return `mdi ${trimmed}`;
+        return `mdi mdi-${trimmed}`;
+      };
+      
       return {
         id: operacion._id,
         type: operacion.tipo,
@@ -261,7 +271,7 @@ export class HomeComponent implements OnInit, OnDestroy {
           operacion.categoria ??
           'Sin categoría',
         description: operacion.descripcion,
-        icon: categoriaInfo.icono ?? 'mdi mdi-cash',
+        icon: normalizeIcon(categoriaInfo.icono),
         amount:
           operacion.tipo === 'Ingreso' || operacion.tipo === 'income'
             ? operacion.monto

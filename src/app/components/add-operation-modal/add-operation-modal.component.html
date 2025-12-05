@@ -4,7 +4,7 @@
     <i class="mdi mdi-close"></i>
   </button>
 
-  <h2 class="bottom-sheet-title">Registrar Operacion</h2>
+  <h2 class="bottom-sheet-title">Agregar Operacion</h2>
 
   <button
     class="save-btn"
@@ -65,14 +65,13 @@
   <!-- Fecha y Billetera -->
   <div class="form-group">
     <label class="form-label">Fecha</label>
-    <div class="input-with-icon">
+    <div class="input-with-icon date-input-wrapper">
       <input
-        #dateInput
         type="date"
-        class="form-input"
+        class="form-input date-input"
         [(ngModel)]="date"
       />
-      <i class="mdi mdi-calendar" (click)="openDatePicker(dateInput)"></i>
+      <i class="mdi mdi-calendar"></i>
     </div>
   </div>
 

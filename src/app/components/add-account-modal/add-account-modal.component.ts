@@ -48,7 +48,6 @@ export class AddAccountModalComponent implements OnInit, OnChanges {
   type: WalletType = 'bank';
   provider = '';
   initialBalance: number | null = null;
-  currency = 'ARS';
   cardColor = 'linear-gradient(135deg, #667EEA, #764BA2)';
   walletTypeIcons: Record<WalletType, string> = {
     bank: 'mdi-bank',
@@ -70,13 +69,13 @@ export class AddAccountModalComponent implements OnInit, OnChanges {
 
   // Opciones (pueden mapearse a íconos/colores luego)
   providersByType: Record<WalletType, string[]> = {
-    bank: ['Santander', 'BBVA', 'Galicia', 'Macro', 'Provincia'],
-    digital: ['Mercado Pago', 'Ualá', 'Naranja X'],
+    bank: ['BBVA', 'Galicia', 'Macro', 'Provincia', 'Santander'],
+    digital: ['Mercado Pago', 'Naranja X', 'Ualá'],
     cash: ['Efectivo'],
   };
 
   get currentProviders(): string[] {
-    return this.providersByType[this.type] || [];
+    return (this.providersByType[this.type] || []).sort((a, b) => a.localeCompare(b));
   }
 
   setType(next: WalletType) {
@@ -101,7 +100,7 @@ export class AddAccountModalComponent implements OnInit, OnChanges {
       proveedor: this.provider || 'N/A',
       balance: Math.max(0, Math.floor(this.initialBalance ?? 0)),
       isDefault: false,
-      moneda: this.currency,
+      moneda: 'ARS',
       color: this.cardColor,
       ingresoHistorico: 0,
       gastoHistorico: 0,
@@ -145,7 +144,6 @@ export class AddAccountModalComponent implements OnInit, OnChanges {
     this.type = 'bank';
     this.provider = '';
     this.initialBalance = null;
-    this.currency = 'ARS';
     this.cardColor = 'linear-gradient(135deg, #667EEA, #764BA2)';
   }
 
@@ -163,7 +161,6 @@ export class AddAccountModalComponent implements OnInit, OnChanges {
       this.type = (this.walletToEdit.type as WalletType) || 'bank';
       this.provider = this.walletToEdit.proveedor || '';
       this.initialBalance = this.walletToEdit.balance ?? 0;
-      this.currency = this.walletToEdit.moneda || 'ARS';
       this.cardColor = this.walletToEdit.color || this.cardColor;
     }
   }

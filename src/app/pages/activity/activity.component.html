@@ -18,7 +18,7 @@
         <div class="date-header">{{ group.date }}</div>
 
         <div class="transactions-list">
-          <div class="transaction-item" *ngFor="let operacion of group.operaciones">
+          <div class="transaction-item" *ngFor="let operacion of group.operaciones" (click)="openEditOperationModal(operacion)">
             <!-- Ícono de categoría -->
             <div
               class="category-icon"
@@ -56,5 +56,15 @@
       <p>Aún no has registrado ningun gasto. ¡Comienza a trackear tus gastos!</p>
     </div>
   </div>
+
+  <!-- Modal de edición -->
+  <edit-operation-modal
+    *ngIf="showEditModal && selectedOperacion"
+    [operacion]="selectedOperacion"
+    (closeModal)="closeEditModal()"
+    (operationUpdated)="onOperationUpdated()"
+    (operationDeleted)="onOperationDeleted()"
+  >
+  </edit-operation-modal>
 </div>
 

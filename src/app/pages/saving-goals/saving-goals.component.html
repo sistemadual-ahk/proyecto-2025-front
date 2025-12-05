@@ -11,9 +11,6 @@
             <i class="mdi" [ngClass]="cat.icono" [style.color]="cat.iconColor || '#fff'"></i>
           </div>
           <h3 class="goal-title">{{ goal.titulo }}</h3>
-          <span class="goal-status-badge" [class.completed]="isCompleted(goal)">
-            {{ isCompleted(goal) ? 'Completado' : 'Pendiente' }}
-          </span>
         </div>
         <div class="goal-actions">
           <button class="goal-action-btn ops-btn" (click)="openGoalOperations(goal.id!); $event.stopPropagation()" aria-label="Agregar ingresos y gastos">
@@ -31,7 +28,12 @@
             <span class="separator">/</span>
             <span class="target-amount">${{ goal.montoObjetivo.toLocaleString() }}</span>
           </div>
-          <span class="progress-percentage">{{ getProgress(goal).toFixed(0) }}%</span>
+          <div class="progress-right">
+            <span class="goal-status-badge" [class.completed]="isCompleted(goal)">
+              {{ isCompleted(goal) ? 'Completado' : 'Pendiente' }}
+            </span>
+            <span class="progress-percentage">{{ getProgress(goal).toFixed(0) }}%</span>
+          </div>
         </div>
         <div class="progress-bar">
           <div

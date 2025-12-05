@@ -42,6 +42,12 @@ export class SettingsComponent {
     });
   }
 
+  openTelegramBot(): void {
+    // TODO: Configurar el link del bot de Telegram
+    const telegramBotUrl = 'linkAlBotDeTelegram'; // Reemplazar con tu bot
+    window.open(telegramBotUrl, '_blank');
+  }
+
   logout(): void {
     // TODO: Hook into auth service when available
     this.router.navigate(['/login']).catch(() => {

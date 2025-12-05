@@ -80,9 +80,11 @@ export class TransactionBottomSheet implements OnInit {
   }
 
   loadData(): void {
-    // Carga de Categorías
-    this.categoriaService.getCategorias().subscribe((data) => {
-      this.categorias = data.filter(categoria => categoria.type === this.transactionType);
+    // Cargar solo categorías del tipo seleccionado (income o expense)
+    this.categoriaService.getCategorias().subscribe(data => {
+      this.categorias = data
+        .filter(categoria => categoria.type === this.transactionType)
+        .sort((a, b) => a.nombre.localeCompare(b.nombre));
       console.log('Categorías filtradas:', this.categorias);
     });
 
@@ -90,7 +92,9 @@ export class TransactionBottomSheet implements OnInit {
     // Carga de Billeteras (filtrar la General id:0 ya que no existe en el backend)
     this.billeteraService.getBilleteras().subscribe(data => {
       // Filtrar billeteras reales (excluir cualquier billetera sin ID o con ID "0")
-      this.billeteras = data.filter(bill => bill.id && bill.id !== '0');
+      this.billeteras = data
+        .filter(bill => bill.id && bill.id !== '0')
+        .sort((a, b) => a.nombre.localeCompare(b.nombre));
       console.log('Billeteras cargadas:', this.billeteras);
 
       if (this.billeteras.length === 0) {

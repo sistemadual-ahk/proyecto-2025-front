@@ -459,16 +459,7 @@
         border-radius: 12px;
         border: 1px solid rgba(255, 255, 255, 0.12);
         background: rgba(255, 255, 255, 0.05);
-        cursor: pointer;
         padding: 0 14px;
-
-        .date-display {
-          flex: 1;
-          color: #fff;
-          font-size: 14px;
-          font-family: 'Poppins', sans-serif;
-          pointer-events: none;
-        }
 
         > i {
           position: absolute;
@@ -480,22 +471,44 @@
         }
 
         input {
-          position: absolute;
           width: 100%;
           height: 100%;
-          left: 0;
-          top: 0;
-          opacity: 0;
-          cursor: pointer;
-          padding: 0;
+          padding: 0 40px 0 0;
           border: none;
           background: transparent;
-          z-index: 3;
+          color: #fff;
+          font-size: 14px;
+          font-family: 'Poppins', sans-serif;
+          cursor: pointer;
 
-          &[type="date"] {
-            appearance: none;
-            -webkit-appearance: none;
-            -moz-appearance: none;
+          &:focus {
+            outline: none;
+          }
+        }
+
+        &.date-input-wrapper {
+          cursor: pointer;
+
+          > i {
+            pointer-events: auto;
+            cursor: pointer;
+          }
+
+          .edit-date-input {
+            cursor: pointer;
+            
+            // Ocultar el icono nativo del navegador pero mantener la funcionalidad
+            &::-webkit-calendar-picker-indicator {
+              position: absolute;
+              left: 0;
+              top: 0;
+              width: 100%;
+              height: 100%;
+              margin: 0;
+              padding: 0;
+              opacity: 0;
+              cursor: pointer;
+            }
           }
         }
 
@@ -503,7 +516,7 @@
           height: 44px;
           padding: 0 12px;
 
-          .date-display {
+          input {
             font-size: 13px;
           }
 

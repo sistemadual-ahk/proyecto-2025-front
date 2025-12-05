@@ -39,7 +39,7 @@ export class WalletsComponent implements OnInit {
     from: string;
     to: string;
     amount: number;
-    currency: 'ARS' | 'USD';
+    currency: 'ARS';
     date: string;
     status: 'Completada' | 'Pendiente';
   }[] = [];
@@ -51,7 +51,7 @@ export class WalletsComponent implements OnInit {
       from: string;
       to: string;
       amount: number;
-      currency: 'ARS' | 'USD';
+      currency: 'ARS';
       date: string;
       status: 'Completada' | 'Pendiente';
     }[]
@@ -63,7 +63,6 @@ export class WalletsComponent implements OnInit {
     destinationId: '',
     destinationAmount: null as number | null,
   };
-  selectedCurrency: 'ARS' | 'USD' = 'ARS';
   selectedWallet: any = null;
   walletToEdit: Billetera | null = null;
   addAccountMode: 'create' | 'edit' = 'create';
@@ -75,8 +74,6 @@ export class WalletsComponent implements OnInit {
   readonly defaultWalletColor = 'linear-gradient(135deg, #667EEA, #764BA2)';
   private walletTypeOverrides: Record<string, WalletType> = {};
   private readonly walletTypeOverridesKey = 'walletTypeOverrides';
-  private walletCurrencyOverrides: Record<string, 'ARS' | 'USD'> = {};
-  private readonly walletCurrencyOverridesKey = 'walletCurrencyOverrides';
   editWalletForm: {
     id: string | number | null;
     nombre: string;
@@ -104,13 +101,9 @@ export class WalletsComponent implements OnInit {
     digital: 'mdi-credit-card',
     cash: 'mdi-cash-multiple',
   };
-  currencyOptions = [
-    { value: 'ARS', label: 'ARS' },
-    { value: 'USD', label: 'USD' },
-  ];
   providersByType: Record<WalletType, string[]> = {
-    bank: ['Santander', 'BBVA', 'Galicia', 'Macro', 'Provincia'],
-    digital: ['Mercado Pago', 'Uala', 'Naranja X'],
+    bank: ['BBVA', 'Galicia', 'Macro', 'Provincia', 'Santander'],
+    digital: ['Mercado Pago', 'Naranja X', 'Uala'],
     cash: ['Efectivo'],
   };
   colorOptions: { gradient: string }[] = [
@@ -124,7 +117,7 @@ export class WalletsComponent implements OnInit {
     { gradient: 'linear-gradient(135deg, #06B6D4, #0891B2)' },
   ];
   get editProviders(): string[] {
-    return this.providersByType[this.editWalletForm.type] || [];
+    return (this.providersByType[this.editWalletForm.type] || []).sort((a, b) => a.localeCompare(b));
   }
 
   // Datos de las billeteras
@@ -180,7 +173,6 @@ export class WalletsComponent implements OnInit {
   // Método de inicialización
   ngOnInit(): void {
     this.loadWalletTypeOverrides();
-    this.loadWalletCurrencyOverrides();
     this.loadData();
   }
 
@@ -222,14 +214,8 @@ export class WalletsComponent implements OnInit {
     return this.wallets.reduce((total, wallet) => total + wallet.balance, 0);
   }
 
-  get filteredTotalBalance(): number {
-    return this.billeteras
-      .filter((wallet) => this.getWalletCurrencyValue(wallet) === this.selectedCurrency)
-      .reduce((total, wallet) => total + wallet.balance, 0);
-  }
-
-  setCurrency(currency: 'ARS' | 'USD') {
-    this.selectedCurrency = currency;
+  get totalBalanceARS(): number {
+    return this.billeteras.reduce((total, wallet) => total + wallet.balance, 0);
   }
 
   // Métodos para el menú
@@ -278,9 +264,6 @@ export class WalletsComponent implements OnInit {
     this.addAccountMode = 'create';
     this.walletToEdit = null;
     this.setWalletTypeOverride(walletId, event.type);
-    if (event.payload?.moneda) {
-      this.setWalletCurrencyOverride(walletId, this.normalizeCurrency(event.payload.moneda));
-    }
 
     if (event.mode === 'edit') {
       if (!walletId) {
@@ -341,11 +324,10 @@ export class WalletsComponent implements OnInit {
     const overrideType = this.getWalletTypeOverride(wallet.id);
     const walletType = overrideType || this.resolveWalletType(wallet.type as string);
     const walletIcon = this.normalizeIcon(wallet.icon || this.walletTypeIcons[walletType]);
-    const walletCurrency = this.getWalletCurrencyValue(wallet);
     return {
       ...wallet,
       type: walletType,
-      moneda: walletCurrency,
+      moneda: 'ARS',
       icon: walletIcon,
     };
   }
@@ -430,52 +412,8 @@ export class WalletsComponent implements OnInit {
     );
   }
 
-  private getWalletCurrencyValue(wallet: Partial<Billetera>): 'ARS' | 'USD' {
-    const override = this.getWalletCurrencyOverride(wallet.id as any);
-    if (override) {
-      return override;
-    }
-    return this.normalizeCurrency(wallet.moneda);
-  }
-
-  private getWalletCurrencyOverride(id?: string | number | null): 'ARS' | 'USD' | undefined {
-    if (id === null || id === undefined) return undefined;
-    return this.walletCurrencyOverrides[String(id)];
-  }
-
-  private setWalletCurrencyOverride(id: string | number | null | undefined, currency: 'ARS' | 'USD') {
-    if (id === null || id === undefined) {
-      return;
-    }
-    this.walletCurrencyOverrides[String(id)] = currency;
-    this.persistWalletCurrencyOverrides();
-  }
-
-  private loadWalletCurrencyOverrides() {
-    if (!this.canUseLocalStorage()) {
-      this.walletCurrencyOverrides = {};
-      return;
-    }
-    try {
-      const stored = window.localStorage.getItem(this.walletCurrencyOverridesKey);
-      this.walletCurrencyOverrides = stored ? JSON.parse(stored) : {};
-    } catch {
-      this.walletCurrencyOverrides = {};
-    }
-  }
-
-  private persistWalletCurrencyOverrides() {
-    if (!this.canUseLocalStorage()) {
-      return;
-    }
-    try {
-      window.localStorage.setItem(
-        this.walletCurrencyOverridesKey,
-        JSON.stringify(this.walletCurrencyOverrides)
-      );
-    } catch {
-      // ignorar errores de almacenamiento
-    }
+  private getWalletCurrencyValue(wallet: Partial<Billetera>): 'ARS' {
+    return 'ARS';
   }
 
   setAsDefault() {
@@ -652,7 +590,7 @@ export class WalletsComponent implements OnInit {
   }
 
   // Formatear números
-  formatCurrency(amount: number, currency: 'ARS' | 'USD' = this.selectedCurrency): string {
+  formatCurrency(amount: number, currency: 'ARS' = 'ARS'): string {
     return new Intl.NumberFormat('es-AR', {
       style: 'currency',
       currency,
@@ -661,8 +599,8 @@ export class WalletsComponent implements OnInit {
     }).format(amount);
   }
 
-  getWalletCurrency(wallet: Partial<Billetera>): 'ARS' | 'USD' {
-    return this.getWalletCurrencyValue(wallet);
+  getWalletCurrency(wallet: Partial<Billetera>): 'ARS' {
+    return 'ARS';
   }
 
   private normalizeWallet(wallet: Billetera): Billetera {
@@ -676,9 +614,8 @@ export class WalletsComponent implements OnInit {
     };
   }
 
-  private normalizeCurrency(moneda?: string | null): 'ARS' | 'USD' {
-    const normalized = (moneda || '').toString().toUpperCase();
-    return normalized === 'USD' ? 'USD' : 'ARS';
+  private normalizeCurrency(moneda?: string | null): 'ARS' {
+    return 'ARS';
   }
 
   // --- Transfer modal helpers ---

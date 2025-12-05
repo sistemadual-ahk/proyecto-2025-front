@@ -8,6 +8,7 @@ import { Subscription } from 'rxjs';
 import { OperacionService } from '../../services/operacion.service';
 import { Operacion } from '../../../models/operacion.model';
 import { formatDate } from '../../utils/formatDate';
+import { EditOperationModal } from '../../components/edit-operation-modal/edit-operation-modal.component';
 
 type OperacionVista = Operacion & {
   categoriaNombre: string;
@@ -18,7 +19,14 @@ type OperacionVista = Operacion & {
 @Component({
   selector: 'app-activity',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule, SidebarComponent, PageTitleComponent],
+  imports: [
+    CommonModule, 
+    RouterModule, 
+    FormsModule, 
+    SidebarComponent, 
+    PageTitleComponent,
+    EditOperationModal
+  ],
   templateUrl: './activity.component.html',
   styleUrl: './activity.component.scss',
 })
@@ -40,6 +48,10 @@ export class ActivityComponent implements OnInit, OnDestroy {
 
   //input  
   searchTerm: string = '';
+  
+  // Modal de edición
+  showEditModal = false;
+  selectedOperacion: OperacionVista | null = null;
 
 
   ngOnInit(): void {
@@ -128,6 +140,26 @@ export class ActivityComponent implements OnInit, OnDestroy {
 
   goBack() {
     this.router.navigate(['/home']);
+  }
+
+  openEditOperationModal(operacion: OperacionVista): void {
+    console.log('Abriendo modal con operación:', operacion);
+    console.log('ID de operación:', operacion._id || operacion.id);
+    this.selectedOperacion = operacion;
+    this.showEditModal = true;
+  }
+
+  closeEditModal(): void {
+    this.showEditModal = false;
+    this.selectedOperacion = null;
+  }
+
+  onOperationUpdated(): void {
+    this.loadOperaciones();
+  }
+
+  onOperationDeleted(): void {
+    this.loadOperaciones();
   }
 
   private mapOperacionParaVista(op: Operacion): OperacionVista {

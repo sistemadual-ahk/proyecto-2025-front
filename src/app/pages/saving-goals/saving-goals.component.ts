@@ -518,6 +518,20 @@ export class SavingGoalsComponent implements OnInit {
           this.normalizeOperacionFromApi(op)
         );
 
+        // Actualizar estado si se completó el objetivo
+        if (objetivoActualizado.montoActual >= objetivoActualizado.montoObjetivo) {
+          if (objetivoActualizado.estado !== EstadoObjetivo.COMPLETADO) {
+            objetivoActualizado.estado = EstadoObjetivo.COMPLETADO;
+            // Actualizar en el backend
+            this.objetivoService.updateObjetivo(objetivoActualizado.id!, {
+              estado: EstadoObjetivo.COMPLETADO
+            }).subscribe({
+              next: () => console.log('Estado actualizado a COMPLETADO'),
+              error: (err) => console.error('Error al actualizar estado', err)
+            });
+          }
+        }
+
         const idx = this.savingGoals.findIndex(
           (g) => g.id === objetivoActualizado.id
         );
@@ -562,7 +576,9 @@ export class SavingGoalsComponent implements OnInit {
   }
 
   isCompleted(goal: Objetivo): boolean {
-    return goal.estado === EstadoObjetivo.COMPLETADO;
+    const completed = goal.estado === EstadoObjetivo.COMPLETADO;
+    console.log('Goal:', goal.titulo, 'Estado:', goal.estado, 'isCompleted:', completed);
+    return completed;
   }
 
   viewTip(tipId: number) {

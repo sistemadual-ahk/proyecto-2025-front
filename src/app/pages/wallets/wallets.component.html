@@ -4,27 +4,10 @@
     <!-- Navigation and Title -->
     <app-page-title title="Mis billeteras" (back)="goBack()"></app-page-title>
 
-    <div class="currency-switch">
-      <button
-        class="currency-btn"
-        [class.active]="selectedCurrency === 'ARS'"
-        (click)="setCurrency('ARS')"
-      >
-        ARS
-      </button>
-      <button
-        class="currency-btn"
-        [class.active]="selectedCurrency === 'USD'"
-        (click)="setCurrency('USD')"
-      >
-        USD
-      </button>
-    </div>
-
     <!-- Total Balance Card -->
     <div class="total-balance-card">
       <div class="balance-label">Total:</div>
-      <div class="balance-amount">{{ formatCurrency(filteredTotalBalance, selectedCurrency) }}</div>
+      <div class="balance-amount">{{ formatCurrency(totalBalanceARS, 'ARS') }}</div>
     </div>
 
     <!-- Action Buttons -->
@@ -282,25 +265,6 @@
               required
               placeholder="Ingrese monto"
             />
-            <i class="mdi mdi-currency-usd"></i>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label class="form-label" for="walletCurrency">Moneda</label>
-          <div class="input-with-icon">
-            <mat-select
-              class="form-input"
-              id="walletCurrency"
-              name="walletCurrency"
-              [(ngModel)]="editWalletForm.moneda"
-              required
-              placeholder="Seleccionar moneda"
-            >
-              <mat-option *ngFor="let currency of currencyOptions" [value]="currency.value">
-                {{ currency.label }}
-              </mat-option>
-            </mat-select>
             <i class="mdi mdi-currency-usd"></i>
           </div>
         </div>

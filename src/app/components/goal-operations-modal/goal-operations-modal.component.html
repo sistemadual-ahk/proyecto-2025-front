@@ -111,15 +111,14 @@
             />
           </div>
           <div class="edit-row">
-            <div class="input-with-icon">
+            <div class="input-with-icon date-input-wrapper">
               <input
                 type="date"
                 class="edit-date-input"
                 [(ngModel)]="operacion.fecha"
                 (change)="onDateChange(operacion)"
-                #dateInput
               />
-              <i class="mdi mdi-calendar" (click)="dateInput.click()"></i>
+              <i class="mdi mdi-calendar"></i>
             </div>
             <div class="monto-input-wrapper">
               <span class="monto-prefix">$</span>
