@@ -264,6 +264,11 @@ export class ProfileComponent implements OnInit {
   }
 
   goBack(): void {
-    this.router.navigate(['/home']);
+    const fromSettings = window.history.state?.fromSettings;
+    if (fromSettings) {
+      this.router.navigate(['/settings']).catch(() => window.history.back());
+    } else {
+      this.router.navigate(['/home']).catch(() => window.history.back());
+    }
   }
 }

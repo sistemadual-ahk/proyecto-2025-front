@@ -24,8 +24,8 @@ export class SettingsComponent {
   }
 
   openProfile(): void {
-    // Placeholder: adjust when profile route is ready
-    this.router.navigate(['/profile']).catch(() => {
+    // Pasar estado para que el perfil sepa volver a Ajustes
+    this.router.navigate(['/profile'], { state: { fromSettings: true } }).catch(() => {
       console.error('Error navigating to profile');
     });
   }
