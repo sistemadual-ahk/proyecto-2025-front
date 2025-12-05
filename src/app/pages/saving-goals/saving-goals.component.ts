@@ -6,6 +6,7 @@ import { HeaderComponent } from '../../components/header/header.component';
 import { SidebarComponent } from '../../components/sidebar/sidebar.component';
 import { PageTitleComponent } from '../../components/page-title/page-title.component';
 import { AddGoalModalComponent } from '../../components/add-goal-modal/add-goal-modal.component';
+import { GoalOperationsModalComponent } from '../../components/goal-operations-modal/goal-operations-modal.component';
 
 import { Objetivo, EstadoObjetivo } from '../../../models/objetivo.model';
 import { Operacion } from '../../../models/operacion.model';
@@ -26,6 +27,7 @@ import { forkJoin } from 'rxjs';
     SidebarComponent,
     PageTitleComponent,
     AddGoalModalComponent,
+    GoalOperationsModalComponent,
   ],
   templateUrl: './saving-goals.component.html',
   styleUrl: './saving-goals.component.scss',
@@ -37,6 +39,8 @@ export class SavingGoalsComponent implements OnInit {
   isEditMode = false;
   selectedGoalId?: string;
   selectedGoal?: Objetivo;
+  showGoalOperations = false;
+  selectedGoalForOps?: Objetivo;
 
   // Datos reales
   savingGoals: Objetivo[] = [];
@@ -117,6 +121,7 @@ export class SavingGoalsComponent implements OnInit {
       ...raw,
       id: raw.id || raw._id,
       _id: raw._id,
+      monto: Number(raw.monto) || 0,
       fecha: fechaStr,
       categoriaId:
         raw.categoriaId ||
@@ -243,6 +248,29 @@ export class SavingGoalsComponent implements OnInit {
     });
   }
 
+  openGoalOperations(goalId: string) {
+    this.showGoalOperations = true;
+    this.selectedGoalForOps = undefined;
+
+    this.objetivoService.getObjetivoById(goalId).subscribe({
+      next: (resp) => {
+        const raw = (resp as any).data ?? resp;
+        const objetivo = this.normalizeObjetivoFromApi(raw);
+        const opsRaw: any[] = raw.operaciones || [];
+
+        objetivo.operaciones = opsRaw.map((op) =>
+          this.normalizeOperacionFromApi(op)
+        );
+
+        this.selectedGoalForOps = objetivo;
+      },
+      error: (err) => {
+        console.error('Error al obtener operaciones del objetivo', err);
+        this.showGoalOperations = false;
+      },
+    });
+  }
+
   deleteGoal(goalId: string) {
     this.objetivoService.deleteObjetivo(goalId).subscribe({
       next: () => {
@@ -260,6 +288,22 @@ export class SavingGoalsComponent implements OnInit {
       this.deleteGoal(this.selectedGoal.id);
     }
     this.onCloseAddGoal();
+  }
+
+  onCloseGoalOperations() {
+    this.showGoalOperations = false;
+    this.selectedGoalForOps = undefined;
+  }
+
+  onSaveGoalOperations(operaciones: Operacion[]) {
+    if (!this.selectedGoalForOps?.id) {
+      console.warn('No hay objetivo seleccionado para guardar operaciones');
+      this.onCloseGoalOperations();
+      return;
+    }
+
+    this.syncOperacionesForObjetivo(this.selectedGoalForOps, operaciones);
+    this.onCloseGoalOperations();
   }
 
   // ----------------- GUARDAR OBJETIVO + OPERACIONES -----------------
@@ -281,14 +325,21 @@ export class SavingGoalsComponent implements OnInit {
         .updateObjetivo(this.selectedGoal.id, payload)
         .subscribe({
           next: (updated) => {
-            const objetivoActualizado = this.normalizeObjetivoFromApi(
-              (updated as any).data ?? updated
-            );
-
-            this.syncOperacionesForObjetivo(
-              objetivoActualizado,
-              goal.operaciones || []
-            );
+            const rawData = (updated as any).data ?? updated;
+            
+            if (!rawData) {
+              console.warn('Respuesta vacía al actualizar objetivo');
+              this.onCloseAddGoal();
+              return;
+            }
+            
+            const objetivoActualizado = this.normalizeObjetivoFromApi(rawData);
+            
+            if (!objetivoActualizado || !objetivoActualizado.id) {
+              console.warn('No se pudo normalizar el objetivo actualizado');
+              this.onCloseAddGoal();
+              return;
+            }
 
             const index = this.savingGoals.findIndex(
               (g) => g.id === this.selectedGoal!.id
@@ -329,14 +380,21 @@ export class SavingGoalsComponent implements OnInit {
 
       this.objetivoService.createObjetivo(payload).subscribe({
         next: (created) => {
-          const objetivoCreado = this.normalizeObjetivoFromApi(
-            (created as any).data ?? created
-          );
-
-          this.syncOperacionesForObjetivo(
-            objetivoCreado,
-            goal.operaciones || []
-          );
+          const rawData = (created as any).data ?? created;
+          
+          if (!rawData) {
+            console.warn('Respuesta vacía al crear objetivo');
+            this.onCloseAddGoal();
+            return;
+          }
+          
+          const objetivoCreado = this.normalizeObjetivoFromApi(rawData);
+          
+          if (!objetivoCreado || !objetivoCreado.id) {
+            console.warn('No se pudo normalizar el objetivo creado');
+            this.onCloseAddGoal();
+            return;
+          }
 
           this.savingGoals.push(objetivoCreado);
           this.onCloseAddGoal();
@@ -349,30 +407,59 @@ export class SavingGoalsComponent implements OnInit {
   }
 
   /**
-   * Crea en el back las operaciones del modal asociadas a un objetivo.
-   * Usa la categoriaId del objetivo si la operación no trae categoriaId.
-   * No mandamos fecha: el back usa new Date() (hoy).
-   * Al terminar, refrescamos el objetivo desde el back para actualizar
-   * el porcentaje y montoActual sin recargar toda la página.
+   * Sincroniza las operaciones del objetivo:
+   * - Crea operaciones nuevas (sin _id)
+   * - Elimina operaciones que fueron borradas (compara con las del objetivo original)
+   * Al terminar, refrescamos el objetivo desde el back
    */
   private syncOperacionesForObjetivo(
     objetivo: Objetivo,
     operaciones: Operacion[]
   ): void {
     if (!objetivo.id) return;
-    if (!operaciones || operaciones.length === 0) return;
 
-    const createOps$ = [];
+    const createOps$: any[] = [];
+    const deleteOps$: any[] = [];
 
+    // Operaciones originales (las que estaban antes)
+    const originalOpIds = (objetivo.operaciones || [])
+      .map((op) => op._id || op.id)
+      .filter((id) => id);
+
+    // Operaciones actuales (las que hay ahora)
+    const currentOpIds = operaciones
+      .map((op) => op._id || op.id)
+      .filter((id) => id);
+
+    // Detectar operaciones eliminadas (estaban antes pero ya no están)
+    const deletedOpIds = originalOpIds.filter((id) => !currentOpIds.includes(id));
+
+    // Crear solicitudes de eliminación para operaciones borradas
+    for (const deletedId of deletedOpIds) {
+      if (deletedId) {
+        deleteOps$.push(this.operacionService.deleteOperacion(deletedId));
+      }
+    }
+
+    // Crear solicitudes de creación para operaciones nuevas
     for (const op of operaciones) {
       // Si ya existe en back, no la recreamos
       if (op._id || (op as any).id) continue;
 
       const categoriaId = op.categoriaId || objetivo.categoriaId;
+      const billeteraId = op.billeteraId || objetivo.billeteraId;
 
       if (!categoriaId) {
         console.warn(
           'No se puede crear operación del objetivo porque no tiene categoriaId ni la del objetivo',
+          op
+        );
+        continue;
+      }
+
+      if (!billeteraId) {
+        console.warn(
+          'No se puede crear operación del objetivo porque no tiene billeteraId ni la del objetivo',
           op
         );
         continue;
@@ -383,49 +470,83 @@ export class SavingGoalsComponent implements OnInit {
         tipo: op.tipo,
         descripcion: op.descripcion,
         categoriaId,
+        billeteraId,
         objetivo: objetivo.id,
       };
 
       createOps$.push(this.operacionService.createOperacion(payload));
     }
 
-    if (createOps$.length === 0) return;
+    // Combinar todas las solicitudes (crear + eliminar)
+    const allOps$ = [...createOps$, ...deleteOps$];
 
-    forkJoin(createOps$).subscribe({
+    // Si no hay operaciones que crear ni eliminar, solo refrescar
+    if (allOps$.length === 0) {
+      this.refreshObjetivoAfterSync(objetivo.id);
+      return;
+    }
+
+    forkJoin(allOps$).subscribe({
       next: () => {
-        // Una vez creadas todas las operaciones, traemos el objetivo actualizado
-        this.objetivoService.getObjetivoById(objetivo.id!).subscribe({
-          next: (resp) => {
-            const rawObj = (resp as any).data ?? resp;
-            const objetivoActualizado = this.normalizeObjetivoFromApi(rawObj);
-
-            const idx = this.savingGoals.findIndex(
-              (g) => g.id === objetivoActualizado.id
-            );
-
-            if (idx !== -1) {
-              this.savingGoals[idx] = objetivoActualizado;
-            } else {
-              this.savingGoals.push(objetivoActualizado);
-            }
-
-            if (
-              this.selectedGoal &&
-              this.selectedGoal.id === objetivoActualizado.id
-            ) {
-              this.selectedGoal = objetivoActualizado;
-            }
-          },
-          error: (err) => {
-            console.error(
-              'Error al refrescar objetivo tras crear operaciones',
-              err
-            );
-          },
-        });
+        this.refreshObjetivoAfterSync(objetivo.id!);
       },
       error: (err) => {
-        console.error('Error al crear operaciones asociadas al objetivo', err);
+        console.error('Error al sincronizar operaciones del objetivo', err);
+      },
+    });
+  }
+
+  private refreshObjetivoAfterSync(objetivoId: string): void {
+    this.objetivoService.getObjetivoById(objetivoId).subscribe({
+      next: (resp) => {
+        const rawObj = (resp as any).data ?? resp;
+
+        if (!rawObj) {
+          console.warn('Respuesta vacía al refrescar objetivo');
+          return;
+        }
+
+        const objetivoActualizado = this.normalizeObjetivoFromApi(rawObj);
+
+        if (!objetivoActualizado || !objetivoActualizado.id) {
+          console.warn('No se pudo normalizar el objetivo actualizado');
+          return;
+        }
+
+        const opsRaw: any[] = rawObj.operaciones || [];
+        objetivoActualizado.operaciones = opsRaw.map((op) =>
+          this.normalizeOperacionFromApi(op)
+        );
+
+        const idx = this.savingGoals.findIndex(
+          (g) => g.id === objetivoActualizado.id
+        );
+
+        if (idx !== -1) {
+          this.savingGoals[idx] = objetivoActualizado;
+        } else {
+          this.savingGoals.push(objetivoActualizado);
+        }
+
+        if (
+          this.selectedGoal &&
+          this.selectedGoal.id === objetivoActualizado.id
+        ) {
+          this.selectedGoal = objetivoActualizado;
+        }
+
+        if (
+          this.selectedGoalForOps &&
+          this.selectedGoalForOps.id === objetivoActualizado.id
+        ) {
+          this.selectedGoalForOps = objetivoActualizado;
+        }
+      },
+      error: (err) => {
+        console.error(
+          'Error al refrescar objetivo tras sincronizar operaciones',
+          err
+        );
       },
     });
   }

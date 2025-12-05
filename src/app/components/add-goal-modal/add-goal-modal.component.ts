@@ -11,7 +11,6 @@ import {
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Objetivo, EstadoObjetivo } from '../../../models/objetivo.model';
-import { Operacion } from '../../../models/operacion.model';
 import { Categoria } from '../../../models/categoria.model';
 import { CategoriaService } from '../../services/categoria.service';
 import { MatSelectModule } from '@angular/material/select';
@@ -43,7 +42,6 @@ export class AddGoalModalComponent implements OnInit, OnChanges {
   fechaFin?: string;
   titulo: string = '';
   estado: EstadoObjetivo = EstadoObjetivo.PENDIENTE;
-  operaciones: Operacion[] = [];
 
   // Lista de categorías
   categorias: Categoria[] = [];
@@ -147,7 +145,6 @@ export class AddGoalModalComponent implements OnInit, OnChanges {
       : undefined;
 
     this.estado = obj.estado;
-    this.operaciones = obj.operaciones ? [...obj.operaciones] : [];
   }
 
   // ===================== ACCIONES PRINCIPALES =====================
@@ -172,7 +169,6 @@ export class AddGoalModalComponent implements OnInit, OnChanges {
       fechaEsperadaFinalizacion: this.fechaEsperadaFinalizacion,
       fechaFin: this.fechaFin,
       estado: this.estado,
-      operaciones: this.operaciones,
     };
 
     this.save.emit(objetoToSave);
@@ -203,135 +199,6 @@ export class AddGoalModalComponent implements OnInit, OnChanges {
 
   selectColor(selectedColor: string): void {
     this.color = selectedColor;
-  }
-
-  // ===================== OPERACIONES LOCALES =====================
-
-  private buildDefaultDescripcion(tipo: Operacion['tipo']): string {
-    const base = this.titulo?.trim() || 'Objetivo';
-    const sufijo =
-      tipo === 'Ingreso' || tipo === 'income' ? 'Ingreso' : 'Egreso';
-    return `${base} ${sufijo}`;
-  }
-
-  getRecentOperations(): Operacion[] {
-    if (!this.operaciones || this.operaciones.length === 0) {
-      return [];
-    }
-    return [...this.operaciones]
-      .sort((a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime())
-      .slice(0, 5);
-  }
-
-  formatDate(fecha: string): string {
-    const date = new Date(fecha);
-    const today = new Date();
-    const yesterday = new Date(today);
-    yesterday.setDate(yesterday.getDate() - 1);
-
-    const dateOnly = new Date(
-      date.getFullYear(),
-      date.getMonth(),
-      date.getDate()
-    );
-    const todayOnly = new Date(
-      today.getFullYear(),
-      today.getMonth(),
-      today.getDate()
-    );
-    const yesterdayOnly = new Date(
-      yesterday.getFullYear(),
-      yesterday.getMonth(),
-      yesterday.getDate()
-    );
-
-    if (dateOnly.getTime() === todayOnly.getTime()) {
-      return 'Hoy';
-    } else if (dateOnly.getTime() === yesterdayOnly.getTime()) {
-      return 'Ayer';
-    } else {
-      return date.toLocaleDateString('es-AR', {
-        day: '2-digit',
-        month: 'short',
-        year: 'numeric',
-      });
-    }
-  }
-
-  getStatusLabel(): string {
-    return this.isCompleted() ? 'Completado' : 'Pendiente';
-  }
-
-  getProgress(): number {
-    if (!this.montoObjetivo || this.montoObjetivo === 0) return 0;
-    return Math.min((this.montoActual / this.montoObjetivo) * 100, 100);
-  }
-
-  // --- edición de operaciones ---
-
-  editingIndex: number | null = null;
-
-  addOperacion(): void {
-    const defaultTipo: Operacion['tipo'] = 'Egreso';
-
-    const newOperacion: Operacion = {
-      tipo: defaultTipo,
-      monto: 0,
-      descripcion: this.buildDefaultDescripcion(defaultTipo),
-      fecha: new Date().toISOString().split('T')[0],
-    };
-    this.operaciones.push(newOperacion);
-    this.editingIndex = this.operaciones.length - 1;
-  }
-
-  toggleTipo(operacion: Operacion): void {
-    const oldTipo = operacion.tipo;
-    const newTipo: Operacion['tipo'] =
-      oldTipo === 'Ingreso' || oldTipo === 'income' ? 'Egreso' : 'Ingreso';
-
-    const autoIngreso = this.buildDefaultDescripcion('Ingreso');
-    const autoEgreso = this.buildDefaultDescripcion('Egreso');
-
-    const desc = operacion.descripcion || '';
-
-    // Solo pisamos la descripción si era la automática o estaba vacía
-    if (!desc || desc === autoIngreso || desc === autoEgreso) {
-      operacion.descripcion = this.buildDefaultDescripcion(newTipo);
-    }
-
-    operacion.tipo = newTipo;
-  }
-
-  startEditOperacion(index: number): void {
-    this.editingIndex = index;
-  }
-
-  saveOperacion(): void {
-    this.updateMontoActual();
-    this.editingIndex = null;
-  }
-
-  deleteOperacion(index: number): void {
-    this.operaciones.splice(index, 1);
-    this.editingIndex = null;
-    this.updateMontoActual();
-  }
-
-  // Egreso  => suma al objetivo
-  // Ingreso => resta al objetivo
-  updateMontoActual(): void {
-    this.montoActual = this.operaciones.reduce((total, op) => {
-      const monto = op.monto || 0;
-      if (op.tipo === 'Egreso' || op.tipo === 'expense') {
-        return total + monto;
-      } else {
-        return total - monto;
-      }
-    }, 0);
-  }
-
-  isIngreso(operacion: Operacion): boolean {
-    return operacion.tipo === 'Egreso' || operacion.tipo === 'expense';
   }
 
   // ===================== CATEGORÍA =====================

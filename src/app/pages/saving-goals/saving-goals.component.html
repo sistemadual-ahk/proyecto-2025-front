@@ -15,7 +15,14 @@
             {{ isCompleted(goal) ? 'Completado' : 'Pendiente' }}
           </span>
         </div>
-        <button class="goal-chevron" (click)="editGoal(goal.id!)"><i class="mdi mdi-chevron-right"></i></button>
+        <div class="goal-actions">
+          <button class="goal-action-btn ops-btn" (click)="openGoalOperations(goal.id!); $event.stopPropagation()" aria-label="Agregar ingresos y gastos">
+            <i class="mdi mdi-cash-plus"></i>
+          </button>
+          <button class="goal-action-btn edit-btn" (click)="editGoal(goal.id!); $event.stopPropagation()" aria-label="Editar objetivo">
+            <i class="mdi mdi-pencil"></i>
+          </button>
+        </div>
       </div>
       <div class="progress-container">
         <div class="progress-header">
@@ -54,4 +61,11 @@
     (save)="onSaveGoal($event)" 
     (delete)="onDeleteGoal()">
   </app-add-goal-modal>
+
+  <app-goal-operations-modal
+    *ngIf="showGoalOperations"
+    [objetivo]="selectedGoalForOps"
+    (close)="onCloseGoalOperations()"
+    (save)="onSaveGoalOperations($event)">
+  </app-goal-operations-modal>
 </div>
