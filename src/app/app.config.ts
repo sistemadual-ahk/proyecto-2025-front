@@ -24,7 +24,7 @@ function getRedirectUri(): string {
         const platform = Capacitor.getPlatform();
         // Si estamos en Android o iOS, usar el esquema de deep link
         if (platform === 'android' || platform === 'ios') {
-          return 'com.gastify.app://';
+          return 'com.gastify.app://dev-zztl4usqwhq2jl2.us.auth0.com/android/com.gastify.app/callback';
         }
       } catch (e) {
         // Si falla, continuar con la detección alternativa
@@ -38,7 +38,7 @@ function getRedirectUri(): string {
                         !/Chrome|Safari|Firefox/i.test(userAgent);
     
     if (isMobileApp || window.location.protocol === 'capacitor:') {
-      return 'com.gastify.app://';
+      return 'com.gastify.app://dev-zztl4usqwhq2jl2.us.auth0.com/android/com.gastify.app/callback';
     }
   }
   
