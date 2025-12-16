@@ -426,7 +426,19 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
   }
 
-  addTransaction() {
+  isTransactionModalOpen = false;
+
+  addTransaction(event?: Event) {
+    if (event) {
+      event.stopPropagation();
+      event.preventDefault();
+    }
+
+    if (this.isTransactionModalOpen) {
+      return;
+    }
+
+    this.isTransactionModalOpen = true;
     console.log('Agregar operación');
     const bottomSheetRef = this._transactionBottomSheet.open(TransactionBottomSheet, {
       disableClose: false,
@@ -437,6 +449,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     // Manejar el resultado cuando se cierra el bottom sheet
     bottomSheetRef.afterDismissed().subscribe(result => {
+      this.isTransactionModalOpen = false;
       if (result) {
         console.log('Transacción guardada:', result);
         // Recargar los datos después de guardar

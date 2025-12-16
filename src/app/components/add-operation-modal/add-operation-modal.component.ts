@@ -71,6 +71,7 @@ export class TransactionBottomSheet implements OnInit {
   // --- DATOS CARGADOS DEL BACKEND ---
   categorias: Categoria[] = [];
   billeteras: Billetera[] = [];
+  isLoading = true;
 
   constructor() { }
 
@@ -80,12 +81,14 @@ export class TransactionBottomSheet implements OnInit {
   }
 
   loadData(): void {
+    this.isLoading = true;
     // Cargar solo categorías del tipo seleccionado (income o expense)
     this.categoriaService.getCategorias().subscribe(data => {
       this.categorias = data
         .filter(categoria => categoria.type === this.transactionType)
         .sort((a, b) => a.nombre.localeCompare(b.nombre));
       console.log('Categorías filtradas:', this.categorias);
+      this.isLoading = false;
     });
 
 

@@ -141,7 +141,7 @@
       </mat-select>
       <i class="mdi mdi-tag"></i>
     </div>
-    <small class="form-hint" *ngIf="categorias.length === 0" style="color: #ff6b6b; margin-top: 4px; display: block;">
+    <small class="form-hint" *ngIf="!isLoading && categorias.length === 0" style="color: #ff6b6b; margin-top: 4px; display: block;">
       ⚠️ No hay categorías disponibles. Ve a Categorías y crea una primero.
     </small>
   </div>

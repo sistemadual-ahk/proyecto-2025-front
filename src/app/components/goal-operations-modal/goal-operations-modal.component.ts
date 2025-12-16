@@ -103,7 +103,7 @@ export class GoalOperationsModalComponent implements OnInit, OnChanges {
   }
 
   addOperacion(): void {
-    const defaultTipo: Operacion['tipo'] = 'Egreso';
+    const defaultTipo: Operacion['tipo'] = 'Ingreso';
     // Obtener la fecha local correcta de Argentina (ART: UTC-3)
     const today = new Date();
     const argentinaTime = new Date(today.toLocaleString('es-AR', { timeZone: 'America/Argentina/Buenos_Aires' }));
@@ -171,7 +171,7 @@ export class GoalOperationsModalComponent implements OnInit, OnChanges {
   }
 
   isIngreso(operacion: Operacion): boolean {
-    return operacion.tipo === 'Egreso' || operacion.tipo === 'expense';
+    return operacion.tipo === 'Ingreso' || operacion.tipo === 'income';
   }
 
   private patchFromObjetivo(obj: Objetivo): void {

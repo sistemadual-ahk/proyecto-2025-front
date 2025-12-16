@@ -138,13 +138,13 @@
 
 .toggle-btn {
   flex: 1;
-  min-height: 40px;
-  padding: 0 16px;
+  min-height: 50px;
+  padding: 8px 16px;
   border: none;
   border-radius: 16px;
   font-family: 'Poppins', sans-serif;
-  font-size: 14px;
-  font-weight: 500;
+  font-size: 15px;
+  font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
   background-color: transparent;
@@ -152,9 +152,18 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 10px;
+  
+  /* Asegurar que el texto no se corte */
+  white-space: nowrap;
+  overflow: visible;
 
-  i { font-size: 18px; }
+  i { 
+    font-size: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 
   &.active {
     color: #fff;

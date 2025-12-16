@@ -6,7 +6,7 @@
 
     <h2 class="bottom-sheet-title">
       <i class="mdi mdi-cash-multiple"></i>
-      Ingresos y gastos
+      Monto del objetivo
     </h2>
 
     <button
@@ -94,11 +94,11 @@
             <div class="tipo-toggle" (click)="toggleTipo(operacion); $event.stopPropagation()">
               <div class="toggle-option" [class.active]="operacion.tipo === 'Ingreso'">
                 <i class="mdi mdi-arrow-down"></i>
-                Ingreso
+                Agregar monto
               </div>
               <div class="toggle-option" [class.active]="operacion.tipo === 'Egreso'">
                 <i class="mdi mdi-arrow-up"></i>
-                Egreso
+                Sacar monto
               </div>
             </div>
           </div>

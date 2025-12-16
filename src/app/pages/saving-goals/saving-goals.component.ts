@@ -144,6 +144,10 @@ export class SavingGoalsComponent implements OnInit {
         const def = billeteras.find((b) => (b as any).isDefault);
         if (def) {
           this.defaultWalletId = def.id;
+        } else if (billeteras.length > 0) {
+          // Fallback a la primera billetera si no hay default
+          this.defaultWalletId = billeteras[0].id;
+          console.warn('No se encontró billetera default, usando la primera disponible:', billeteras[0].nombre);
         } else {
           console.warn('No se encontró billetera default para el usuario');
         }
@@ -357,6 +361,7 @@ export class SavingGoalsComponent implements OnInit {
       const billeteraId = goal.billeteraId || this.defaultWalletId;
 
       if (!billeteraId) {
+        alert('No se puede crear el objetivo porque no tienes ninguna billetera registrada. Por favor crea una billetera primero.');
         console.error(
           'No hay billeteraId para crear objetivo (ni seleccionada ni default)'
         );
@@ -364,6 +369,7 @@ export class SavingGoalsComponent implements OnInit {
       }
 
       if (!goal.categoriaId) {
+        alert('Debes seleccionar una categoría para el objetivo.');
         console.error('Debe seleccionar una categoría para el objetivo');
         return;
       }

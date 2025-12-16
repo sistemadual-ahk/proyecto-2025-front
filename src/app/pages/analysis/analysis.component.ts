@@ -57,7 +57,23 @@ export class AnalysisComponent implements OnInit {
   get formattedDate(): string {
     const months = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 
                     'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+    
+    if (this.selectedPeriod === 'annual') {
+      return `${this.selectedDate.getFullYear()}`;
+    }
+
+    if (this.selectedPeriod === 'weekly') {
+      const weekNum = this.getWeekOfMonth(this.selectedDate);
+      return `Semana ${weekNum} - ${months[this.selectedDate.getMonth()]}`;
+    }
+
     return `${months[this.selectedDate.getMonth()]} ${this.selectedDate.getFullYear()}`;
+  }
+
+  private getWeekOfMonth(date: Date): number {
+    const firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
+    const dayOfWeek = firstDay.getDay();
+    return Math.ceil((date.getDate() + dayOfWeek) / 7);
   }
 
   get canGoNext(): boolean {
