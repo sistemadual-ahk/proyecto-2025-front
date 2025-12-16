@@ -35,6 +35,7 @@
         <span class="detail-value" *ngIf="!isEditing">${{ usuario.ingresoMensual | number }}</span>
         <input
           type="number"
+          inputmode="numeric"
           class="detail-input"
           [(ngModel)]="usuario.ingresoMensual"
           *ngIf="isEditing"
@@ -99,6 +100,7 @@
         <span class="detail-value" *ngIf="!isEditing">{{ usuario.telegramID | number }}</span>
         <input
           type="number"
+          inputmode="numeric"
           class="detail-input"
           [(ngModel)]="usuario.telegramID"
           *ngIf="isEditing"

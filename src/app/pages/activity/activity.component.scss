@@ -335,3 +335,157 @@
     font-size: 14px;
   }
 }
+
+/* Filtros */
+.filters-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.filter-group {
+  display: flex;
+  gap: 8px;
+}
+
+.type-filter {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 4px;
+  border-radius: 12px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.filter-btn {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.6);
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &.active {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    font-weight: 600;
+  }
+
+  &.income-btn.active {
+    background: rgba(61, 205, 153, 0.2);
+    color: #3dcd99;
+  }
+
+  &.expense-btn.active {
+    background: rgba(255, 77, 77, 0.2);
+    color: #ff4d4d;
+  }
+}
+
+.filter-row {
+  display: flex;
+  gap: 10px;
+}
+
+.select-filter {
+  flex: 1;
+  position: relative;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+  
+  ::ng-deep .mat-mdc-select-trigger {
+    padding: 12px 14px;
+    color: #fff;
+    font-size: 14px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+  }
+
+  ::ng-deep .mat-mdc-select-arrow {
+    color: rgba(255, 255, 255, 0.6);
+  }
+
+  ::ng-deep .mat-mdc-select-value {
+    color: #fff;
+  }
+  
+  ::ng-deep .mat-mdc-select-value-text {
+    color: #fff;
+  }
+}
+
+/* Load More Button */
+.load-more-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.load-more-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #fff;
+  padding: 10px 24px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 160px;
+  
+  &:hover {
+    background: rgba(255, 255, 255, 0.15);
+  }
+  
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+}
+
+.loader {
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: #fff;
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Estilos globales para el panel del select (dropdown) */
+::ng-deep .custom-select-panel {
+  background: #2a2a3e !important;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px !important;
+  margin-top: 4px;
+  
+  .mat-mdc-option {
+    color: rgba(255, 255, 255, 0.8) !important;
+    font-family: 'Inter', sans-serif !important;
+    font-size: 14px !important;
+    min-height: 40px !important;
+    
+    &:hover, &.mdc-list-item--selected {
+      background: rgba(255, 255, 255, 0.08) !important;
+      color: #fff !important;
+    }
+    
+    .mdc-list-item__primary-text {
+      color: inherit !important;
+    }
+  }
+}

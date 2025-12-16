@@ -10,6 +10,52 @@
         <i class="mdi mdi-magnify search-icon"></i>
         <input type="text" placeholder="Buscar" class="search-input" [(ngModel)]="searchTerm" (input)="onSearch()"/>
       </div>
+      
+      <!-- Filtros -->
+      <div class="filters-container">
+        <!-- Filtro Tipo -->
+        <div class="filter-group type-filter">
+          <button 
+            class="filter-btn" 
+            [class.active]="filterType === 'all'" 
+            (click)="filterType = 'all'; onFilterChange()">
+            Todos
+          </button>
+          <button 
+            class="filter-btn income-btn" 
+            [class.active]="filterType === 'income'" 
+            (click)="filterType = 'income'; onFilterChange()">
+            Ingresos
+          </button>
+          <button 
+            class="filter-btn expense-btn" 
+            [class.active]="filterType === 'expense'" 
+            (click)="filterType = 'expense'; onFilterChange()">
+            Gastos
+          </button>
+        </div>
+
+        <div class="filter-row">
+          <!-- Filtro Tiempo -->
+          <div class="filter-group select-filter">
+            <mat-select [(ngModel)]="filterTime" (selectionChange)="onFilterChange()" class="custom-mat-select" panelClass="custom-select-panel">
+              <mat-option value="historic">Histórico</mat-option>
+              <mat-option value="month">Último mes</mat-option>
+              <mat-option value="week">Última semana</mat-option>
+            </mat-select>
+          </div>
+
+          <!-- Filtro Billetera -->
+          <div class="filter-group select-filter">
+            <mat-select [(ngModel)]="filterWalletId" (selectionChange)="onFilterChange()" class="custom-mat-select" panelClass="custom-select-panel">
+              <mat-option value="all">Todas las billeteras</mat-option>
+              <mat-option *ngFor="let wallet of wallets" [value]="wallet.id">
+                {{ wallet.nombre }}
+              </mat-option>
+            </mat-select>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- Lista de operaciones agrupados por fecha -->
@@ -44,6 +90,14 @@
             </div>
           </div>
         </div>
+      </div>
+      
+      <!-- Botón Cargar más -->
+      <div class="load-more-container" *ngIf="hasMoreItems && groupedOperaciones.length > 0">
+        <button class="load-more-btn" (click)="loadMore()" [disabled]="isLoadingMore">
+          <span *ngIf="!isLoadingMore">Cargar más movimientos</span>
+          <div class="loader" *ngIf="isLoadingMore"></div>
+        </button>
       </div>
     </div>
 

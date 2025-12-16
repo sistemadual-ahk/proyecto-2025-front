@@ -105,6 +105,7 @@ export class TransactionBottomSheet implements OnInit {
 
   toggleTransactionType(type: 'income' | 'expense'): void {
     this.transactionType = type;
+    this.category = null; // Reset category when switching type
     this.loadData();
   }
 

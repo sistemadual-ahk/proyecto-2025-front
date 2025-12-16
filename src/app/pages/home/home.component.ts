@@ -172,6 +172,7 @@ export class HomeComponent implements OnInit, OnDestroy {
           this.operaciones = this.filterOperacionesByMonth(op, this.currentViewDate);
           this.calculateStats();
           this.loadRecentMovements();
+          this.mapBilleterasToCards();
         },
         error: (error) => {
           console.error('Error al cargar egresos:', error);
@@ -326,7 +327,15 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   viewAllMovements() {
-    this.router.navigate(['/activity']);
+    const billeteraActual = this.billeteras[this.currentIndex];
+    const queryParams: any = {};
+    
+    // Si hay una billetera seleccionada y no es la General (id '0'), filtrar por ella
+    if (billeteraActual && billeteraActual.id !== '0') {
+      queryParams.walletId = billeteraActual.id;
+    }
+    
+    this.router.navigate(['/activity'], { queryParams });
   }
 
   // Métodos para botones inferiores
@@ -502,12 +511,31 @@ export class HomeComponent implements OnInit, OnDestroy {
         background = billetera.color;
       }
 
+      // Calcular balance mensual
+      let monthlyBalance = 0;
+      let operacionesBilletera: Operacion[] = [];
+
+      if (billetera.id === '0') {
+         operacionesBilletera = this.operaciones;
+      } else {
+         operacionesBilletera = this.operaciones.filter(op => {
+            const billeteraId = typeof op.billetera === 'object' && op.billetera !== null
+              ? (op.billetera as any).id || (op.billetera as any)._id
+              : op.billetera;
+            return billeteraId === billetera.id?.toString() || op.billeteraId === billetera.id?.toString();
+         });
+      }
+
+      const ingresos = operacionesBilletera.filter(op => op.tipo === 'Ingreso' || op.tipo === 'income').reduce((sum, op) => sum + op.monto, 0);
+      const egresos = operacionesBilletera.filter(op => op.tipo === 'Egreso' || op.tipo === 'expense').reduce((sum, op) => sum + op.monto, 0);
+      monthlyBalance = ingresos - egresos;
+
       return {
         typeLabel: billetera.nombre,
         icon: icon,
-        number: billetera.nombre,
-        holder: walletCurrency,
-        balance: `$${billetera.balance.toLocaleString('es-ES')}`,
+        number: `Total: $${billetera.balance.toLocaleString('es-ES')}`,
+        holder: 'Balance Mensual',
+        balance: `$${monthlyBalance.toLocaleString('es-ES')}`,
         background: background,
         isGeneral: billetera.id === '0', // Marcar si es la billetera General
       };

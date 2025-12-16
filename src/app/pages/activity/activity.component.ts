@@ -1,14 +1,17 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { RouterModule, Router } from '@angular/router';
+import { RouterModule, Router, ActivatedRoute } from '@angular/router';
 import { SidebarComponent } from '../../components/sidebar/sidebar.component';
 import { PageTitleComponent } from '../../components/page-title/page-title.component';
 import { Subscription } from 'rxjs';
 import { OperacionService } from '../../services/operacion.service';
 import { Operacion } from '../../../models/operacion.model';
+import { BilleteraService } from '../../services/billetera.service';
+import { Billetera } from '../../../models/billetera.model';
 import { formatDate } from '../../utils/formatDate';
 import { EditOperationModal } from '../../components/edit-operation-modal/edit-operation-modal.component';
+import { MatSelectModule } from '@angular/material/select';
 
 type OperacionVista = Operacion & {
   categoriaNombre: string;
@@ -25,7 +28,8 @@ type OperacionVista = Operacion & {
     FormsModule, 
     SidebarComponent, 
     PageTitleComponent,
-    EditOperationModal
+    EditOperationModal,
+    MatSelectModule
   ],
   templateUrl: './activity.component.html',
   styleUrl: './activity.component.scss',
@@ -34,7 +38,9 @@ type OperacionVista = Operacion & {
 export class ActivityComponent implements OnInit, OnDestroy {
   constructor(
     private router: Router,
-    private operacionService: OperacionService
+    private route: ActivatedRoute,
+    private operacionService: OperacionService,
+    private billeteraService: BilleteraService
   ) { }
 
   // Estado del menú
@@ -49,13 +55,36 @@ export class ActivityComponent implements OnInit, OnDestroy {
   //input  
   searchTerm: string = '';
   
+  // Filtros
+  filterType: 'all' | 'income' | 'expense' = 'all';
+  filterTime: 'historic' | 'month' | 'week' = 'month';
+  filterWalletId: string = 'all';
+  wallets: Billetera[] = [];
+
+  // Paginación
+  itemsToShow: number = 20;
+  itemsIncrement: number = 20;
+  isLoadingMore: boolean = false;
+  hasMoreItems: boolean = true;
+  private filteredOperaciones: OperacionVista[] = [];
+
   // Modal de edición
   showEditModal = false;
   selectedOperacion: OperacionVista | null = null;
 
 
   ngOnInit(): void {
-    this.loadOperaciones();
+    this.loadWallets();
+    
+    // Leer parámetros de consulta para filtro inicial
+    this.subscription.add(
+      this.route.queryParams.subscribe(params => {
+        if (params['walletId']) {
+          this.filterWalletId = params['walletId'];
+        }
+        this.loadOperaciones();
+      })
+    );
   }
 
   ngOnDestroy(): void {
@@ -63,6 +92,16 @@ export class ActivityComponent implements OnInit, OnDestroy {
   }
   private allOperaciones: OperacionVista[] = [];
 
+  private loadWallets(): void {
+    this.subscription.add(
+      this.billeteraService.getBilleteras().subscribe({
+        next: (wallets) => {
+          this.wallets = wallets;
+        },
+        error: (err) => console.error('Error loading wallets', err)
+      })
+    );
+  }
 
   private loadOperaciones(): void {
     this.subscription.add(
@@ -75,8 +114,8 @@ export class ActivityComponent implements OnInit, OnDestroy {
             .slice()
             .sort((a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime());
 
-          this.allOperaciones = ordenadas; // útil si usás búsqueda
-          this.groupedOperaciones = this.groupOperacionesByDate(ordenadas);
+          this.allOperaciones = ordenadas; 
+          this.applyFilters();
         },
         error: (error) => {
           console.error('Error al cargar operaciones:', error);
@@ -85,27 +124,81 @@ export class ActivityComponent implements OnInit, OnDestroy {
     );
   }
 
-
-
   onSearch(): void {
-    const term = this.searchTerm.toLowerCase().trim();
-
-    if (!term) {
-      this.groupedOperaciones = this.groupOperacionesByDate(this.allOperaciones);
-      return;
-    }
-
-
-    const filtradas = this.allOperaciones.filter(op =>
-      (op.descripcion ?? '').toLowerCase().includes(term) ||
-      (op.categoriaNombre ?? '').toLowerCase().includes(term)
-    );
-
-
-    this.groupedOperaciones = this.groupOperacionesByDate(filtradas);
+    this.applyFilters();
   }
 
+  onFilterChange(): void {
+    this.applyFilters();
+  }
 
+  applyFilters(): void {
+    let filtered = this.allOperaciones;
+
+    // 1. Filtro de búsqueda
+    const term = this.searchTerm.toLowerCase().trim();
+    if (term) {
+      filtered = filtered.filter(op =>
+        (op.descripcion ?? '').toLowerCase().includes(term) ||
+        (op.categoriaNombre ?? '').toLowerCase().includes(term)
+      );
+    }
+
+    // 2. Filtro de tipo
+    if (this.filterType !== 'all') {
+      const typeMap: Record<string, string> = {
+        'income': 'Ingreso',
+        'expense': 'Egreso'
+      };
+      // Manejar tanto 'Ingreso'/'Egreso' como 'income'/'expense'
+      filtered = filtered.filter(op => {
+        const opType = op.tipo === 'income' ? 'Ingreso' : (op.tipo === 'expense' ? 'Egreso' : op.tipo);
+        return opType === typeMap[this.filterType];
+      });
+    }
+
+    // 3. Filtro de tiempo
+    const now = new Date();
+    if (this.filterTime === 'week') {
+      const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+      filtered = filtered.filter(op => new Date(op.fecha) >= oneWeekAgo);
+    } else if (this.filterTime === 'month') {
+      const oneMonthAgo = new Date(now.getFullYear(), now.getMonth() - 1, now.getDate());
+      filtered = filtered.filter(op => new Date(op.fecha) >= oneMonthAgo);
+    }
+
+    // 4. Filtro de billetera
+    if (this.filterWalletId !== 'all') {
+      filtered = filtered.filter(op => {
+        const walletId = typeof op.billetera === 'object' && op.billetera !== null
+          ? (op.billetera as any).id || (op.billetera as any)._id
+          : op.billetera;
+        return walletId === this.filterWalletId || op.billeteraId === this.filterWalletId;
+      });
+    }
+
+    this.filteredOperaciones = filtered;
+    this.itemsToShow = this.itemsIncrement; // Reset pagination
+    this.updateGroupedOperaciones();
+  }
+
+  loadMore(): void {
+    if (this.isLoadingMore || !this.hasMoreItems) return;
+    
+    this.isLoadingMore = true;
+    // Simular carga para UX
+    setTimeout(() => {
+      this.itemsToShow += this.itemsIncrement;
+      this.updateGroupedOperaciones();
+      this.isLoadingMore = false;
+    }, 500);
+  }
+
+  private updateGroupedOperaciones(): void {
+    const visibleOps = this.filteredOperaciones.slice(0, this.itemsToShow);
+    this.hasMoreItems = this.itemsToShow < this.filteredOperaciones.length;
+    this.groupedOperaciones = this.groupOperacionesByDate(visibleOps);
+  }
 
   private groupOperacionesByDate(
     operaciones: OperacionVista[]
