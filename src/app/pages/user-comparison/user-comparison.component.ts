@@ -25,8 +25,8 @@ interface UserComparisonData {
   };
   categorias: CategoryData[];
   totalOperaciones: number;
-  primeraFecha: string | null;
-  ultimaFecha: string | null;
+  primeraFecha: string;
+  ultimaFecha: string;
 }
 
 @Component({
@@ -47,8 +47,7 @@ export class UserComparisonComponent implements OnInit {
     sueldo: false,
     profesion: {
       selected: false,
-      value: '', // 'mi_profesion' o nombre de profesión específica
-      useMyProfession: false
+      value: '' // Si es la profesión del usuario actual, se usa currentUserProfesion
     },
     ubicacion: {
       selected: false,
@@ -103,10 +102,6 @@ private loadUserData(): void {
           localidad: userData.ubicacion.localidad || ''
         };
       }
-      console.debug('UserComparison: loaded userData', {
-        profesion: this.currentUserProfesion,
-        ubicacion: this.currentUserUbicacion
-      });
     },
     error: (err) => {
       console.error('Error al cargar datos del usuario', err);
@@ -178,101 +173,12 @@ private loadUserData(): void {
     });
   }
 
-  private loadComparisonData(payload?: any): void {
-    if (!payload) {
-      // No se recibió payload — no intentamos usar datos hardcodeados.
-      console.warn('No se proporcionó payload para la comparación.');
-      this.loading = false;
-      return;
-    }
-
-    // Helper para mapear usuario backend a la interfaz local
-    const mapBackendUser = (u: any): UserComparisonData => ({
-      name: u.name || u.nombre || '',
-      sueldo: u.sueldo ?? 0,
-      profesion: u.profesion || '',
-      estadoCivil: u.estadoCivil || u.estado_civil || '',
-      ubicacion: {
-        provincia: u.ubicacion?.provincia || '',
-        municipio: u.ubicacion?.municipio || '',
-        localidad: u.ubicacion?.localidad || '',
-      },
-      categorias: Array.isArray(u.categorias)
-        ? u.categorias.map((c: any) => ({ name: c.nombre || c.name || '', total: c.montoTotal ?? c.total ?? 0 }))
-        : [],
-      totalOperaciones: u.totalOperaciones ?? u.total_operaciones ?? 0,
-      primeraFecha: u.primeraFechaMes ?? u.primeraFecha ?? null,
-      ultimaFecha: u.ultimaFechaMes ?? u.ultimaFecha ?? null,
-    } as UserComparisonData);
-
-    // Endpoint backend: /usuarios/comparar (API base takes care of /api prefix)
-    // Use GET and send criteria as a JSON-encoded query param
-    // Ignorar criterios por ahora: siempre llamar GET /usuarios/comparar sin query params
-    // Use the exact route registered in the backend router: "/comparar/"
-    this.api.get<any>('/usuarios/comparar/').subscribe({
-      next: (res) => {
-        // ApiService ya devuelve response.data, se espera { usuarios: [ ... ] }
-        if (!res) {
-          this.loading = false;
-          return;
-        }
-
-        const usuarios = res.usuarios || (Array.isArray(res) ? res : null);
-
-        if (Array.isArray(usuarios) && usuarios.length >= 1) {
-          this.currentUser = mapBackendUser(usuarios[0]);
-          if (usuarios.length >= 2) {
-            this.comparedUser = mapBackendUser(usuarios[1]);
-          } else if (this.currentUserData) {
-            this.comparedUser = {
-              sueldo: this.currentUserData.sueldo || 0,
-              profesion: this.currentUserProfesion,
-              estadoCivil: this.currentUserData.estadoCivil || '',
-              ubicacion: this.currentUserUbicacion || { provincia: '', municipio: '', localidad: '' },
-              categorias: [],
-              totalOperaciones: 0,
-              primeraFecha: '',
-              ultimaFecha: ''
-            } as any;
-          }
-        } else if (Array.isArray(res) && res.length >= 2) {
-          this.currentUser = mapBackendUser(res[0]);
-          this.comparedUser = mapBackendUser(res[1]);
-        } else {
-          // Forma inesperada: intentar mapear el objeto recibido
-          try {
-            this.comparedUser = mapBackendUser(res);
-            if (!this.currentUser && this.currentUserData) {
-              this.currentUser = {
-                sueldo: this.currentUserData.sueldo || 0,
-                profesion: this.currentUserProfesion,
-                estadoCivil: this.currentUserData.estadoCivil || '',
-                ubicacion: this.currentUserUbicacion || { provincia: '', municipio: '', localidad: '' },
-                categorias: [],
-                totalOperaciones: 0,
-                primeraFecha: '',
-                ultimaFecha: ''
-              } as any;
-            }
-          } catch (e) {
-            console.error('Respuesta inesperada del backend para comparación', res);
-          }
-        }
-
-        this.loading = false;
-      },
-      error: (err) => {
-        console.error('Error al obtener comparación desde backend', err);
-        this.loading = false;
-      }
-    });
-  }
 
   goBack(): void {
     this.router.navigate(['/home']);
   }
 
-  formatDate(dateString: string | null): string {
+  formatDate(dateString: string): string {
     if (!dateString) return 'N/A';
     const date = new Date(dateString);
     return date.toLocaleDateString('es-AR', {
@@ -290,7 +196,6 @@ private loadUserData(): void {
       this.showProfesionDropdown = this.comparisonCriteria.profesion.selected;
       if (!this.comparisonCriteria.profesion.selected) {
         this.comparisonCriteria.profesion.value = '';
-        this.comparisonCriteria.profesion.useMyProfession = false;
       }
     } else if (criterion === 'ubicacion') {
       this.comparisonCriteria.ubicacion.selected = !this.comparisonCriteria.ubicacion.selected;
@@ -311,7 +216,6 @@ private loadUserData(): void {
     this.showProfesionDropdown = value;
     if (!value) {
       this.comparisonCriteria.profesion.value = '';
-      this.comparisonCriteria.profesion.useMyProfession = false;
     }
   }
 
@@ -330,7 +234,10 @@ private loadUserData(): void {
 
   onProfesionSelect(value: string): void {
     this.comparisonCriteria.profesion.value = value;
-    this.comparisonCriteria.profesion.useMyProfession = false;
+    // Si selecciona "Mi misma profesión", usar currentUserProfesion
+    if (value === this.currentUserProfesion) {
+      this.comparisonCriteria.profesion.value = this.currentUserProfesion;
+    }
   }
 
   onUseMyLocation(): void {
@@ -345,15 +252,6 @@ private loadUserData(): void {
         this.setLocalidadesFromMunicipio(this.currentUserUbicacion.municipio);
       }
     }
-  }
-
-  onUseMyProfession(): void {
-    this.comparisonCriteria.profesion.useMyProfession = true;
-    if (this.currentUserProfesion) {
-      this.comparisonCriteria.profesion.value = this.currentUserProfesion;
-    }
-    this.showProfesionDropdown = true;
-    this.comparisonCriteria.profesion.selected = true;
   }
 
   onProvinciaChange(provinciaNombre: string): void {
@@ -416,31 +314,104 @@ private loadUserData(): void {
       return;
     }
     
+    // Preparar payload para el backend
+    const payload = this.prepareComparisonPayload();
+    console.log('Payload JSON para backend:', JSON.stringify(payload, null, 2));
+    console.log('Payload objeto:', payload);
+    
     this.showCriteriaSelection = false;
     this.loading = true;
-    // Construir payload para backend
-    const payload: any = {
-      criterios: {
-        sueldo: this.comparisonCriteria.sueldo,
-        profesion: null,
-        ubicacion: null
+    
+    // Llamar al endpoint del backend (GET con body)
+    // getWithBody ya devuelve response.data, así que data es directamente el objeto data de la respuesta
+    this.api.getWithBody<any>('/usuarios/compararporcriterios', payload).subscribe({
+      next: (data) => {
+        console.log('Respuesta completa del servidor (data):', data);
+        console.log('Usuario actual:', data.usuarioActual);
+        console.log('Comparación:', data.comparacion);
+        
+        // Mapear datos del usuario actual
+        if (data.usuarioActual) {
+          this.currentUser = this.mapUserData(data.usuarioActual, true);
+          console.log('Usuario actual mapeado:', this.currentUser);
+        }
+        
+        // Mapear datos de comparación (array de usuarios)
+        if (data.comparacion?.usuarios && Array.isArray(data.comparacion.usuarios)) {
+          const usuarios = data.comparacion.usuarios;
+          console.log('Usuarios en comparación:', usuarios);
+          
+          // Si hay usuarios en el array, el primero es el actual (si no se mapeó arriba) o todos son comparados
+          if (usuarios.length > 0) {
+            // Si no mapeamos usuarioActual arriba, el primero del array es el actual
+            if (!this.currentUser) {
+              this.currentUser = this.mapUserData(usuarios[0], true);
+              console.log('Usuario actual desde array:', this.currentUser);
+            }
+            
+            // El segundo usuario del array es el comparado (o el primero si ya mapeamos el actual)
+            if (usuarios.length > 1) {
+              this.comparedUser = this.mapUserData(usuarios[1], false);
+            } else if (usuarios.length === 1 && this.currentUser) {
+              // Si solo hay uno y ya mapeamos el actual, este es el comparado
+              this.comparedUser = this.mapUserData(usuarios[0], false);
+            }
+            console.log('Usuario comparado mapeado:', this.comparedUser);
+          }
+        }
+        
+        this.loading = false;
+      },
+      error: (err) => {
+        console.error('Error al comparar usuarios', err);
+        console.error('Error completo:', JSON.stringify(err, null, 2));
+        console.error('Payload enviado:', JSON.stringify(payload, null, 2));
+        this.loading = false;
+        // TODO: Mostrar mensaje de error al usuario
+        // Revertir a la selección de criterios si hay error
+        this.showCriteriaSelection = true;
       }
-    };
+    });
+  }
 
-    if (this.comparisonCriteria.profesion.selected) {
-      if (this.comparisonCriteria.profesion.useMyProfession) {
-        payload.criterios.profesion = { useMyProfession: true, value: this.currentUserProfesion };
-      } else {
-        payload.criterios.profesion = { useMyProfession: false, value: this.comparisonCriteria.profesion.value };
-      }
+  /**
+   * Prepara el payload para enviar al backend
+   * Solo incluye los campos que fueron seleccionados
+   * Formato: { sueldo: true, profesion: "valor", ubicacion: {...}, mes: X, anio: Y }
+   */
+  private prepareComparisonPayload(): any {
+    const payload: any = {};
+    const now = new Date();
+    const mes = now.getMonth() + 1; // getMonth() devuelve 0-11
+    const anio = now.getFullYear();
+
+    // Sueldo: si está seleccionado, enviar true
+    if (this.comparisonCriteria.sueldo) {
+      payload.sueldo = true;
     }
 
+    // Profesión: si está seleccionado y tiene valor
+    if (this.comparisonCriteria.profesion.selected && this.comparisonCriteria.profesion.value) {
+      // El valor ya viene del dropdown (puede ser currentUserProfesion o otra profesión)
+      payload.profesion = this.comparisonCriteria.profesion.value;
+    }
+
+    // Ubicación: si está seleccionado
     if (this.comparisonCriteria.ubicacion.selected) {
-      if (this.comparisonCriteria.ubicacion.useMyLocation) {
-        payload.criterios.ubicacion = { useMyLocation: true, value: this.currentUserUbicacion };
-      } else {
-        payload.criterios.ubicacion = {
-          useMyLocation: false,
+      if (this.comparisonCriteria.ubicacion.useMyLocation && this.currentUserUbicacion) {
+        // Usar ubicación del usuario actual
+        payload.ubicacion = {
+          provincia: this.currentUserUbicacion.provincia,
+          municipio: this.currentUserUbicacion.municipio,
+          localidad: this.currentUserUbicacion.localidad
+        };
+      } else if (
+        this.comparisonCriteria.ubicacion.provincia &&
+        this.comparisonCriteria.ubicacion.municipio &&
+        this.comparisonCriteria.ubicacion.localidad
+      ) {
+        // Usar ubicación seleccionada manualmente
+        payload.ubicacion = {
           provincia: this.comparisonCriteria.ubicacion.provincia,
           municipio: this.comparisonCriteria.ubicacion.municipio,
           localidad: this.comparisonCriteria.ubicacion.localidad
@@ -448,8 +419,41 @@ private loadUserData(): void {
       }
     }
 
-    // Intentamos llamar al backend para obtener la comparativa. Si falla, usamos datos de ejemplo.
-    this.loadComparisonData(payload);
+    // Siempre incluir mes y año
+    payload.mes = mes;
+    payload.anio = anio;
+
+    return payload;
+  }
+
+  /**
+   * Mapea los datos del usuario recibidos del backend al formato esperado
+   */
+  private mapUserData(userData: any, isCurrentUser: boolean = false): UserComparisonData {
+    // Mapear categorías del formato del backend
+    const categorias: CategoryData[] = [];
+    if (userData.categorias && Array.isArray(userData.categorias)) {
+      categorias.push(...userData.categorias.map((cat: any) => ({
+        name: cat.nombre || cat.name || '',
+        total: cat.montoTotal || cat.total || 0
+      })));
+    }
+
+    return {
+      name: isCurrentUser ? userData.name : undefined, // Solo el usuario actual tiene nombre
+      sueldo: userData.sueldo || 0,
+      profesion: userData.profesion || '',
+      estadoCivil: userData.estadoCivil || userData.estado_civil || '',
+      ubicacion: {
+        provincia: userData.ubicacion?.provincia || '',
+        municipio: userData.ubicacion?.municipio || '',
+        localidad: userData.ubicacion?.localidad || ''
+      },
+      categorias: categorias,
+      totalOperaciones: userData.totalOperaciones || 0,
+      primeraFecha: userData.primeraFechaMes || userData.primera_fecha_mes || '',
+      ultimaFecha: userData.ultimaFechaMes || userData.ultima_fecha_mes || ''
+    };
   }
 
   resetComparison(): void {
@@ -464,8 +468,7 @@ private loadUserData(): void {
       sueldo: false,
       profesion: {
         selected: false,
-        value: '',
-        useMyProfession: false
+        value: ''
       },
       ubicacion: {
         selected: false,

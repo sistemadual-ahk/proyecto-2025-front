@@ -38,25 +38,15 @@
             </label>
             
             <div class="criterion-dropdown" *ngIf="showProfesionDropdown && comparisonCriteria.profesion.selected">
-                  <button
-                    class="use-my-location-btn"
-                    (click)="onUseMyProfession()"
-                    [class.active]="comparisonCriteria.profesion.useMyProfession"
-                    [disabled]="!currentUserProfesion"
-                    title="Usa tu profesión guardada"
-                    style="margin-bottom:12px;"
-                  >
-                    <i class="mdi mdi-briefcase-check"></i>
-                    <span *ngIf="currentUserProfesion">Usar mi profesión ({{ currentUserProfesion }})</span>
-                    <span *ngIf="!currentUserProfesion">Usar mi profesión (sin datos)</span>
-                  </button>
-
               <mat-select 
                 class="profesion-select"
                 [(ngModel)]="comparisonCriteria.profesion.value"
                 (ngModelChange)="onProfesionSelect($event)"
                 placeholder="Selecciona una profesión"
               >
+                <mat-option [value]="currentUserProfesion" *ngIf="currentUserProfesion">
+                  Mi misma profesión ({{ currentUserProfesion }})
+                </mat-option>
                 <mat-option 
                   *ngFor="let prof of profesionOptions" 
                   [value]="prof"

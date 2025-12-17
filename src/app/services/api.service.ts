@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
@@ -39,6 +39,25 @@ export class ApiService {
   create<T>(route: string, data: any): Observable<T> {
     return this.http
       .post<ApiResponse<T>>(`${this.API_BASE_URL}${route}`, data)
+      .pipe(map((response) => response.data));
+  }
+
+  post<T>(route: string, data: any): Observable<T> {
+    return this.http
+      .post<ApiResponse<T>>(`${this.API_BASE_URL}${route}`, data)
+      .pipe(map((response) => response.data));
+  }
+
+  getWithBody<T>(route: string, data: any): Observable<T> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json'
+    });
+    
+    return this.http
+      .request<ApiResponse<T>>('GET', `${this.API_BASE_URL}${route}`, {
+        body: data,
+        headers: headers
+      })
       .pipe(map((response) => response.data));
   }
 
