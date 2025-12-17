@@ -33,7 +33,12 @@
         <button class="item" (click)="openTelegramBot()">
           <div class="left">
             <i class="mdi mdi-robot icon"></i>
-            <span class="label">Bot de Telegram</span>
+            <div class="text-content">
+              <span class="label">Bot de Telegram</span>
+              <span class="status" [class.connected]="user?.telegramId">
+                {{ user?.telegramId ? 'Conectado' : 'No conectado' }}
+              </span>
+            </div>
           </div>
           <i class="mdi mdi-open-in-new more"></i>
         </button>

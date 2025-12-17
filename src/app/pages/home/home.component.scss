@@ -205,6 +205,10 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 16px;
+
+  &.general-header {
+    margin-bottom: 7px;
+  }
 }
 
 .card-logo {
@@ -218,13 +222,23 @@
   font-size: 1.1rem;
   color: white;
   overflow: hidden;
+
+  &.has-logo {
+    width: 90px;
+    height: 40px;
+    background: transparent;
+    border-radius: 0;
+    padding: 0;
+    justify-content: flex-start;
+  }
 }
 
 .gastify-logo {
   width: 100%;
   height: 100%;
   object-fit: contain;
-  padding: 4px;
+  padding: 0;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.4));
 }
 
 .card-type {

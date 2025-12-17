@@ -1,7 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { PageTitleComponent } from '../../components/page-title/page-title.component';
+import { UserService } from '../../services/user.service';
+import { UserDTO } from '../../../models/user.model';
 
 @Component({
   selector: 'app-settings',
@@ -13,8 +15,19 @@ import { PageTitleComponent } from '../../components/page-title/page-title.compo
   templateUrl: './settings.component.html',
   styleUrl: './settings.components.scss',
 })
-export class SettingsComponent {
-  constructor(private router: Router) {}
+export class SettingsComponent implements OnInit {
+  user: UserDTO | null = null;
+
+  constructor(
+    private router: Router,
+    private userService: UserService
+  ) {}
+
+  ngOnInit(): void {
+    this.userService.userData$.subscribe(user => {
+      this.user = user;
+    });
+  }
 
   goBack(): void {
     // Desde settings principal, volvemos al home
@@ -44,7 +57,7 @@ export class SettingsComponent {
 
   openTelegramBot(): void {
     // TODO: Configurar el link del bot de Telegram
-    const telegramBotUrl = 'linkAlBotDeTelegram'; // Reemplazar con tu bot
+    const telegramBotUrl = 'https://web.telegram.org/a/#7579525505'; // Reemplazar con tu bot
     window.open(telegramBotUrl, '_blank');
   }
 

@@ -15,6 +15,7 @@ import { SecuritySettingsComponent } from './pages/settings/security/security-se
 import { PinSettingsComponent } from './pages/settings/security/pin/pin-settings.component';
 import { DataPoliciesComponent } from './pages/settings/security/data/data-policies.component';
 import { UserComparisonComponent } from './pages/user-comparison/user-comparison.component';
+import { RecurringOperationsComponent } from './pages/recurring-operations/recurring-operations.component';
 
 export const routes: Routes = [
   // Rutas públicas (sin autenticación)
@@ -35,6 +36,7 @@ export const routes: Routes = [
   { path: 'settings/security/data', component: DataPoliciesComponent, canActivate: [AuthGuard] },
   { path: 'categories', component: CategoriesComponent, canActivate: [AuthGuard] },
   { path: 'user-comparison', component: UserComparisonComponent, canActivate: [AuthGuard] },
+  { path: 'recurring-operations', component: RecurringOperationsComponent, canActivate: [AuthGuard] },
 
   // Ruta wildcard - redirige al login si la ruta no existe
   { path: '**', redirectTo: '' },

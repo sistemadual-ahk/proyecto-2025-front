@@ -7,16 +7,20 @@ import {
   OnInit,
   Output,
   SimpleChanges,
+  inject,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { MatSelectModule } from '@angular/material/select';
 import { Objetivo } from '../../../models/objetivo.model';
 import { Operacion } from '../../../models/operacion.model';
+import { BilleteraService } from '../../services/billetera.service';
+import { Billetera } from '../../../models/billetera.model';
 
 @Component({
   selector: 'app-goal-operations-modal',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, MatSelectModule],
   templateUrl: './goal-operations-modal.component.html',
   styleUrl: './goal-operations-modal.component.scss',
 })
@@ -27,13 +31,22 @@ export class GoalOperationsModalComponent implements OnInit, OnChanges {
 
   @HostBinding('class.closing') isClosing = false;
 
+  private billeteraService = inject(BilleteraService);
   operaciones: Operacion[] = [];
+  billeteras: Billetera[] = [];
   editingIndex: number | null = null;
 
   ngOnInit(): void {
     if (this.objetivo) {
       this.patchFromObjetivo(this.objetivo);
     }
+    this.loadBilleteras();
+  }
+
+  private loadBilleteras(): void {
+    this.billeteraService.getBilleteras().subscribe((data) => {
+      this.billeteras = data.filter(b => b.id !== '0'); // Excluir general si es necesario
+    });
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -55,7 +68,8 @@ export class GoalOperationsModalComponent implements OnInit, OnChanges {
     return this.operaciones.reduce((total, op) => {
       if (op._id || op.id) return total;
       const monto = op.monto || 0;
-      if (op.tipo === 'Egreso' || op.tipo === 'expense') {
+      // Ingreso suma al objetivo, Egreso resta del objetivo
+      if (op.tipo === 'Ingreso' || op.tipo === 'income') {
         return total + monto;
       }
       return total - monto;
@@ -112,11 +126,16 @@ export class GoalOperationsModalComponent implements OnInit, OnChanges {
     const day = String(argentinaTime.getDate()).padStart(2, '0');
     const localDateString = `${year}-${month}-${day}`;
     
+    // Billetera por defecto (la primera o la marcada como default)
+    const defaultWallet = this.billeteras.find(b => b.isDefault) || this.billeteras[0];
+
     const newOperacion: Operacion = {
       tipo: defaultTipo,
       monto: 0,
-      descripcion: this.buildDefaultDescripcion(defaultTipo),
+      descripcion: '',
       fecha: localDateString,
+      billeteraId: defaultWallet?.id,
+      billetera: defaultWallet?.id // Para compatibilidad
     };
     this.operaciones.push(newOperacion);
     this.editingIndex = this.operaciones.length - 1;

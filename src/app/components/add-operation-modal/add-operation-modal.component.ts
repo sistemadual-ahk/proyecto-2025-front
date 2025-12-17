@@ -100,6 +100,12 @@ export class TransactionBottomSheet implements OnInit {
         .sort((a, b) => a.nombre.localeCompare(b.nombre));
       console.log('Billeteras cargadas:', this.billeteras);
 
+      // Seleccionar billetera predeterminada
+      if (this.billeteras.length > 0) {
+        const defaultWallet = this.billeteras.find(b => b.isDefault);
+        this.wallet = defaultWallet || this.billeteras[0];
+      }
+
       if (this.billeteras.length === 0) {
         console.warn('⚠️ No hay billeteras disponibles. Crea una primero.');
       }

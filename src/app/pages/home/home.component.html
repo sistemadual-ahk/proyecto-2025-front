@@ -54,8 +54,8 @@
         [style.background]="card.background"
         [style.transform]="getCardTransform(i)"
       >
-        <div class="card-header">
-          <div class="card-logo">
+        <div class="card-header" [class.general-header]="card.isGeneral">
+          <div class="card-logo" [class.has-logo]="card.isGeneral">
             <img *ngIf="card.isGeneral" src="assets/images/gastifyLogo.png" alt="Gastify" class="gastify-logo">
             <i *ngIf="!card.isGeneral" class="mdi" [ngClass]="card.icon"></i>
           </div>

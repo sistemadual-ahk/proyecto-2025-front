@@ -94,14 +94,32 @@
             <div class="tipo-toggle" (click)="toggleTipo(operacion); $event.stopPropagation()">
               <div class="toggle-option" [class.active]="operacion.tipo === 'Ingreso'">
                 <i class="mdi mdi-arrow-down"></i>
-                Agregar monto
+                Agregar Ingreso
               </div>
               <div class="toggle-option" [class.active]="operacion.tipo === 'Egreso'">
                 <i class="mdi mdi-arrow-up"></i>
-                Sacar monto
+                Agregar Gasto
               </div>
             </div>
           </div>
+          
+          <div class="edit-row">
+            <div class="select-wrapper mat-select-wrapper">
+              <i class="mdi mdi-wallet-outline select-icon"></i>
+              <mat-select 
+                [(ngModel)]="operacion.billeteraId" 
+                placeholder="Seleccionar billetera"
+                class="custom-mat-select"
+                panelClass="custom-select-panel"
+                (click)="$event.stopPropagation()"
+              >
+                <mat-option *ngFor="let wallet of billeteras" [value]="wallet.id">
+                  {{ wallet.nombre }}
+                </mat-option>
+              </mat-select>
+            </div>
+          </div>
+
           <div class="edit-row">
             <input
               type="text"

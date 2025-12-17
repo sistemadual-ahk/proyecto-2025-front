@@ -36,10 +36,6 @@
         <i class="mdi mdi-home"></i>
         <span>Inicio</span>
       </a>
-      <a routerLink="/activity" routerLinkActive="active" class="sidebar-nav-item" (click)="closeMenu()">
-        <i class="mdi mdi-history"></i>
-        <span>Actividad</span>
-      </a>
       <a
         routerLink="/wallets"
         routerLinkActive="active"
@@ -63,6 +59,19 @@
       <a routerLink="/categories" routerLinkActive="active" class="sidebar-nav-item" (click)="closeMenu()">
         <i class="mdi mdi-tag"></i>
         <span>Categorías</span>
+      </a>
+      <a routerLink="/activity" routerLinkActive="active" class="sidebar-nav-item" (click)="closeMenu()">
+        <i class="mdi mdi-history"></i>
+        <span>Actividad</span>
+      </a>
+      <a
+        routerLink="/recurring-operations"
+        routerLinkActive="active"
+        class="sidebar-nav-item"
+        (click)="closeMenu()"
+      >
+        <i class="mdi mdi-calendar-clock"></i>
+        <span>Recurrentes</span>
       </a>
       <a
         routerLink="/settings"

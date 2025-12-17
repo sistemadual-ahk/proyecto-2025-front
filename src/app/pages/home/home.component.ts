@@ -122,7 +122,7 @@ export class HomeComponent implements OnInit, OnDestroy {
             type: 'digital',
             balance: totalBalance,
             isDefault: true,
-            color: 'linear-gradient(135deg, #3dcd99, #2ba87a)',
+            color: 'linear-gradient(135deg, #3dcd99 0%, #2ba87a 50%, #1e7e5b 100%)',
             moneda: 'ARS',
             ingresoHistorico: billeteras.reduce((sum, b) => sum + (b.ingresoHistorico || 0), 0),
             gastoHistorico: billeteras.reduce((sum, b) => sum + (b.gastoHistorico || 0), 0)
@@ -154,7 +154,7 @@ export class HomeComponent implements OnInit, OnDestroy {
             type: 'digital',
             balance: 0,
             isDefault: true,
-            color: 'linear-gradient(135deg, #3dcd99, #2ba87a)',
+            color: 'linear-gradient(135deg, #3dcd99 0%, #2ba87a 50%, #1e7e5b 100%)',
             moneda: 'ARS',
             ingresoHistorico: 0,
             gastoHistorico: 0
