@@ -80,12 +80,15 @@
                   {{ operacion.descripcion }}
                                   </h3>
                 <p class="transaction-category">{{ operacion.categoriaNombre || 'Sin categor�a' }}</p>
-                <p class="transaction-time">{{ formatearFecha(operacion.fecha.toString()) }}</p>
+                <p class="transaction-wallet">{{ getBilleteraNombre(operacion) }}</p>
               </div>
 
               <div class="transaction-amount" [class.income]="operacion.tipo === 'Ingreso' || operacion.tipo === 'income'">
-                <span class="amount-sign">{{ operacion.tipo === 'Ingreso' || operacion.tipo === 'income' ? '+' : '-' }}</span>
-                ${{ operacion.monto.toLocaleString() }}
+                <div class="amount-value">
+                  <span class="amount-sign">{{ operacion.tipo === 'Ingreso' || operacion.tipo === 'income' ? '+' : '-' }}</span>
+                  ${{ operacion.monto.toLocaleString() }}
+                </div>
+                <div class="transaction-date">{{ formatearFecha(operacion.fecha.toString()) }}</div>
               </div>
             </div>
           </div>
@@ -121,4 +124,3 @@
   >
   </edit-operation-modal>
 </div>
-
