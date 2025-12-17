@@ -48,7 +48,7 @@
       <button
         type="button"
         class="add-operacion-btn"
-        (click)="addOperacion()"
+        (click)="addOperacion(); $event.stopPropagation()"
         aria-label="Agregar operación"
       >
         <i class="mdi mdi-plus"></i>
@@ -61,7 +61,7 @@
         class="operacion-item"
         *ngFor="let operacion of operaciones; let i = index"
         [class.editing]="editingIndex === i"
-        (click)="startEditOperacion(i)"
+        (click)="editingIndex !== i && startEditOperacion(i)"
       >
         <div class="operacion-content" *ngIf="editingIndex !== i">
           <div class="operacion-info">
@@ -91,10 +91,10 @@
           </div>
         </div>
 
-        <div class="operacion-edit-form" *ngIf="editingIndex === i">
+        <!-- ✅ IMPORTANTE: stopPropagation para que no re-dispare el click del item -->
+        <div class="operacion-edit-form" *ngIf="editingIndex === i" (click)="$event.stopPropagation()">
           <div class="edit-row tipo-toggle-row">
             <div class="tipo-toggle" (click)="toggleTipo(operacion); $event.stopPropagation()">
-              <!-- ✅ IZQUIERDA (como la imagen): "Agregar Ingreso" => tipo 'Egreso' -->
               <div
                 class="toggle-option"
                 [class.active]="operacion.tipo === 'Egreso' || operacion.tipo === 'expense'"
@@ -103,7 +103,6 @@
                 Agregar Ingreso
               </div>
 
-              <!-- ✅ DERECHA (como la imagen): "Agregar Gasto" => tipo 'Ingreso' -->
               <div
                 class="toggle-option"
                 [class.active]="operacion.tipo === 'Ingreso' || operacion.tipo === 'income'"
@@ -137,6 +136,7 @@
               class="edit-desc-input"
               [(ngModel)]="operacion.descripcion"
               placeholder="Descripción"
+              (click)="$event.stopPropagation()"
             />
           </div>
 
@@ -147,6 +147,7 @@
                 class="edit-date-input"
                 [(ngModel)]="operacion.fecha"
                 (change)="onDateChange(operacion)"
+                (click)="$event.stopPropagation()"
               />
               <i class="mdi mdi-calendar"></i>
             </div>
@@ -162,6 +163,7 @@
                 min="0"
                 step="0.01"
                 (focus)="onMontoFocus($event)"
+                (click)="$event.stopPropagation()"
               />
             </div>
           </div>

@@ -420,6 +420,8 @@ export class SavingGoalsComponent implements OnInit {
         monto: op.monto,
         tipo: op.tipo,
         descripcion: op.descripcion,
+        billeteraId: op.billeteraId,
+        fecha: op.fecha,
         categoriaId,
         objetivo: objetivo.id,
       };

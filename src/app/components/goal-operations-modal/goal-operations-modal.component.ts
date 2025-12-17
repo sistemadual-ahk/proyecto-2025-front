@@ -75,20 +75,8 @@ export class GoalOperationsModalComponent implements OnInit, OnChanges {
     this.billeteraService.getBilleteras().subscribe((data) => {
       this.billeteras = data.filter((b) => b.id !== '0');
 
-      // Si ya hay operaciones pendientes sin billetera/fecha -> set default
-      this.operaciones = this.operaciones.map((op) => {
-        const fixed: Operacion = { ...op };
-
-        if (!fixed.billeteraId) {
-          const def = this.billeteras.find((b) => b.isDefault) || this.billeteras[0];
-          fixed.billeteraId = def?.id;
-          (fixed as any).billetera = def?.id; // compat
-        }
-
-        if (!fixed.fecha) fixed.fecha = this.getTodayAR();
-
-        return fixed;
-      });
+      // ✅ normalizar billeteraId en operaciones ya existentes
+      this.operaciones = this.operaciones.map((op) => this.normalizeBilleteraId(op));
     });
   }
 
@@ -156,8 +144,8 @@ export class GoalOperationsModalComponent implements OnInit, OnChanges {
     const isEgreso = tipo === 'Egreso' || tipo === 'expense';
     const isIngreso = tipo === 'Ingreso' || tipo === 'income';
 
-    if (isEgreso) return +monto;   // ✅ aporta (sube objetivo)
-    if (isIngreso) return -monto;  // ✅ retira (baja objetivo)
+    if (isEgreso) return +monto;
+    if (isIngreso) return -monto;
 
     return -monto;
   }
@@ -199,10 +187,7 @@ export class GoalOperationsModalComponent implements OnInit, OnChanges {
     });
   }
 
-  /**
-   * ✅ OJO: se usa SOLO para UI (píldora + / - + colores)
-   * En tu pantalla, lo "verde / Ingreso" es el botón IZQ => tipo 'Egreso'
-   */
+  // ✅ para UI (píldora + / - + colores)
   isIngreso(operacion: Operacion): boolean {
     return operacion.tipo === 'Egreso' || operacion.tipo === 'expense';
   }
@@ -213,7 +198,6 @@ export class GoalOperationsModalComponent implements OnInit, OnChanges {
     this.clearUiMessage();
 
     const localDateString = this.getTodayAR();
-    const defaultWallet = this.billeteras.find((b) => b.isDefault) || this.billeteras[0];
 
     // ✅ default: botón IZQ (Agregar Ingreso) => tipo 'Egreso'
     const defaultTipo: Operacion['tipo'] = 'Egreso';
@@ -223,16 +207,20 @@ export class GoalOperationsModalComponent implements OnInit, OnChanges {
       monto: 0,
       descripcion: this.buildDefaultDescripcion(defaultTipo),
       fecha: localDateString,
-      billeteraId: defaultWallet?.id,
-      billetera: defaultWallet?.id as any,
+      billeteraId: undefined, // ✅ ahora la elige el usuario
     };
 
-    this.operaciones.push(newOperacion);
+    this.operaciones.push(this.normalizeBilleteraId(newOperacion));
     this.editingIndex = this.operaciones.length - 1;
   }
 
+  // ✅ FIX: no re-ejecutar si ya estás editando ese item (si no, se re-renderiza y no te deja tipear)
   startEditOperacion(index: number): void {
     this.clearUiMessage();
+
+    if (this.editingIndex === index) return;
+
+    this.operaciones[index] = this.normalizeBilleteraId(this.operaciones[index]!);
     this.editingIndex = index;
   }
 
@@ -256,9 +244,6 @@ export class GoalOperationsModalComponent implements OnInit, OnChanges {
     this.clearUiMessage();
   }
 
-  /**
-   * ✅ Toggle: IZQ = Egreso, DER = Ingreso (como pediste)
-   */
   toggleTipo(operacion: Operacion): void {
     this.clearUiMessage();
 
@@ -309,11 +294,6 @@ export class GoalOperationsModalComponent implements OnInit, OnChanges {
 
   // ===================== VALIDACIONES =====================
 
-  /**
-   * Reglas con esta pantalla:
-   * - tipo 'Egreso' (botón IZQ "Agregar Ingreso") => SUMA => cap a meta
-   * - tipo 'Ingreso' (botón DER "Agregar Gasto")  => RESTA => anti-negativo
-   */
   private validateAdjustAndMaybeBlock(
     index: number,
     opts: { autoAdjust: boolean; allowDeleteIfZeroRemaining: boolean }
@@ -337,8 +317,8 @@ export class GoalOperationsModalComponent implements OnInit, OnChanges {
     const tipo = op.tipo;
     const monto = Number(op.monto) || 0;
 
-    const isEgreso = tipo === 'Egreso' || tipo === 'expense';   // suma
-    const isIngreso = tipo === 'Ingreso' || tipo === 'income';  // resta
+    const isEgreso = tipo === 'Egreso' || tipo === 'expense';
+    const isIngreso = tipo === 'Ingreso' || tipo === 'income';
 
     const currentWithoutThis = base + deltaExcept;
 
@@ -389,7 +369,7 @@ export class GoalOperationsModalComponent implements OnInit, OnChanges {
 
     // 2) ANTI-NEGATIVO (cuando RESTA: Ingreso)
     if (isIngreso) {
-      const next = currentWithoutThis + this.goalDeltaFor(op); // resta
+      const next = currentWithoutThis + this.goalDeltaFor(op);
       if (next >= 0) return true;
 
       const max = Math.max(0, currentWithoutThis);
@@ -401,7 +381,6 @@ export class GoalOperationsModalComponent implements OnInit, OnChanges {
       return false;
     }
 
-    // fallback
     const next = currentWithoutThis + this.goalDeltaFor(op);
     if (next < 0) {
       const max = Math.max(0, currentWithoutThis);
@@ -465,7 +444,7 @@ export class GoalOperationsModalComponent implements OnInit, OnChanges {
     this.suggestedMonto = null;
   }
 
-  // ===================== PATCH / DEFAULT DESC =====================
+  // ===================== PATCH / DESC / NORMALIZE =====================
 
   private patchFromObjetivo(obj: Objetivo): void {
     this.operaciones = obj.operaciones
@@ -482,7 +461,7 @@ export class GoalOperationsModalComponent implements OnInit, OnChanges {
             operacion.fecha = this.getTodayAR();
           }
 
-          return operacion;
+          return this.normalizeBilleteraId(operacion);
         })
       : [];
 
@@ -492,11 +471,26 @@ export class GoalOperationsModalComponent implements OnInit, OnChanges {
 
   private buildDefaultDescripcion(tipo: Operacion['tipo']): string {
     const base = this.objetivo?.titulo?.trim() || 'Objetivo';
-
-    // Texto acorde a tus botones:
-    // Egreso (izq) = “Ingreso” al objetivo
-    // Ingreso (der) = “Gasto” del objetivo
     const sufijo = tipo === 'Egreso' || tipo === 'expense' ? 'Ingreso' : 'Gasto';
     return `${base} ${sufijo}`;
+  }
+
+  /**
+   * ✅ Asegura que operacion.billeteraId exista aunque el backend te devuelva billetera como objeto.
+   * - Si viene billeteraId => ok
+   * - Si viene billetera: { id | _id } => lo mapea a billeteraId
+   */
+  private normalizeBilleteraId(op: Operacion): Operacion {
+    const fixed: any = { ...op };
+
+    if (!fixed.billeteraId && fixed.billetera) {
+      fixed.billeteraId =
+        fixed.billetera.id ||
+        fixed.billetera._id ||
+        (typeof fixed.billetera === 'string' ? fixed.billetera : undefined);
+    }
+
+    // No setear default acá: el usuario elige
+    return fixed as Operacion;
   }
 }
