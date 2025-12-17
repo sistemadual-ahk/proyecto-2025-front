@@ -21,7 +21,7 @@ type WalletType = 'bank' | 'digital' | 'cash';
     MatSelectModule,
   ],
   templateUrl: './wallets.component.html',
-  styleUrl: './wallets.component.scss',
+  styleUrls: ['./wallets.component.scss'],
 })
 export class WalletsComponent implements OnInit {
   private subscription = new Subscription();

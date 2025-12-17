@@ -231,6 +231,22 @@ export class ActivityComponent implements OnInit, OnDestroy {
     return formatDate(dateString);
   }
 
+  getBilleteraNombre(operacion: OperacionVista): string {
+    if (typeof operacion.billetera === 'object' && operacion.billetera !== null) {
+      const nombre = (operacion.billetera as any).nombre;
+      if (nombre) return nombre;
+    }
+
+    const walletId = typeof operacion.billetera === 'object' && operacion.billetera !== null
+      ? (operacion.billetera as any).id || (operacion.billetera as any)._id
+      : operacion.billetera || operacion.billeteraId;
+
+    if (!walletId) return 'Sin billetera';
+
+    const wallet = this.wallets.find(w => w.id === walletId || (w as any)._id === walletId);
+    return wallet?.nombre || 'Sin billetera';
+  }
+
   goBack() {
     this.router.navigate(['/home']);
   }
