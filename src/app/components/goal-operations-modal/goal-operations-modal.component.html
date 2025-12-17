@@ -9,12 +9,7 @@
       Monto del objetivo
     </h2>
 
-    <button
-      class="save-btn"
-      type="button"
-      (click)="onSave()"
-      aria-label="Guardar operaciones"
-    >
+    <button class="save-btn" type="button" (click)="onSave()" aria-label="Guardar operaciones">
       <i class="mdi mdi-check"></i>
     </button>
   </div>
@@ -33,11 +28,11 @@
     <div class="amount-grid">
       <div class="amount-block">
         <span class="label">Acumulado</span>
-        <span class="value">${{ goal.montoActual.toLocaleString() }}</span>
+        <span class="value">${{ (goal.montoActual || 0).toLocaleString() }}</span>
       </div>
       <div class="amount-block">
         <span class="label">Meta</span>
-        <span class="value">${{ goal.montoObjetivo.toLocaleString() }}</span>
+        <span class="value">${{ (goal.montoObjetivo || 0).toLocaleString() }}</span>
       </div>
     </div>
   </div>
@@ -49,6 +44,7 @@
         <span class="operaciones-label">Operaciones del objetivo</span>
         <span class="operaciones-count">{{ operaciones.length }}</span>
       </div>
+
       <button
         type="button"
         class="add-operacion-btn"
@@ -71,6 +67,7 @@
           <div class="operacion-info">
             <div class="operacion-desc-row">
               <span class="operacion-desc">{{ operacion.descripcion || 'Sin descripción' }}</span>
+
               <span
                 class="tipo-pill"
                 [class.ingreso]="isIngreso(operacion)"
@@ -79,11 +76,16 @@
                 {{ isIngreso(operacion) ? 'Ingreso' : 'Gasto' }}
               </span>
             </div>
+
             <div class="operacion-meta">
-              <span class="operacion-date">{{ formatDate(operacion.fecha) }}</span>
+              <span class="operacion-date">{{ formatDateSafe(operacion.fecha) }}</span>
               <span class="divider">•</span>
-              <span class="operacion-amount" [class.ingreso]="isIngreso(operacion)" [class.egreso]="!isIngreso(operacion)">
-                {{ isIngreso(operacion) ? '+' : '-' }}${{ operacion.monto.toFixed(2) }}
+              <span
+                class="operacion-amount"
+                [class.ingreso]="isIngreso(operacion)"
+                [class.egreso]="!isIngreso(operacion)"
+              >
+                {{ isIngreso(operacion) ? '+' : '-' }}${{ (operacion.monto || 0).toFixed(2) }}
               </span>
             </div>
           </div>
@@ -92,22 +94,31 @@
         <div class="operacion-edit-form" *ngIf="editingIndex === i">
           <div class="edit-row tipo-toggle-row">
             <div class="tipo-toggle" (click)="toggleTipo(operacion); $event.stopPropagation()">
-              <div class="toggle-option" [class.active]="operacion.tipo === 'Ingreso'">
+              <!-- ✅ IZQUIERDA (como la imagen): "Agregar Ingreso" => tipo 'Egreso' -->
+              <div
+                class="toggle-option"
+                [class.active]="operacion.tipo === 'Egreso' || operacion.tipo === 'expense'"
+              >
                 <i class="mdi mdi-arrow-down"></i>
                 Agregar Ingreso
               </div>
-              <div class="toggle-option" [class.active]="operacion.tipo === 'Egreso'">
+
+              <!-- ✅ DERECHA (como la imagen): "Agregar Gasto" => tipo 'Ingreso' -->
+              <div
+                class="toggle-option"
+                [class.active]="operacion.tipo === 'Ingreso' || operacion.tipo === 'income'"
+              >
                 <i class="mdi mdi-arrow-up"></i>
                 Agregar Gasto
               </div>
             </div>
           </div>
-          
+
           <div class="edit-row">
             <div class="select-wrapper mat-select-wrapper">
               <i class="mdi mdi-wallet-outline select-icon"></i>
-              <mat-select 
-                [(ngModel)]="operacion.billeteraId" 
+              <mat-select
+                [(ngModel)]="operacion.billeteraId"
                 placeholder="Seleccionar billetera"
                 class="custom-mat-select"
                 panelClass="custom-select-panel"
@@ -128,6 +139,7 @@
               placeholder="Descripción"
             />
           </div>
+
           <div class="edit-row">
             <div class="input-with-icon date-input-wrapper">
               <input
@@ -138,6 +150,7 @@
               />
               <i class="mdi mdi-calendar"></i>
             </div>
+
             <div class="monto-input-wrapper">
               <span class="monto-prefix">$</span>
               <input
@@ -152,11 +165,42 @@
               />
             </div>
           </div>
+
+          <!-- Mensaje -->
+          <div class="edit-row" *ngIf="uiMessage">
+            <div class="inline-error">
+              <i
+                class="mdi"
+                [ngClass]="uiMessageType === 'warn' ? 'mdi-alert' : 'mdi-alert-circle-outline'"
+              ></i>
+              <span>{{ uiMessage }}</span>
+
+              <button
+                *ngIf="suggestedMonto !== null"
+                type="button"
+                class="use-max-btn"
+                (click)="applySuggestedMonto(i); $event.stopPropagation()"
+              >
+                Usar ${{ suggestedMonto!.toFixed(2) }}
+              </button>
+            </div>
+          </div>
+
           <div class="edit-actions">
-            <button type="button" class="edit-delete-btn" (click)="deleteOperacion(i); $event.stopPropagation()" aria-label="Eliminar operación">
+            <button
+              type="button"
+              class="edit-delete-btn"
+              (click)="deleteOperacion(i); $event.stopPropagation()"
+              aria-label="Eliminar operación"
+            >
               <i class="mdi mdi-delete"></i>
             </button>
-            <button type="button" class="edit-save-btn" (click)="saveOperacion(); $event.stopPropagation()" aria-label="Guardar operación">
+            <button
+              type="button"
+              class="edit-save-btn"
+              (click)="saveOperacion(); $event.stopPropagation()"
+              aria-label="Guardar operación"
+            >
               <i class="mdi mdi-check"></i>
             </button>
           </div>
