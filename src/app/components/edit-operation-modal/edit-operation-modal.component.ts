@@ -63,6 +63,10 @@ export class EditOperationModal {
   categorias: Categoria[] = [];
   billeteras: Billetera[] = [];
 
+  onClose(): void {
+    this.closeModal.emit();
+  }
+
   ngOnInit() {
     // Validar que la operación tenga un ID
     if (!this.operacion._id && !this.operacion.id) {
@@ -130,10 +134,6 @@ export class EditOperationModal {
         .filter(categoria => categoria.type === this.transactionType)
         .sort((a, b) => a.nombre.localeCompare(b.nombre));
     });
-  }
-
-  onClose(): void {
-    this.closeModal.emit();
   }
 
   onSave(): void {
