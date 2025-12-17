@@ -162,7 +162,7 @@
   margin-left: 4px;
 }
 
-.transaction-time {
+.transaction-wallet {
   font-size: 13px;
   color: rgba(255, 255, 255, 0.6);
   margin: 0;
@@ -170,6 +170,10 @@
 }
 
 .transaction-amount {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
   font-size: 16px;
   font-weight: 700;
   color: #ef4444;
@@ -182,6 +186,19 @@
   .amount-sign {
     font-size: 14px;
   }
+}
+
+.amount-value {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.transaction-date {
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.6);
+  line-height: 1.2;
 }
 
 // Estado vacío

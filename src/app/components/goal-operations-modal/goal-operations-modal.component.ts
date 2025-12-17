@@ -2,6 +2,8 @@ import {
   Component,
   EventEmitter,
   HostBinding,
+  HostListener,
+  ElementRef,
   Input,
   OnChanges,
   OnInit,
@@ -37,6 +39,14 @@ export class GoalOperationsModalComponent implements OnInit, OnChanges {
   @HostBinding('class.closing') isClosing = false;
 
   private billeteraService = inject(BilleteraService);
+  private elementRef = inject(ElementRef);
+
+  @HostListener('click', ['$event'])
+  onBackdropClick(event: MouseEvent) {
+    if (event.target === this.elementRef.nativeElement) {
+      this.onClose();
+    }
+  }
 
   operaciones: Operacion[] = [];
   billeteras: Billetera[] = [];

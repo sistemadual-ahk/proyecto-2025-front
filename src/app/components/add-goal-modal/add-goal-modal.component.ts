@@ -7,6 +7,9 @@ import {
   OnChanges,
   SimpleChanges,
   HostBinding,
+  HostListener,
+  ElementRef,
+  inject,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -30,6 +33,15 @@ export class AddGoalModalComponent implements OnInit, OnChanges {
   @Output() delete = new EventEmitter<void>();
 
   @HostBinding('class.closing') isClosing = false;
+
+  private elementRef = inject(ElementRef);
+
+  @HostListener('click', ['$event'])
+  onBackdropClick(event: MouseEvent) {
+    if (event.target === this.elementRef.nativeElement) {
+      this.onClose();
+    }
+  }
 
   // Campos del formulario
   montoObjetivo: number | null = null;
