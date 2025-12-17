@@ -13,8 +13,6 @@ import { Operacion } from '../../../models/operacion.model';
 import { ObjetivoService } from '../../services/objetivo.service';
 import { Categoria } from '../../../models/categoria.model';
 import { CategoriaService } from '../../services/categoria.service';
-import { Billetera } from '../../../models/billetera.model';
-import { BilleteraService } from '../../services/billetera.service';
 import { OperacionService } from '../../services/operacion.service';
 import { forkJoin } from 'rxjs';
 
@@ -51,7 +49,6 @@ export class SavingGoalsComponent implements OnInit {
   // Estado de carga / error simple
   isLoading = false;
   loadError?: string;
-  defaultWalletId?: string;
 
   // Tips de ahorro
   savingTips = [
@@ -82,12 +79,10 @@ export class SavingGoalsComponent implements OnInit {
     private router: Router,
     private objetivoService: ObjetivoService,
     private categoriaService: CategoriaService,
-    private billeteraService: BilleteraService,
     private operacionService: OperacionService
   ) {}
 
   ngOnInit(): void {
-    this.loadDefaultWallet();
     this.loadGoals();
     this.loadCategorias();
   }
@@ -102,11 +97,6 @@ export class SavingGoalsComponent implements OnInit {
         raw.categoriaId ||
         raw.categoria?._id ||
         raw.categoria?.id ||
-        undefined,
-      billeteraId:
-        raw.billeteraId ||
-        raw.billetera?._id ||
-        raw.billetera?.id ||
         undefined,
     } as Objetivo;
   }
@@ -128,35 +118,10 @@ export class SavingGoalsComponent implements OnInit {
         raw.categoria?._id ||
         raw.categoria?.id ||
         undefined,
-      billeteraId:
-        raw.billeteraId ||
-        raw.billetera?._id ||
-        raw.billetera?.id ||
-        undefined,
     } as Operacion;
   }
 
   // ----------------- Carga de datos -----------------
-
-  private loadDefaultWallet(): void {
-    this.billeteraService.getBilleteras().subscribe({
-      next: (billeteras: Billetera[]) => {
-        const def = billeteras.find((b) => (b as any).isDefault);
-        if (def) {
-          this.defaultWalletId = def.id;
-        } else if (billeteras.length > 0) {
-          // Fallback a la primera billetera si no hay default
-          this.defaultWalletId = billeteras[0].id;
-          console.warn('No se encontró billetera default, usando la primera disponible:', billeteras[0].nombre);
-        } else {
-          console.warn('No se encontró billetera default para el usuario');
-        }
-      },
-      error: (err) => {
-        console.error('Error al cargar billeteras', err);
-      },
-    });
-  }
 
   private loadGoals(): void {
     this.isLoading = true;
@@ -318,7 +283,6 @@ export class SavingGoalsComponent implements OnInit {
         titulo: goal.titulo,
         montoObjetivo: goal.montoObjetivo,
         categoriaId: goal.categoriaId,
-        billeteraId: goal.billeteraId,
         fechaInicio: goal.fechaInicio,
         fechaEsperadaFinalizacion: goal.fechaEsperadaFinalizacion,
         fechaFin: goal.fechaFin,
@@ -358,15 +322,6 @@ export class SavingGoalsComponent implements OnInit {
           },
         });
     } else {
-      const billeteraId = goal.billeteraId || this.defaultWalletId;
-
-      if (!billeteraId) {
-        alert('No se puede crear el objetivo porque no tienes ninguna billetera registrada. Por favor crea una billetera primero.');
-        console.error(
-          'No hay billeteraId para crear objetivo (ni seleccionada ni default)'
-        );
-        return;
-      }
 
       if (!goal.categoriaId) {
         alert('Debes seleccionar una categoría para el objetivo.');
@@ -377,7 +332,6 @@ export class SavingGoalsComponent implements OnInit {
       const payload: any = {
         titulo: goal.titulo,
         montoObjetivo: goal.montoObjetivo,
-        billeteraId,
         categoriaId: goal.categoriaId,
         fechaInicio: goal.fechaInicio,
         fechaEsperadaFinalizacion: goal.fechaEsperadaFinalizacion,
@@ -453,19 +407,10 @@ export class SavingGoalsComponent implements OnInit {
       if (op._id || (op as any).id) continue;
 
       const categoriaId = op.categoriaId || objetivo.categoriaId;
-      const billeteraId = op.billeteraId || objetivo.billeteraId;
 
       if (!categoriaId) {
         console.warn(
           'No se puede crear operación del objetivo porque no tiene categoriaId ni la del objetivo',
-          op
-        );
-        continue;
-      }
-
-      if (!billeteraId) {
-        console.warn(
-          'No se puede crear operación del objetivo porque no tiene billeteraId ni la del objetivo',
           op
         );
         continue;
@@ -476,7 +421,6 @@ export class SavingGoalsComponent implements OnInit {
         tipo: op.tipo,
         descripcion: op.descripcion,
         categoriaId,
-        billeteraId,
         objetivo: objetivo.id,
       };
 

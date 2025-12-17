@@ -35,7 +35,6 @@ export class AddGoalModalComponent implements OnInit, OnChanges {
   montoObjetivo: number | null = null;
   montoActual: number = 0;
   categoriaId: string = '';
-  billeteraId: string = '';
   color: string = '#E5E7EB';
   fechaInicio: string = '';
   fechaEsperadaFinalizacion: string = '';
@@ -126,14 +125,6 @@ export class AddGoalModalComponent implements OnInit, OnChanges {
       anyObj.categoria?._id ||
       anyObj.categoria?.id ||
       '';
-
-    this.billeteraId =
-      (obj as any).billeteraId ||
-      anyObj.billeteraId ||
-      anyObj.billetera?._id ||
-      anyObj.billetera?.id ||
-      '';
-
     this.color = (obj as any).color || this.colorOptions[0];
 
     this.fechaInicio = this.normalizeDate(obj.fechaInicio as any);
@@ -163,7 +154,6 @@ export class AddGoalModalComponent implements OnInit, OnChanges {
       montoObjetivo: this.montoObjetivo || 0,
       montoActual: this.montoActual,
       categoriaId: this.categoriaId,
-      billeteraId: this.billeteraId,
       color: this.color,
       fechaInicio: this.fechaInicio,
       fechaEsperadaFinalizacion: this.fechaEsperadaFinalizacion,
