@@ -56,7 +56,9 @@ export class UserComparisonComponent implements OnInit {
       municipio: '',
       localidad: '',
       useMyLocation: false
-    }
+    },
+    anio: null as number | null,
+    mes: null as number | null
   };
 
   // Datos del usuario actual
@@ -178,14 +180,7 @@ private loadUserData(): void {
     });
   }
 
-  private loadComparisonData(payload?: any): void {
-    if (!payload) {
-      // No se recibió payload — no intentamos usar datos hardcodeados.
-      console.warn('No se proporcionó payload para la comparación.');
-      this.loading = false;
-      return;
-    }
-
+  private loadComparisonData(payload: any): void {
     // Helper para mapear usuario backend a la interfaz local
     const mapBackendUser = (u: any): UserComparisonData => ({
       name: u.name || u.nombre || '',
@@ -205,58 +200,28 @@ private loadUserData(): void {
       ultimaFecha: u.ultimaFechaMes ?? u.ultimaFecha ?? null,
     } as UserComparisonData);
 
-    // Endpoint backend: /usuarios/comparar (API base takes care of /api prefix)
-    // Use GET and send criteria as a JSON-encoded query param
-    // Ignorar criterios por ahora: siempre llamar GET /usuarios/comparar sin query params
-    // Use the exact route registered in the backend router: "/comparar/"
-    this.api.get<any>('/usuarios/comparar/').subscribe({
+    // POST a usuarios/compararporcriterios
+    this.api.create<any>('/usuarios/compararporcriterios', payload).subscribe({
       next: (res) => {
-        // ApiService ya devuelve response.data, se espera { usuarios: [ ... ] }
+        // ApiService ya devuelve response.data
         if (!res) {
           this.loading = false;
           return;
         }
 
-        const usuarios = res.usuarios || (Array.isArray(res) ? res : null);
-
-        if (Array.isArray(usuarios) && usuarios.length >= 1) {
-          this.currentUser = mapBackendUser(usuarios[0]);
-          if (usuarios.length >= 2) {
-            this.comparedUser = mapBackendUser(usuarios[1]);
-          } else if (this.currentUserData) {
-            this.comparedUser = {
-              sueldo: this.currentUserData.sueldo || 0,
-              profesion: this.currentUserProfesion,
-              estadoCivil: this.currentUserData.estadoCivil || '',
-              ubicacion: this.currentUserUbicacion || { provincia: '', municipio: '', localidad: '' },
-              categorias: [],
-              totalOperaciones: 0,
-              primeraFecha: '',
-              ultimaFecha: ''
-            } as any;
+        // La respuesta tiene la estructura: { usuarioActual, candidato, comparacion }
+        // comparacion.usuarios contiene el array con los datos de comparación
+        if (res.comparacion && Array.isArray(res.comparacion.usuarios) && res.comparacion.usuarios.length >= 2) {
+          this.currentUser = mapBackendUser(res.comparacion.usuarios[0]);
+          this.comparedUser = mapBackendUser(res.comparacion.usuarios[1]);
+        } else if (res.comparacion && Array.isArray(res.comparacion.usuarios) && res.comparacion.usuarios.length === 1) {
+          this.currentUser = mapBackendUser(res.comparacion.usuarios[0]);
+          // Si solo hay un usuario, usar datos del candidato si están disponibles
+          if (res.candidato) {
+            this.comparedUser = mapBackendUser(res.candidato);
           }
-        } else if (Array.isArray(res) && res.length >= 2) {
-          this.currentUser = mapBackendUser(res[0]);
-          this.comparedUser = mapBackendUser(res[1]);
         } else {
-          // Forma inesperada: intentar mapear el objeto recibido
-          try {
-            this.comparedUser = mapBackendUser(res);
-            if (!this.currentUser && this.currentUserData) {
-              this.currentUser = {
-                sueldo: this.currentUserData.sueldo || 0,
-                profesion: this.currentUserProfesion,
-                estadoCivil: this.currentUserData.estadoCivil || '',
-                ubicacion: this.currentUserUbicacion || { provincia: '', municipio: '', localidad: '' },
-                categorias: [],
-                totalOperaciones: 0,
-                primeraFecha: '',
-                ultimaFecha: ''
-              } as any;
-            }
-          } catch (e) {
-            console.error('Respuesta inesperada del backend para comparación', res);
-          }
+          console.error('Respuesta inesperada del backend para comparación', res);
         }
 
         this.loading = false;
@@ -418,29 +383,36 @@ private loadUserData(): void {
     
     this.showCriteriaSelection = false;
     this.loading = true;
-    // Construir payload para backend
-    const payload: any = {
-      criterios: {
-        sueldo: this.comparisonCriteria.sueldo,
-        profesion: null,
-        ubicacion: null
-      }
-    };
+    
+    // Construir payload JSON según los campos elegidos
+    const payload: any = {};
 
+    // Solo incluir sueldo si está seleccionado
+    if (this.comparisonCriteria.sueldo) {
+      payload.sueldo = true;
+    }
+
+    // Solo incluir profesion si está seleccionada y tiene valor
     if (this.comparisonCriteria.profesion.selected) {
       if (this.comparisonCriteria.profesion.useMyProfession) {
-        payload.criterios.profesion = { useMyProfession: true, value: this.currentUserProfesion };
-      } else {
-        payload.criterios.profesion = { useMyProfession: false, value: this.comparisonCriteria.profesion.value };
+        payload.profesion = this.currentUserProfesion;
+      } else if (this.comparisonCriteria.profesion.value) {
+        payload.profesion = this.comparisonCriteria.profesion.value;
       }
     }
 
+    // Solo incluir ubicacion si está seleccionada y tiene valores
     if (this.comparisonCriteria.ubicacion.selected) {
-      if (this.comparisonCriteria.ubicacion.useMyLocation) {
-        payload.criterios.ubicacion = { useMyLocation: true, value: this.currentUserUbicacion };
-      } else {
-        payload.criterios.ubicacion = {
-          useMyLocation: false,
+      if (this.comparisonCriteria.ubicacion.useMyLocation && this.currentUserUbicacion) {
+        payload.ubicacion = {
+          provincia: this.currentUserUbicacion.provincia,
+          municipio: this.currentUserUbicacion.municipio,
+          localidad: this.currentUserUbicacion.localidad
+        };
+      } else if (this.comparisonCriteria.ubicacion.provincia && 
+                 this.comparisonCriteria.ubicacion.municipio && 
+                 this.comparisonCriteria.ubicacion.localidad) {
+        payload.ubicacion = {
           provincia: this.comparisonCriteria.ubicacion.provincia,
           municipio: this.comparisonCriteria.ubicacion.municipio,
           localidad: this.comparisonCriteria.ubicacion.localidad
@@ -448,7 +420,16 @@ private loadUserData(): void {
       }
     }
 
-    // Intentamos llamar al backend para obtener la comparativa. Si falla, usamos datos de ejemplo.
+    // Incluir anio y mes si están definidos
+    if (this.comparisonCriteria.anio !== null && this.comparisonCriteria.anio !== undefined) {
+      payload.anio = this.comparisonCriteria.anio;
+    }
+
+    if (this.comparisonCriteria.mes !== null && this.comparisonCriteria.mes !== undefined) {
+      payload.mes = this.comparisonCriteria.mes;
+    }
+
+    // Llamar al backend con POST
     this.loadComparisonData(payload);
   }
 
@@ -473,7 +454,9 @@ private loadUserData(): void {
         municipio: '',
         localidad: '',
         useMyLocation: false
-      }
+      },
+      anio: null,
+      mes: null
     };
     this.municipios = [];
     this.localidades = [];
