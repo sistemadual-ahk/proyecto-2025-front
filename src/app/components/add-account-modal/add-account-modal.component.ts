@@ -1,6 +1,7 @@
 import { Component, EventEmitter, OnInit, OnChanges, SimpleChanges, Output, Input, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { NumberFormatDirective } from '../../directives/number-format.directive';
 import { BilleteraService } from '../../services/billetera.service';
 import { Billetera } from '../../../models/billetera.model';
 import { MatSelectModule } from '@angular/material/select';
@@ -10,7 +11,7 @@ type WalletType = 'bank' | 'digital' | 'cash';
 @Component({
   selector: 'app-add-account-modal',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatSelectModule],
+  imports: [CommonModule, FormsModule, MatSelectModule, NumberFormatDirective],
   templateUrl: './add-account-modal.component.html',
   styleUrl: './add-account-modal.component.scss',
 })

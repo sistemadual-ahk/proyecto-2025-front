@@ -20,7 +20,7 @@
         </div>
         <div class="card-content">
           <h3 class="card-title">Ingresos</h3>
-          <p class="card-amount">${{ income }}</p>
+          <p class="card-amount">${{ income | number:'1.0-2' }}</p>
         </div>
       </div>
 
@@ -30,7 +30,7 @@
         </div>
         <div class="card-content">
           <h3 class="card-title">Gastos</h3>
-          <p class="card-amount">${{ expenses }}</p>
+          <p class="card-amount">${{ expenses | number:'1.0-2' }}</p>
         </div>
       </div>
     </div>
@@ -61,7 +61,7 @@
           </div>
           <div class="card-type">{{ card.typeLabel }}</div>
         </div>
-        <div class="card-number">{{ card.number }}</div>
+        <div class="card-number">{{ hideBalances ? 'Total: ****' : card.number }}</div>
         <div class="card-footer">
           <div class="card-holder">{{ card.holder }}</div>
           <div class="card-balance">{{ card.balance }}</div>
@@ -96,7 +96,7 @@
           <div class="movement-amount" 
                [class.income]="movement.type === 'income' || movement.type === 'Ingreso'"
                [class.expense]="movement.type === 'expense' || movement.type === 'Egreso'">
-            {{ movement.amount > 0 ? '+' : '' }}${{ redondearAmount(movement.amount) }}
+            {{ movement.amount > 0 ? '+' : '' }}${{ movement.amount | number:'1.0-2' }}
           </div>
         </div>
       </div>

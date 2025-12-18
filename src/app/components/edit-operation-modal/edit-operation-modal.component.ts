@@ -1,6 +1,7 @@
 import { Component, inject, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { NumberFormatDirective } from '../../directives/number-format.directive';
 import { MatSelectModule } from '@angular/material/select';
 import { BilleteraService } from '../../services/billetera.service';
 import { Billetera } from '../../../models/billetera.model';

@@ -1,6 +1,7 @@
 ﻿import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { NumberFormatDirective } from '../../directives/number-format.directive';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { AddAccountModalComponent } from '../../components/add-account-modal/add-account-modal.component';
@@ -19,6 +20,7 @@ type WalletType = 'bank' | 'digital' | 'cash';
     AddAccountModalComponent,
     PageTitleComponent,
     MatSelectModule,
+    NumberFormatDirective,
   ],
   templateUrl: './wallets.component.html',
   styleUrls: ['./wallets.component.scss'],
@@ -32,6 +34,10 @@ export class WalletsComponent implements OnInit {
   showTransferModal = false;
   showTransferHistory = false;
   showEditWalletModal = false;
+  
+  // Estado de visibilidad de saldos
+  hideBalances = false;
+
   transferHistory: {
     id: string;
     fromId: string;
@@ -172,8 +178,19 @@ export class WalletsComponent implements OnInit {
 
   // Método de inicialización
   ngOnInit(): void {
+    // Cargar preferencia de visibilidad
+    const savedHideBalances = localStorage.getItem('hideBalances');
+    if (savedHideBalances) {
+      this.hideBalances = JSON.parse(savedHideBalances);
+    }
+
     this.loadWalletTypeOverrides();
     this.loadData();
+  }
+
+  toggleBalances(): void {
+    this.hideBalances = !this.hideBalances;
+    localStorage.setItem('hideBalances', JSON.stringify(this.hideBalances));
   }
 
   private loadBilleteras(): void {

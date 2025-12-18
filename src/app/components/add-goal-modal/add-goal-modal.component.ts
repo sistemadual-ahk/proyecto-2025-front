@@ -13,6 +13,7 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { NumberFormatDirective } from '../../directives/number-format.directive';
 import { Objetivo, EstadoObjetivo } from '../../../models/objetivo.model';
 import { Categoria } from '../../../models/categoria.model';
 import { CategoriaService } from '../../services/categoria.service';
@@ -21,7 +22,7 @@ import { MatSelectModule } from '@angular/material/select';
 @Component({
   selector: 'app-add-goal-modal',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatSelectModule],
+  imports: [CommonModule, FormsModule, MatSelectModule, NumberFormatDirective],
   templateUrl: './add-goal-modal.component.html',
   styleUrl: './add-goal-modal.component.scss',
 })

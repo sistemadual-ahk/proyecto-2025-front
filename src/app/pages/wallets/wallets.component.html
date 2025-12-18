@@ -6,8 +6,15 @@
 
     <!-- Total Balance Card -->
     <div class="total-balance-card">
-      <div class="balance-label">Total:</div>
-      <div class="balance-amount">{{ formatCurrency(totalBalanceARS, 'ARS') }}</div>
+      <button class="toggle-balance-btn" (click)="toggleBalances()">
+        <i class="mdi" [ngClass]="hideBalances ? 'mdi-eye-off' : 'mdi-eye'"></i>
+      </button>
+      <div class="balance-header">
+        <div class="balance-label">Total:</div>
+      </div>
+      <div class="balance-amount">
+        {{ hideBalances ? '****' : formatCurrency(totalBalanceARS, 'ARS') }}
+      </div>
     </div>
 
     <!-- Action Buttons -->
@@ -37,13 +44,13 @@
           <div class="wallet-name">{{ wallet.nombre }}</div>
           <div class="wallet-subtitle">
             <span class="wallet-type">{{ wallet.type }}</span>
-            <span class="wallet-dot" *ngIf="wallet.isDefault">•</span>
-            <span class="wallet-default" *ngIf="wallet.isDefault">Predeterminada</span>
           </div>
         </div>
         <div class="wallet-meta">
           <div class="wallet-meta-text">
-            <div class="wallet-balance">{{ formatCurrency(wallet.balance, getWalletCurrency(wallet)) }}</div>
+            <div class="wallet-balance">
+              {{ hideBalances ? '****' : formatCurrency(wallet.balance, getWalletCurrency(wallet)) }}
+            </div>
             <div class="wallet-currency">{{ getWalletCurrency(wallet) }}</div>
           </div>
           <i class="mdi mdi-chevron-right"></i>
@@ -85,27 +92,31 @@
         <button class="popup-close-btn" (click)="closeWalletPopup()">
           <i class="mdi mdi-close"></i>
         </button>
-      </div>
-
       <!-- Contenido del popup -->
       <div class="popup-content">
         <!-- Balance principal -->
         <div class="popup-balance-section">
           <div class="popup-balance-label">Balance actual</div>
-          <div class="popup-balance-amount">{{ formatCurrency(selectedWallet?.balance || 0) }}</div>
+          <div class="popup-balance-amount">
+            {{ hideBalances ? '****' : formatCurrency(selectedWallet?.balance || 0) }}
+          </div>
         </div>
 
         <div class="popup-balance-grid">
           <!-- Ingresos históricos -->
           <div class="popup-balance-section small">
             <div class="popup-balance-label">Ingresos históricos</div>
-            <div class="popup-balance-amount">{{ formatCurrency(selectedWallet?.ingresoHistorico || 0) }}</div>
+            <div class="popup-balance-amount">
+              {{ hideBalances ? '****' : formatCurrency(selectedWallet?.ingresoHistorico || 0) }}
+            </div>
           </div>
 
           <!-- Gastos históricos -->
           <div class="popup-balance-section small">
             <div class="popup-balance-label">Gastos históricos</div>
-            <div class="popup-balance-amount">{{ formatCurrency(selectedWallet?.gastoHistorico || 0) }}</div>
+            <div class="popup-balance-amount">
+              {{ hideBalances ? '****' : formatCurrency(selectedWallet?.gastoHistorico || 0) }}
+            </div>
           </div>
         </div>
 
@@ -255,14 +266,13 @@
           <label class="form-label" for="walletBalance">Balance actual</label>
           <div class="input-with-icon">
             <input
-              type="number"
-              inputmode="numeric"
+              type="text"
+              inputmode="decimal"
+              appNumberFormat
               class="form-input"
               id="walletBalance"
               name="walletBalance"
               [(ngModel)]="editWalletForm.balance"
-              min="0"
-              step="1"
               required
               placeholder="Ingrese monto"
             />
@@ -348,9 +358,9 @@
           <span class="detail-value">
             <input
               class="form-input"
-              type="number"
-              inputmode="numeric"
-              min="0"
+              type="text"
+              inputmode="decimal"
+              appNumberFormat
               [(ngModel)]="transferForm.originAmount"
               placeholder="Ingrese monto"
             />

@@ -1,6 +1,7 @@
 import { OnInit, Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { NumberFormatDirective } from '../../directives/number-format.directive';
 import {
   MatBottomSheet,
   MatBottomSheetModule,
@@ -49,7 +50,7 @@ const toLocalISOString = (dateString: string): string => {
 @Component({
   selector: 'add-operation-modal',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatButtonModule, MatBottomSheetModule, MatSelectModule],
+  imports: [CommonModule, FormsModule, MatButtonModule, MatBottomSheetModule, MatSelectModule, NumberFormatDirective],
   templateUrl: './add-operation-modal.component.html',
   styleUrls: ['./add-operation-modal.component.scss'],
 })

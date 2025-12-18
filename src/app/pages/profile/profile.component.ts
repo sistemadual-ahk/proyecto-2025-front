@@ -8,11 +8,12 @@ import { AuthService } from '@auth0/auth0-angular';
 import { MatSelectModule } from '@angular/material/select';
 import { ApiService } from '../../services/api.service';
 import { UserDTO } from '../../../models/user.model';
+import { NumberFormatDirective } from '../../directives/number-format.directive';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule, FormsModule, PageTitleComponent, MatSelectModule],
+  imports: [CommonModule, FormsModule, PageTitleComponent, MatSelectModule, NumberFormatDirective],
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.scss'],
 })

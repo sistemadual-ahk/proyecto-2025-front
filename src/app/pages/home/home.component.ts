@@ -50,6 +50,9 @@ export class HomeComponent implements OnInit, OnDestroy {
   isDragging = false;
   isAnimating = false;
 
+  // Estado de visibilidad de saldos
+  hideBalances = false;
+
   private _transactionBottomSheet = inject(MatBottomSheet);
 
   constructor(
@@ -96,6 +99,12 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    // Cargar preferencia de visibilidad
+    const savedHideBalances = localStorage.getItem('hideBalances');
+    if (savedHideBalances) {
+      this.hideBalances = JSON.parse(savedHideBalances);
+    }
+
     this.loadWalletTypeOverrides();
     this.loadData();
   }

@@ -15,6 +15,7 @@ import {
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
+import { NumberFormatDirective } from '../../directives/number-format.directive';
 
 import { Objetivo } from '../../../models/objetivo.model';
 import { Operacion } from '../../../models/operacion.model';
@@ -26,7 +27,7 @@ type UiMessageType = 'error' | 'warn';
 @Component({
   selector: 'app-goal-operations-modal',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatSelectModule],
+  imports: [CommonModule, FormsModule, MatSelectModule, NumberFormatDirective],
   templateUrl: './goal-operations-modal.component.html',
   styleUrl: './goal-operations-modal.component.scss',
 })
